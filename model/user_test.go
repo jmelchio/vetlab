@@ -26,7 +26,7 @@ var _ = Describe("User", func() {
 					PasswordHash: "some-password-hashed",
 					OrgID:        "some-org-id",
 				}
-				expectedJson = `{"user_id": "some-user-id"}`
+				expectedJson = `{"user_id":"some-user-id","user_name":"some-user-name","first_name":"some-first-name","last_name":"some-last-name","email":"user@server.com","password_hash":"some-password-hashed","org_id":"some-org-id"}`
 			})
 			It("transforms without errors", func() {
 				userBytes, err := json.Marshal(goUser)
