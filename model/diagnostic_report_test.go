@@ -12,33 +12,39 @@ import (
 
 var _ = Describe("DiagnosticReport", func() {
 	Describe("Diagnostic report can be transformed from and to Json", func() {
+		var (
+			goDiagnosticReport   DiagnosticReport
+			jsonDiagnosticReport string
+		)
+		BeforeEach(func() {
+			goDiagnosticReport = DiagnosticReport{
+				ReportID:   "some-report-id",
+				OrgID:      "some-org-id",
+				CustomerID: "some-customer-id",
+				UserID:     "some-user-id",
+				Date:       time.Time{},
+				ReportBody: "some-report-body",
+				ReportFile: "some-report-file",
+			}
+			jsonDiagnosticReport = `{"report_id":"some-report-id","org_id":"some-org-id","customer_id":"some-customer-id","user_id":"some-user-id","date":"0001-01-01T00:00:00Z","report_body":"some-report-body","report_file":"some-report-file"}`
+		})
 		Context("From Golang to Json", func() {
-			var (
-				goDiagnosticReport DiagnosticReport
-				expectedJson       string
-			)
-			BeforeEach(func() {
-				goDiagnosticReport = DiagnosticReport{
-					ReportID:   "some-report-id",
-					OrgID:      "some-org-id",
-					CustomerID: "some-customer-id",
-					UserID:     "some-user-id",
-					Date:       time.Time{},
-					ReportBody: "some-report-body",
-					ReportFile: "some-report-file",
-				}
-				expectedJson = `{"report_id": "some-report-id"}`
-			})
 			It("Transforms without errors", func() {
 				diagnosticReportBytes, err := json.Marshal(goDiagnosticReport)
 				Expect(err).NotTo(HaveOccurred())
 
 				jsonResult := string(diagnosticReportBytes)
-				Expect(jsonResult).To(Equal(expectedJson))
+				Expect(jsonResult).To(Equal(jsonDiagnosticReport))
 			})
 		})
 		Context("From Json to Golang", func() {
+			It("Transforms without errors", func() {
+				var unmarshalDiagnosticReport DiagnosticReport
+				err := json.Unmarshal([]byte(jsonDiagnosticReport), &unmarshalDiagnosticReport)
+				Expect(err).NotTo(HaveOccurred())
 
+				Expect(unmarshalDiagnosticReport).To(Equal(goDiagnosticReport))
+			})
 		})
 	})
 })
