@@ -9,6 +9,7 @@ type User struct {
 	Email        string `json:"email"`
 	PasswordHash string `json:"password_hash"`
 	OrgID        string `json:"org_id"`
+	AdminUser    bool   `json:"admin_user"`
 }
 
 //go:generate counterfeiter . UserRepo
