@@ -11,14 +11,3 @@ type DiagnosticRequest struct {
 	Date        time.Time `json:"date"`
 	Description string    `json:"description"`
 }
-
-//go:generate counterfeiter . DiagnosticRequestRepo
-
-// DiagnosticRequestRepo describes the persistence interface for diagnostic requests
-type DiagnosticRequestRepo interface {
-	Create(DiagnosticRequest) (*DiagnosticRequest, error)
-	Update(DiagnosticRequest) (*DiagnosticRequest, error)
-	Delete(DiagnosticRequest) error
-	GetByID(string) (*DiagnosticRequest, error)
-	GetByOrgID(string) ([]DiagnosticRequest, error)
-}

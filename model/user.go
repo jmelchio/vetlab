@@ -11,14 +11,3 @@ type User struct {
 	OrgID        string `json:"org_id"`
 	AdminUser    bool   `json:"admin_user"`
 }
-
-//go:generate counterfeiter . UserRepo
-
-// UserRepo declares the persistence interface for the User struct
-type UserRepo interface {
-	Create(User) (*User, error)
-	Update(User) (*User, error)
-	Delete(User) error
-	GetByID(string) error
-	GetByOrgID(string) ([]User, error)
-}

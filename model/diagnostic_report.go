@@ -12,14 +12,3 @@ type DiagnosticReport struct {
 	ReportBody string    `json:"report_body"`
 	ReportFile string    `json:"report_file"`
 }
-
-//go:generate counterfeiter . DiagnosticReportRepo
-
-// DiagnosticReportRepo describes the persistence interface for a veterinary lab report
-type DiagnosticReportRepo interface {
-	Create(DiagnosticReport) (*DiagnosticReport, error)
-	Update(DiagnosticReport) (*DiagnosticReport, error)
-	Delete(string) error
-	GetByID(string) (*DiagnosticReport, error)
-	GetByOrgID(string) ([]DiagnosticReport, error)
-}

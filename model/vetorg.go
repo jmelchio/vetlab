@@ -14,14 +14,3 @@ type VetOrg struct {
 	Phone       string `json:"phone"`
 	Fax         string `json:"fax"`
 }
-
-//go:generate counterfeiter . VetOrgRepo
-
-// VetOrgRepo declares the persistence interface for the VetOrg struct
-type VetOrgRepo interface {
-	Create(VetOrg) (*VetOrg, error)
-	Update(VetOrg) (*VetOrg, error)
-	Delete(VetOrg) error
-	GetByID(string) (*VetOrg, error)
-	GetByName(string) ([]VetOrg, error)
-}
