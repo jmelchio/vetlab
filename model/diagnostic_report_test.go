@@ -19,6 +19,7 @@ var _ = Describe("DiagnosticReport", func() {
 		BeforeEach(func() {
 			goDiagnosticReport = DiagnosticReport{
 				ReportID:   "some-report-id",
+				RequestID:  "some-request-id",
 				OrgID:      "some-org-id",
 				CustomerID: "some-customer-id",
 				UserID:     "some-user-id",
@@ -26,7 +27,7 @@ var _ = Describe("DiagnosticReport", func() {
 				ReportBody: "some-report-body",
 				ReportFile: "some-report-file",
 			}
-			jsonDiagnosticReport = `{"report_id":"some-report-id","org_id":"some-org-id","customer_id":"some-customer-id","user_id":"some-user-id","date":"0001-01-01T00:00:00Z","report_body":"some-report-body","report_file":"some-report-file"}`
+			jsonDiagnosticReport = `{"report_id":"some-report-id","request_id":"some-request-id","org_id":"some-org-id","customer_id":"some-customer-id","user_id":"some-user-id","date":"0001-01-01T00:00:00Z","report_body":"some-report-body","report_file":"some-report-file"}`
 		})
 		Context("From Golang to Json", func() {
 			It("Transforms without errors", func() {
