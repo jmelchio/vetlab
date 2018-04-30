@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/jmelchio/vetlab/model"
 )
@@ -12,13 +13,21 @@ type User struct {
 }
 
 // CreateUser creates a new model.User in the vetlab system
-func (userService User) CreateUser(ctx context.Context, user model.User) (model.User, error) {
-	return model.User{}, nil
+func (userService User) CreateUser(ctx context.Context, user model.User) (*model.User, error) {
+	if ctx == nil {
+		return nil, errors.New("Context is required")
+	}
+
+	newUser, err := userService.UserRepo.Create(user)
+	if err != nil {
+		return nil, err
+	}
+	return newUser, nil
 }
 
 // UpdateUser updates a model.User in the vetlab system
-func (userService User) UpdateUser(context.Context, model.User) (model.User, error) {
-	return model.User{}, nil
+func (userService User) UpdateUser(context.Context, model.User) (*model.User, error) {
+	return nil, nil
 }
 
 // DeleteUser delets a model.User from the vetlab system
@@ -27,8 +36,8 @@ func (userService User) DeleteUser(context.Context, model.User) error {
 }
 
 // Login tries to login a user into the vetlab system
-func (userService User) Login(context.Context, string, string) (model.User, error) {
-	return model.User{}, nil
+func (userService User) Login(context.Context, string, string) (*model.User, error) {
+	return nil, nil
 }
 
 // FindUsersByVetOrg attempts to find users by the veterinary organization
@@ -42,6 +51,6 @@ func (userService User) FindUsersByName(context.Context, string) ([]model.User, 
 }
 
 // FindUserByID finds users by their unique ID
-func (userService User) FindUserByID(context.Context, string) (model.User, error) {
-	return model.User{}, nil
+func (userService User) FindUserByID(context.Context, string) (*model.User, error) {
+	return nil, nil
 }
