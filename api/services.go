@@ -11,15 +11,15 @@ import (
 
 // UserService provides the business operations for maintaining users within the application
 type UserService interface {
-	CreateUser(model.User, context.Context) (model.User, error)
-	UpdateUser(model.User, context.Context) (model.User, error)
-	DeleteUser(model.User, context.Context) error
+	CreateUser(context.Context, model.User) (model.User, error)
+	UpdateUser(context.Context, model.User) (model.User, error)
+	DeleteUser(context.Context, model.User) error
 
-	Login(string, string, context.Context) (model.User, error)
+	Login(context.Context, string, string) (model.User, error)
 
-	FindUsersByVetOrg(model.VetOrg, context.Context) ([]model.User, error)
-	FindUsersByName(string, context.Context) ([]model.User, error)
-	FindUserByID(string, context.Context) (model.User, error)
+	FindUsersByVetOrg(context.Context, model.VetOrg) ([]model.User, error)
+	FindUsersByName(context.Context, string) ([]model.User, error)
+	FindUserByID(context.Context, string) (model.User, error)
 }
 
 //go:generate counterfeiter . ReportService
@@ -27,16 +27,16 @@ type UserService interface {
 // ReportService provides the business operations for requesting,finding and retrieving
 // diagnostic reports
 type ReportService interface {
-	SubmitDiagnosticRequest(model.DiagnosticRequest, context.Context) (model.DiagnosticRequest, error)
-	FindReportByDateRange(time.Time, time.Time, model.VetOrg, context.Context) ([]model.DiagnosticReport, error)
-	FindReportByID(string, context.Context) (model.DiagnosticReport, error)
-	FindReportByVetOrg(model.VetOrg, context.Context) ([]model.DiagnosticReport, error)
-	FindReportByUser(model.User, context.Context) ([]model.DiagnosticReport, error)
+	SubmitDiagnosticRequest(context.Context, model.DiagnosticRequest) (model.DiagnosticRequest, error)
+	FindReportByDateRange(context.Context, time.Time, time.Time, model.VetOrg) ([]model.DiagnosticReport, error)
+	FindReportByID(context.Context, string) (model.DiagnosticReport, error)
+	FindReportByVetOrg(context.Context, model.VetOrg) ([]model.DiagnosticReport, error)
+	FindReportByUser(context.Context, model.User) ([]model.DiagnosticReport, error)
 
-	FindRequestByDateRange(time.Time, time.Time, model.VetOrg, context.Context) ([]model.DiagnosticRequest, error)
-	FindRequestByID(string, context.Context) (model.DiagnosticRequest, error)
-	FindRequestByVetOrg(model.VetOrg, context.Context) ([]model.DiagnosticRequest, error)
-	FindRequestByUser(model.User, context.Context) ([]model.DiagnosticRequest, error)
+	FindRequestByDateRange(context.Context, time.Time, time.Time, model.VetOrg) ([]model.DiagnosticRequest, error)
+	FindRequestByID(context.Context, string) (model.DiagnosticRequest, error)
+	FindRequestByVetOrg(context.Context, model.VetOrg) ([]model.DiagnosticRequest, error)
+	FindRequestByUser(context.Context, model.User) ([]model.DiagnosticRequest, error)
 }
 
 //go:generate counterfeiter . VetOrgService
@@ -44,12 +44,12 @@ type ReportService interface {
 // VetOrgService provides the business operations for maintianing veterinary practices
 // within the application
 type VetOrgService interface {
-	CreateVetOrg(model.VetOrg, context.Context) (model.VetOrg, error)
-	UpdateVetOrg(model.VetOrg, context.Context) (model.VetOrg, error)
-	DeteleVetOrg(model.VetOrg, context.Context) error
+	CreateVetOrg(context.Context, model.VetOrg) (model.VetOrg, error)
+	UpdateVetOrg(context.Context, model.VetOrg) (model.VetOrg, error)
+	DeteleVetOrg(context.Context, model.VetOrg) error
 
-	AddUserToVetOrg(model.User, model.VetOrg, context.Context) (model.User, error)
+	AddUserToVetOrg(context.Context, model.User, model.VetOrg) (model.User, error)
 
-	FindVetOrgByName(string, context.Context) (model.VetOrg, error)
-	FindVetOrgByID(string, context.Context) (model.VetOrg, error)
+	FindVetOrgByName(context.Context, string) (model.VetOrg, error)
+	FindVetOrgByID(context.Context, string) (model.VetOrg, error)
 }
