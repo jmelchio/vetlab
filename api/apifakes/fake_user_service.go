@@ -2,19 +2,494 @@
 package apifakes
 
 import (
+	"context"
 	"sync"
 
 	"github.com/jmelchio/vetlab/api"
+	"github.com/jmelchio/vetlab/model"
 )
 
 type FakeUserService struct {
+	CreateUserStub        func(model.User, context.Context) (model.User, error)
+	createUserMutex       sync.RWMutex
+	createUserArgsForCall []struct {
+		arg1 model.User
+		arg2 context.Context
+	}
+	createUserReturns struct {
+		result1 model.User
+		result2 error
+	}
+	createUserReturnsOnCall map[int]struct {
+		result1 model.User
+		result2 error
+	}
+	UpdateUserStub        func(model.User, context.Context) (model.User, error)
+	updateUserMutex       sync.RWMutex
+	updateUserArgsForCall []struct {
+		arg1 model.User
+		arg2 context.Context
+	}
+	updateUserReturns struct {
+		result1 model.User
+		result2 error
+	}
+	updateUserReturnsOnCall map[int]struct {
+		result1 model.User
+		result2 error
+	}
+	DeleteUserStub        func(model.User, context.Context) error
+	deleteUserMutex       sync.RWMutex
+	deleteUserArgsForCall []struct {
+		arg1 model.User
+		arg2 context.Context
+	}
+	deleteUserReturns struct {
+		result1 error
+	}
+	deleteUserReturnsOnCall map[int]struct {
+		result1 error
+	}
+	LoginStub        func(string, string, context.Context) (model.User, error)
+	loginMutex       sync.RWMutex
+	loginArgsForCall []struct {
+		arg1 string
+		arg2 string
+		arg3 context.Context
+	}
+	loginReturns struct {
+		result1 model.User
+		result2 error
+	}
+	loginReturnsOnCall map[int]struct {
+		result1 model.User
+		result2 error
+	}
+	FindUsersByVetOrgStub        func(model.VetOrg, context.Context) ([]model.User, error)
+	findUsersByVetOrgMutex       sync.RWMutex
+	findUsersByVetOrgArgsForCall []struct {
+		arg1 model.VetOrg
+		arg2 context.Context
+	}
+	findUsersByVetOrgReturns struct {
+		result1 []model.User
+		result2 error
+	}
+	findUsersByVetOrgReturnsOnCall map[int]struct {
+		result1 []model.User
+		result2 error
+	}
+	FindUsersByNameStub        func(string, context.Context) ([]model.User, error)
+	findUsersByNameMutex       sync.RWMutex
+	findUsersByNameArgsForCall []struct {
+		arg1 string
+		arg2 context.Context
+	}
+	findUsersByNameReturns struct {
+		result1 []model.User
+		result2 error
+	}
+	findUsersByNameReturnsOnCall map[int]struct {
+		result1 []model.User
+		result2 error
+	}
+	FindUserByIDStub        func(string, context.Context) (model.User, error)
+	findUserByIDMutex       sync.RWMutex
+	findUserByIDArgsForCall []struct {
+		arg1 string
+		arg2 context.Context
+	}
+	findUserByIDReturns struct {
+		result1 model.User
+		result2 error
+	}
+	findUserByIDReturnsOnCall map[int]struct {
+		result1 model.User
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeUserService) CreateUser(arg1 model.User, arg2 context.Context) (model.User, error) {
+	fake.createUserMutex.Lock()
+	ret, specificReturn := fake.createUserReturnsOnCall[len(fake.createUserArgsForCall)]
+	fake.createUserArgsForCall = append(fake.createUserArgsForCall, struct {
+		arg1 model.User
+		arg2 context.Context
+	}{arg1, arg2})
+	fake.recordInvocation("CreateUser", []interface{}{arg1, arg2})
+	fake.createUserMutex.Unlock()
+	if fake.CreateUserStub != nil {
+		return fake.CreateUserStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.createUserReturns.result1, fake.createUserReturns.result2
+}
+
+func (fake *FakeUserService) CreateUserCallCount() int {
+	fake.createUserMutex.RLock()
+	defer fake.createUserMutex.RUnlock()
+	return len(fake.createUserArgsForCall)
+}
+
+func (fake *FakeUserService) CreateUserArgsForCall(i int) (model.User, context.Context) {
+	fake.createUserMutex.RLock()
+	defer fake.createUserMutex.RUnlock()
+	return fake.createUserArgsForCall[i].arg1, fake.createUserArgsForCall[i].arg2
+}
+
+func (fake *FakeUserService) CreateUserReturns(result1 model.User, result2 error) {
+	fake.CreateUserStub = nil
+	fake.createUserReturns = struct {
+		result1 model.User
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeUserService) CreateUserReturnsOnCall(i int, result1 model.User, result2 error) {
+	fake.CreateUserStub = nil
+	if fake.createUserReturnsOnCall == nil {
+		fake.createUserReturnsOnCall = make(map[int]struct {
+			result1 model.User
+			result2 error
+		})
+	}
+	fake.createUserReturnsOnCall[i] = struct {
+		result1 model.User
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeUserService) UpdateUser(arg1 model.User, arg2 context.Context) (model.User, error) {
+	fake.updateUserMutex.Lock()
+	ret, specificReturn := fake.updateUserReturnsOnCall[len(fake.updateUserArgsForCall)]
+	fake.updateUserArgsForCall = append(fake.updateUserArgsForCall, struct {
+		arg1 model.User
+		arg2 context.Context
+	}{arg1, arg2})
+	fake.recordInvocation("UpdateUser", []interface{}{arg1, arg2})
+	fake.updateUserMutex.Unlock()
+	if fake.UpdateUserStub != nil {
+		return fake.UpdateUserStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.updateUserReturns.result1, fake.updateUserReturns.result2
+}
+
+func (fake *FakeUserService) UpdateUserCallCount() int {
+	fake.updateUserMutex.RLock()
+	defer fake.updateUserMutex.RUnlock()
+	return len(fake.updateUserArgsForCall)
+}
+
+func (fake *FakeUserService) UpdateUserArgsForCall(i int) (model.User, context.Context) {
+	fake.updateUserMutex.RLock()
+	defer fake.updateUserMutex.RUnlock()
+	return fake.updateUserArgsForCall[i].arg1, fake.updateUserArgsForCall[i].arg2
+}
+
+func (fake *FakeUserService) UpdateUserReturns(result1 model.User, result2 error) {
+	fake.UpdateUserStub = nil
+	fake.updateUserReturns = struct {
+		result1 model.User
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeUserService) UpdateUserReturnsOnCall(i int, result1 model.User, result2 error) {
+	fake.UpdateUserStub = nil
+	if fake.updateUserReturnsOnCall == nil {
+		fake.updateUserReturnsOnCall = make(map[int]struct {
+			result1 model.User
+			result2 error
+		})
+	}
+	fake.updateUserReturnsOnCall[i] = struct {
+		result1 model.User
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeUserService) DeleteUser(arg1 model.User, arg2 context.Context) error {
+	fake.deleteUserMutex.Lock()
+	ret, specificReturn := fake.deleteUserReturnsOnCall[len(fake.deleteUserArgsForCall)]
+	fake.deleteUserArgsForCall = append(fake.deleteUserArgsForCall, struct {
+		arg1 model.User
+		arg2 context.Context
+	}{arg1, arg2})
+	fake.recordInvocation("DeleteUser", []interface{}{arg1, arg2})
+	fake.deleteUserMutex.Unlock()
+	if fake.DeleteUserStub != nil {
+		return fake.DeleteUserStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.deleteUserReturns.result1
+}
+
+func (fake *FakeUserService) DeleteUserCallCount() int {
+	fake.deleteUserMutex.RLock()
+	defer fake.deleteUserMutex.RUnlock()
+	return len(fake.deleteUserArgsForCall)
+}
+
+func (fake *FakeUserService) DeleteUserArgsForCall(i int) (model.User, context.Context) {
+	fake.deleteUserMutex.RLock()
+	defer fake.deleteUserMutex.RUnlock()
+	return fake.deleteUserArgsForCall[i].arg1, fake.deleteUserArgsForCall[i].arg2
+}
+
+func (fake *FakeUserService) DeleteUserReturns(result1 error) {
+	fake.DeleteUserStub = nil
+	fake.deleteUserReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeUserService) DeleteUserReturnsOnCall(i int, result1 error) {
+	fake.DeleteUserStub = nil
+	if fake.deleteUserReturnsOnCall == nil {
+		fake.deleteUserReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.deleteUserReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeUserService) Login(arg1 string, arg2 string, arg3 context.Context) (model.User, error) {
+	fake.loginMutex.Lock()
+	ret, specificReturn := fake.loginReturnsOnCall[len(fake.loginArgsForCall)]
+	fake.loginArgsForCall = append(fake.loginArgsForCall, struct {
+		arg1 string
+		arg2 string
+		arg3 context.Context
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("Login", []interface{}{arg1, arg2, arg3})
+	fake.loginMutex.Unlock()
+	if fake.LoginStub != nil {
+		return fake.LoginStub(arg1, arg2, arg3)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.loginReturns.result1, fake.loginReturns.result2
+}
+
+func (fake *FakeUserService) LoginCallCount() int {
+	fake.loginMutex.RLock()
+	defer fake.loginMutex.RUnlock()
+	return len(fake.loginArgsForCall)
+}
+
+func (fake *FakeUserService) LoginArgsForCall(i int) (string, string, context.Context) {
+	fake.loginMutex.RLock()
+	defer fake.loginMutex.RUnlock()
+	return fake.loginArgsForCall[i].arg1, fake.loginArgsForCall[i].arg2, fake.loginArgsForCall[i].arg3
+}
+
+func (fake *FakeUserService) LoginReturns(result1 model.User, result2 error) {
+	fake.LoginStub = nil
+	fake.loginReturns = struct {
+		result1 model.User
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeUserService) LoginReturnsOnCall(i int, result1 model.User, result2 error) {
+	fake.LoginStub = nil
+	if fake.loginReturnsOnCall == nil {
+		fake.loginReturnsOnCall = make(map[int]struct {
+			result1 model.User
+			result2 error
+		})
+	}
+	fake.loginReturnsOnCall[i] = struct {
+		result1 model.User
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeUserService) FindUsersByVetOrg(arg1 model.VetOrg, arg2 context.Context) ([]model.User, error) {
+	fake.findUsersByVetOrgMutex.Lock()
+	ret, specificReturn := fake.findUsersByVetOrgReturnsOnCall[len(fake.findUsersByVetOrgArgsForCall)]
+	fake.findUsersByVetOrgArgsForCall = append(fake.findUsersByVetOrgArgsForCall, struct {
+		arg1 model.VetOrg
+		arg2 context.Context
+	}{arg1, arg2})
+	fake.recordInvocation("FindUsersByVetOrg", []interface{}{arg1, arg2})
+	fake.findUsersByVetOrgMutex.Unlock()
+	if fake.FindUsersByVetOrgStub != nil {
+		return fake.FindUsersByVetOrgStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.findUsersByVetOrgReturns.result1, fake.findUsersByVetOrgReturns.result2
+}
+
+func (fake *FakeUserService) FindUsersByVetOrgCallCount() int {
+	fake.findUsersByVetOrgMutex.RLock()
+	defer fake.findUsersByVetOrgMutex.RUnlock()
+	return len(fake.findUsersByVetOrgArgsForCall)
+}
+
+func (fake *FakeUserService) FindUsersByVetOrgArgsForCall(i int) (model.VetOrg, context.Context) {
+	fake.findUsersByVetOrgMutex.RLock()
+	defer fake.findUsersByVetOrgMutex.RUnlock()
+	return fake.findUsersByVetOrgArgsForCall[i].arg1, fake.findUsersByVetOrgArgsForCall[i].arg2
+}
+
+func (fake *FakeUserService) FindUsersByVetOrgReturns(result1 []model.User, result2 error) {
+	fake.FindUsersByVetOrgStub = nil
+	fake.findUsersByVetOrgReturns = struct {
+		result1 []model.User
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeUserService) FindUsersByVetOrgReturnsOnCall(i int, result1 []model.User, result2 error) {
+	fake.FindUsersByVetOrgStub = nil
+	if fake.findUsersByVetOrgReturnsOnCall == nil {
+		fake.findUsersByVetOrgReturnsOnCall = make(map[int]struct {
+			result1 []model.User
+			result2 error
+		})
+	}
+	fake.findUsersByVetOrgReturnsOnCall[i] = struct {
+		result1 []model.User
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeUserService) FindUsersByName(arg1 string, arg2 context.Context) ([]model.User, error) {
+	fake.findUsersByNameMutex.Lock()
+	ret, specificReturn := fake.findUsersByNameReturnsOnCall[len(fake.findUsersByNameArgsForCall)]
+	fake.findUsersByNameArgsForCall = append(fake.findUsersByNameArgsForCall, struct {
+		arg1 string
+		arg2 context.Context
+	}{arg1, arg2})
+	fake.recordInvocation("FindUsersByName", []interface{}{arg1, arg2})
+	fake.findUsersByNameMutex.Unlock()
+	if fake.FindUsersByNameStub != nil {
+		return fake.FindUsersByNameStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.findUsersByNameReturns.result1, fake.findUsersByNameReturns.result2
+}
+
+func (fake *FakeUserService) FindUsersByNameCallCount() int {
+	fake.findUsersByNameMutex.RLock()
+	defer fake.findUsersByNameMutex.RUnlock()
+	return len(fake.findUsersByNameArgsForCall)
+}
+
+func (fake *FakeUserService) FindUsersByNameArgsForCall(i int) (string, context.Context) {
+	fake.findUsersByNameMutex.RLock()
+	defer fake.findUsersByNameMutex.RUnlock()
+	return fake.findUsersByNameArgsForCall[i].arg1, fake.findUsersByNameArgsForCall[i].arg2
+}
+
+func (fake *FakeUserService) FindUsersByNameReturns(result1 []model.User, result2 error) {
+	fake.FindUsersByNameStub = nil
+	fake.findUsersByNameReturns = struct {
+		result1 []model.User
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeUserService) FindUsersByNameReturnsOnCall(i int, result1 []model.User, result2 error) {
+	fake.FindUsersByNameStub = nil
+	if fake.findUsersByNameReturnsOnCall == nil {
+		fake.findUsersByNameReturnsOnCall = make(map[int]struct {
+			result1 []model.User
+			result2 error
+		})
+	}
+	fake.findUsersByNameReturnsOnCall[i] = struct {
+		result1 []model.User
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeUserService) FindUserByID(arg1 string, arg2 context.Context) (model.User, error) {
+	fake.findUserByIDMutex.Lock()
+	ret, specificReturn := fake.findUserByIDReturnsOnCall[len(fake.findUserByIDArgsForCall)]
+	fake.findUserByIDArgsForCall = append(fake.findUserByIDArgsForCall, struct {
+		arg1 string
+		arg2 context.Context
+	}{arg1, arg2})
+	fake.recordInvocation("FindUserByID", []interface{}{arg1, arg2})
+	fake.findUserByIDMutex.Unlock()
+	if fake.FindUserByIDStub != nil {
+		return fake.FindUserByIDStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.findUserByIDReturns.result1, fake.findUserByIDReturns.result2
+}
+
+func (fake *FakeUserService) FindUserByIDCallCount() int {
+	fake.findUserByIDMutex.RLock()
+	defer fake.findUserByIDMutex.RUnlock()
+	return len(fake.findUserByIDArgsForCall)
+}
+
+func (fake *FakeUserService) FindUserByIDArgsForCall(i int) (string, context.Context) {
+	fake.findUserByIDMutex.RLock()
+	defer fake.findUserByIDMutex.RUnlock()
+	return fake.findUserByIDArgsForCall[i].arg1, fake.findUserByIDArgsForCall[i].arg2
+}
+
+func (fake *FakeUserService) FindUserByIDReturns(result1 model.User, result2 error) {
+	fake.FindUserByIDStub = nil
+	fake.findUserByIDReturns = struct {
+		result1 model.User
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeUserService) FindUserByIDReturnsOnCall(i int, result1 model.User, result2 error) {
+	fake.FindUserByIDStub = nil
+	if fake.findUserByIDReturnsOnCall == nil {
+		fake.findUserByIDReturnsOnCall = make(map[int]struct {
+			result1 model.User
+			result2 error
+		})
+	}
+	fake.findUserByIDReturnsOnCall[i] = struct {
+		result1 model.User
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakeUserService) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.createUserMutex.RLock()
+	defer fake.createUserMutex.RUnlock()
+	fake.updateUserMutex.RLock()
+	defer fake.updateUserMutex.RUnlock()
+	fake.deleteUserMutex.RLock()
+	defer fake.deleteUserMutex.RUnlock()
+	fake.loginMutex.RLock()
+	defer fake.loginMutex.RUnlock()
+	fake.findUsersByVetOrgMutex.RLock()
+	defer fake.findUsersByVetOrgMutex.RUnlock()
+	fake.findUsersByNameMutex.RLock()
+	defer fake.findUsersByNameMutex.RUnlock()
+	fake.findUserByIDMutex.RLock()
+	defer fake.findUserByIDMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

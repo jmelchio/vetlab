@@ -72,6 +72,20 @@ type FakeUserRepo struct {
 		result1 []model.User
 		result2 error
 	}
+	GetByUserNamePasswordStub        func(string, string) (model.User, error)
+	getByUserNamePasswordMutex       sync.RWMutex
+	getByUserNamePasswordArgsForCall []struct {
+		arg1 string
+		arg2 string
+	}
+	getByUserNamePasswordReturns struct {
+		result1 model.User
+		result2 error
+	}
+	getByUserNamePasswordReturnsOnCall map[int]struct {
+		result1 model.User
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -328,6 +342,58 @@ func (fake *FakeUserRepo) GetByOrgIDReturnsOnCall(i int, result1 []model.User, r
 	}{result1, result2}
 }
 
+func (fake *FakeUserRepo) GetByUserNamePassword(arg1 string, arg2 string) (model.User, error) {
+	fake.getByUserNamePasswordMutex.Lock()
+	ret, specificReturn := fake.getByUserNamePasswordReturnsOnCall[len(fake.getByUserNamePasswordArgsForCall)]
+	fake.getByUserNamePasswordArgsForCall = append(fake.getByUserNamePasswordArgsForCall, struct {
+		arg1 string
+		arg2 string
+	}{arg1, arg2})
+	fake.recordInvocation("GetByUserNamePassword", []interface{}{arg1, arg2})
+	fake.getByUserNamePasswordMutex.Unlock()
+	if fake.GetByUserNamePasswordStub != nil {
+		return fake.GetByUserNamePasswordStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.getByUserNamePasswordReturns.result1, fake.getByUserNamePasswordReturns.result2
+}
+
+func (fake *FakeUserRepo) GetByUserNamePasswordCallCount() int {
+	fake.getByUserNamePasswordMutex.RLock()
+	defer fake.getByUserNamePasswordMutex.RUnlock()
+	return len(fake.getByUserNamePasswordArgsForCall)
+}
+
+func (fake *FakeUserRepo) GetByUserNamePasswordArgsForCall(i int) (string, string) {
+	fake.getByUserNamePasswordMutex.RLock()
+	defer fake.getByUserNamePasswordMutex.RUnlock()
+	return fake.getByUserNamePasswordArgsForCall[i].arg1, fake.getByUserNamePasswordArgsForCall[i].arg2
+}
+
+func (fake *FakeUserRepo) GetByUserNamePasswordReturns(result1 model.User, result2 error) {
+	fake.GetByUserNamePasswordStub = nil
+	fake.getByUserNamePasswordReturns = struct {
+		result1 model.User
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeUserRepo) GetByUserNamePasswordReturnsOnCall(i int, result1 model.User, result2 error) {
+	fake.GetByUserNamePasswordStub = nil
+	if fake.getByUserNamePasswordReturnsOnCall == nil {
+		fake.getByUserNamePasswordReturnsOnCall = make(map[int]struct {
+			result1 model.User
+			result2 error
+		})
+	}
+	fake.getByUserNamePasswordReturnsOnCall[i] = struct {
+		result1 model.User
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeUserRepo) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -341,6 +407,8 @@ func (fake *FakeUserRepo) Invocations() map[string][][]interface{} {
 	defer fake.getByIDMutex.RUnlock()
 	fake.getByOrgIDMutex.RLock()
 	defer fake.getByOrgIDMutex.RUnlock()
+	fake.getByUserNamePasswordMutex.RLock()
+	defer fake.getByUserNamePasswordMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

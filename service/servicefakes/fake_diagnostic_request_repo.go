@@ -72,6 +72,19 @@ type FakeDiagnosticRequestRepo struct {
 		result1 []model.DiagnosticRequest
 		result2 error
 	}
+	GetByUserIDStub        func(string) ([]model.DiagnosticRequest, error)
+	getByUserIDMutex       sync.RWMutex
+	getByUserIDArgsForCall []struct {
+		arg1 string
+	}
+	getByUserIDReturns struct {
+		result1 []model.DiagnosticRequest
+		result2 error
+	}
+	getByUserIDReturnsOnCall map[int]struct {
+		result1 []model.DiagnosticRequest
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -328,6 +341,57 @@ func (fake *FakeDiagnosticRequestRepo) GetByOrgIDReturnsOnCall(i int, result1 []
 	}{result1, result2}
 }
 
+func (fake *FakeDiagnosticRequestRepo) GetByUserID(arg1 string) ([]model.DiagnosticRequest, error) {
+	fake.getByUserIDMutex.Lock()
+	ret, specificReturn := fake.getByUserIDReturnsOnCall[len(fake.getByUserIDArgsForCall)]
+	fake.getByUserIDArgsForCall = append(fake.getByUserIDArgsForCall, struct {
+		arg1 string
+	}{arg1})
+	fake.recordInvocation("GetByUserID", []interface{}{arg1})
+	fake.getByUserIDMutex.Unlock()
+	if fake.GetByUserIDStub != nil {
+		return fake.GetByUserIDStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.getByUserIDReturns.result1, fake.getByUserIDReturns.result2
+}
+
+func (fake *FakeDiagnosticRequestRepo) GetByUserIDCallCount() int {
+	fake.getByUserIDMutex.RLock()
+	defer fake.getByUserIDMutex.RUnlock()
+	return len(fake.getByUserIDArgsForCall)
+}
+
+func (fake *FakeDiagnosticRequestRepo) GetByUserIDArgsForCall(i int) string {
+	fake.getByUserIDMutex.RLock()
+	defer fake.getByUserIDMutex.RUnlock()
+	return fake.getByUserIDArgsForCall[i].arg1
+}
+
+func (fake *FakeDiagnosticRequestRepo) GetByUserIDReturns(result1 []model.DiagnosticRequest, result2 error) {
+	fake.GetByUserIDStub = nil
+	fake.getByUserIDReturns = struct {
+		result1 []model.DiagnosticRequest
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDiagnosticRequestRepo) GetByUserIDReturnsOnCall(i int, result1 []model.DiagnosticRequest, result2 error) {
+	fake.GetByUserIDStub = nil
+	if fake.getByUserIDReturnsOnCall == nil {
+		fake.getByUserIDReturnsOnCall = make(map[int]struct {
+			result1 []model.DiagnosticRequest
+			result2 error
+		})
+	}
+	fake.getByUserIDReturnsOnCall[i] = struct {
+		result1 []model.DiagnosticRequest
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeDiagnosticRequestRepo) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -341,6 +405,8 @@ func (fake *FakeDiagnosticRequestRepo) Invocations() map[string][][]interface{} 
 	defer fake.getByIDMutex.RUnlock()
 	fake.getByOrgIDMutex.RLock()
 	defer fake.getByOrgIDMutex.RUnlock()
+	fake.getByUserIDMutex.RLock()
+	defer fake.getByUserIDMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

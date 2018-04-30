@@ -11,6 +11,7 @@ type UserRepo interface {
 	Delete(model.User) error
 	GetByID(string) (*model.User, error)
 	GetByOrgID(string) ([]model.User, error)
+	GetByUserNamePassword(string, string) (model.User, error)
 }
 
 //go:generate counterfeiter . DiagnosticReportRepo
@@ -22,6 +23,7 @@ type DiagnosticReportRepo interface {
 	Delete(string) error
 	GetByID(string) (*model.DiagnosticReport, error)
 	GetByOrgID(string) ([]model.DiagnosticReport, error)
+	GetByUserID(string) ([]model.DiagnosticRequest, error)
 }
 
 //go:generate counterfeiter . DiagnosticRequestRepo
@@ -33,6 +35,7 @@ type DiagnosticRequestRepo interface {
 	Delete(model.DiagnosticRequest) error
 	GetByID(string) (*model.DiagnosticRequest, error)
 	GetByOrgID(string) ([]model.DiagnosticRequest, error)
+	GetByUserID(string) ([]model.DiagnosticRequest, error)
 }
 
 //go:generate counterfeiter . VetOrgRepo
