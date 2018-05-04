@@ -14,6 +14,7 @@ type UserService interface {
 	CreateUser(ctx context.Context, user model.User) (*model.User, error)
 	UpdateUser(ctx context.Context, user model.User) (*model.User, error)
 	DeleteUser(ctx context.Context, user model.User) error
+	UpdatePassword(ctx context.Context, user model.User, password string) (*model.User, error)
 
 	Login(ctx context.Context, userName string, password string) (*model.User, error)
 

@@ -7,6 +7,7 @@ import (
 	"github.com/jmelchio/vetlab/model"
 	. "github.com/jmelchio/vetlab/service"
 	"github.com/jmelchio/vetlab/service/servicefakes"
+	"golang.org/x/crypto/bcrypt"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -16,35 +17,35 @@ var _ = Describe("UserService", func() {
 	var (
 		userService User
 		userRepo    *servicefakes.FakeUserRepo
+		user        model.User
 	)
 	BeforeEach(func() {
 		userRepo = new(servicefakes.FakeUserRepo)
 		userService = User{UserRepo: userRepo}
+
+		user = model.User{
+			UserName:     "some-name",
+			FirstName:    "first-name",
+			LastName:     "last-name",
+			Email:        "email@domain.com",
+			PasswordHash: "passord-hash",
+			OrgID:        "org-id",
+			AdminUser:    false,
+		}
 	})
 	Describe("Create a user", func() {
 		var (
-			newUser     model.User
 			createdUser model.User
 		)
 		BeforeEach(func() {
-
-			newUser = model.User{
-				UserName:     "some-name",
-				FirstName:    "first-name",
-				LastName:     "last-name",
-				Email:        "email@domain.com",
-				PasswordHash: "passord-hash",
-				OrgID:        "org-id",
-				AdminUser:    false,
-			}
-			createdUser = newUser
+			createdUser = user
 			createdUser.UserID = "created-user-id"
 
 			userRepo.CreateReturns(&createdUser, nil)
 		})
 		Context("We have a valid user and 'todo' context", func() {
 			It("Returns a user with a new user ID and calls UserRepo.Create", func() {
-				zeUser, err := userService.CreateUser(context.TODO(), newUser)
+				zeUser, err := userService.CreateUser(context.TODO(), user)
 				Expect(err).ToNot(HaveOccurred())
 				Expect(zeUser.UserID).To(Equal("created-user-id"))
 				Expect(userRepo.CreateCallCount()).To(Equal(1))
@@ -52,7 +53,7 @@ var _ = Describe("UserService", func() {
 		})
 		Context("We have a valid user but no context", func() {
 			It("Returns an error and does not call UserRepo.Create", func() {
-				zeUser, err := userService.CreateUser(nil, newUser)
+				zeUser, err := userService.CreateUser(nil, user)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(Equal(MissingContext))
 				Expect(zeUser).To(BeNil())
@@ -64,7 +65,7 @@ var _ = Describe("UserService", func() {
 				userRepo.CreateReturns(nil, errors.New("Unable to create user"))
 			})
 			It("Returns an error after calling UserRepo.Create", func() {
-				zeUser, err := userService.CreateUser(context.TODO(), newUser)
+				zeUser, err := userService.CreateUser(context.TODO(), user)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(Equal("Unable to create user"))
 				Expect(zeUser).To(BeNil())
@@ -74,21 +75,9 @@ var _ = Describe("UserService", func() {
 	})
 	Describe("Update a user", func() {
 		var (
-			user        model.User
 			updatedUser model.User
 		)
 		BeforeEach(func() {
-
-			user = model.User{
-				UserID:       "some-user-id",
-				UserName:     "some-name",
-				FirstName:    "first-name",
-				LastName:     "last-name",
-				Email:        "email@domain.com",
-				PasswordHash: "passord-hash",
-				OrgID:        "org-id",
-				AdminUser:    false,
-			}
 			updatedUser = user
 			updatedUser.UserName = "updated-username"
 			updatedUser.FirstName = "second-first-name"
@@ -126,22 +115,7 @@ var _ = Describe("UserService", func() {
 		})
 	})
 	Describe("Delete a user", func() {
-		var (
-			user model.User
-		)
 		BeforeEach(func() {
-
-			user = model.User{
-				UserID:       "some-user-id",
-				UserName:     "some-name",
-				FirstName:    "first-name",
-				LastName:     "last-name",
-				Email:        "email@domain.com",
-				PasswordHash: "passord-hash",
-				OrgID:        "org-id",
-				AdminUser:    false,
-			}
-
 			userRepo.DeleteReturns(nil)
 		})
 		Context("We have a valid user and context", func() {
@@ -168,6 +142,59 @@ var _ = Describe("UserService", func() {
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(Equal("Unable to delete user"))
 				Expect(userRepo.DeleteCallCount()).To(Equal(1))
+			})
+		})
+	})
+	Describe("UpdatePassword", func() {
+		var (
+			newPwd string
+		)
+		BeforeEach(func() {
+			newPwd = "some-magic-password"
+			userRepo.UpdateReturns(&user, nil)
+		})
+		Context("We have a valid user, password and context", func() {
+			It("It returns no error", func() {
+				updatedUser, err := userService.UpdatePassword(context.TODO(), user, newPwd)
+				Expect(err).ToNot(HaveOccurred())
+				Expect(userRepo.UpdateCallCount()).To(Equal(1))
+				err = bcrypt.CompareHashAndPassword([]byte(updatedUser.PasswordHash), []byte(newPwd))
+				Expect(err).ToNot(HaveOccurred())
+			})
+		})
+		Context("We have a valid user, password but no context", func() {
+			It("Returns an error", func() {
+				updatedUser, err := userService.UpdatePassword(nil, user, newPwd)
+				Expect(err).To(HaveOccurred())
+				Expect(updatedUser).To(BeNil())
+				Expect(err.Error()).To(Equal(MissingContext))
+				Expect(userRepo.UpdateCallCount()).To(Equal(0))
+			})
+
+		})
+		Context("We have a valid user, password and context but update fails", func() {
+			BeforeEach(func() {
+				userRepo.UpdateReturns(nil, errors.New("Unable to update user"))
+			})
+			It("returns an error", func() {
+				updatedUser, err := userService.UpdatePassword(context.TODO(), user, newPwd)
+				Expect(err).To(HaveOccurred())
+				Expect(updatedUser).To(BeNil())
+				Expect(err.Error()).To(Equal("Unable to update user"))
+				Expect(userRepo.UpdateCallCount()).To(Equal(1))
+			})
+		})
+		Context("We have a valid user, a short password and context", func() {
+			BeforeEach(func() {
+				newPwd = "uhseven"
+				userRepo.UpdateReturns(nil, errors.New("Unable to update user"))
+			})
+			It("returns an error", func() {
+				updatedUser, err := userService.UpdatePassword(context.TODO(), user, newPwd)
+				Expect(err).To(HaveOccurred())
+				Expect(updatedUser).To(BeNil())
+				Expect(err.Error()).To(Equal(PasswordTooShort))
+				Expect(userRepo.UpdateCallCount()).To(Equal(0))
 			})
 		})
 	})
