@@ -11,15 +11,15 @@ import (
 
 // UserService provides the business operations for maintaining users within the application
 type UserService interface {
-	CreateUser(context.Context, model.User) (*model.User, error)
-	UpdateUser(context.Context, model.User) (*model.User, error)
-	DeleteUser(context.Context, model.User) error
+	CreateUser(ctx context.Context, user model.User) (*model.User, error)
+	UpdateUser(ctx context.Context, user model.User) (*model.User, error)
+	DeleteUser(ctx context.Context, user model.User) error
 
-	Login(context.Context, string, string) (*model.User, error)
+	Login(ctx context.Context, userName string, password string) (*model.User, error)
 
-	FindUsersByVetOrg(context.Context, model.VetOrg) ([]model.User, error)
-	FindUsersByName(context.Context, string) ([]model.User, error)
-	FindUserByID(context.Context, string) (*model.User, error)
+	FindUsersByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.User, error)
+	FindUsersByName(ctx context.Context, userName string) ([]model.User, error)
+	FindUserByID(ctx context.Context, userID string) (*model.User, error)
 }
 
 //go:generate counterfeiter . ReportService
@@ -27,16 +27,16 @@ type UserService interface {
 // ReportService provides the business operations for requesting,finding and retrieving
 // diagnostic reports
 type ReportService interface {
-	SubmitDiagnosticRequest(context.Context, model.DiagnosticRequest) (*model.DiagnosticRequest, error)
-	FindReportByDateRange(context.Context, time.Time, time.Time, model.VetOrg) ([]model.DiagnosticReport, error)
-	FindReportByID(context.Context, string) (model.DiagnosticReport, error)
-	FindReportByVetOrg(context.Context, model.VetOrg) ([]model.DiagnosticReport, error)
-	FindReportByUser(context.Context, model.User) ([]model.DiagnosticReport, error)
+	SubmitDiagnosticRequest(ctx context.Context, diagReq model.DiagnosticRequest) (*model.DiagnosticRequest, error)
+	FindReportByDateRange(ctx context.Context, start time.Time, end time.Time, vetOrg model.VetOrg) ([]model.DiagnosticReport, error)
+	FindReportByID(ctx context.Context, reportID string) (model.DiagnosticReport, error)
+	FindReportByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.DiagnosticReport, error)
+	FindReportByUser(ctx context.Context, user model.User) ([]model.DiagnosticReport, error)
 
-	FindRequestByDateRange(context.Context, time.Time, time.Time, model.VetOrg) ([]model.DiagnosticRequest, error)
-	FindRequestByID(context.Context, string) (*model.DiagnosticRequest, error)
-	FindRequestByVetOrg(context.Context, model.VetOrg) ([]model.DiagnosticRequest, error)
-	FindRequestByUser(context.Context, model.User) ([]model.DiagnosticRequest, error)
+	FindRequestByDateRange(ctx context.Context, start time.Time, end time.Time, vetOrg model.VetOrg) ([]model.DiagnosticRequest, error)
+	FindRequestByID(ctx context.Context, requestID string) (*model.DiagnosticRequest, error)
+	FindRequestByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.DiagnosticRequest, error)
+	FindRequestByUser(ctx context.Context, user model.User) ([]model.DiagnosticRequest, error)
 }
 
 //go:generate counterfeiter . VetOrgService
@@ -44,12 +44,12 @@ type ReportService interface {
 // VetOrgService provides the business operations for maintianing veterinary practices
 // within the application
 type VetOrgService interface {
-	CreateVetOrg(context.Context, model.VetOrg) (*model.VetOrg, error)
-	UpdateVetOrg(context.Context, model.VetOrg) (*model.VetOrg, error)
-	DeteleVetOrg(context.Context, model.VetOrg) error
+	CreateVetOrg(ctx context.Context, vetOrg model.VetOrg) (*model.VetOrg, error)
+	UpdateVetOrg(ctx context.Context, vetOrg model.VetOrg) (*model.VetOrg, error)
+	DeteleVetOrg(ctx context.Context, vetOrg model.VetOrg) error
 
-	AddUserToVetOrg(context.Context, model.User, model.VetOrg) (*model.User, error)
+	AddUserToVetOrg(ctx context.Context, user model.User, vetOrg model.VetOrg) (*model.User, error)
 
-	FindVetOrgByName(context.Context, string) (*model.VetOrg, error)
-	FindVetOrgByID(context.Context, string) (*model.VetOrg, error)
+	FindVetOrgByName(ctx context.Context, orgName string) (*model.VetOrg, error)
+	FindVetOrgByID(ctx context.Context, orgID string) (*model.VetOrg, error)
 }
