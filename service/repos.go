@@ -11,7 +11,7 @@ type UserRepo interface {
 	Delete(model.User) error
 	GetByID(string) (*model.User, error)
 	GetByOrgID(string) ([]model.User, error)
-	GetByUserNamePassword(string, string) (model.User, error)
+	GetByUserName(string) (*model.User, error)
 }
 
 //go:generate counterfeiter . DiagnosticReportRepo

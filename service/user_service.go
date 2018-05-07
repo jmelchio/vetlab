@@ -15,9 +15,10 @@ type User struct {
 }
 
 const (
-	MissingContext   = "Context is required"
-	PasswordTooShort = "Password should be at least 8 characters"
-	HashingFailed    = "Failed to salt and hash password: %s"
+	MissingContext     = "Context is required"
+	PasswordTooShort   = "Password should be at least 8 characters"
+	HashingFailed      = "Failed to salt and hash password: %s"
+	UserOrPasswordFail = "User or Password mismatch"
 )
 
 // CreateUser creates a new model.User in the vetlab system
@@ -71,12 +72,30 @@ func (userService User) UpdatePassword(ctx context.Context, user model.User, pas
 	if uerr != nil {
 		return nil, uerr
 	}
+
 	return &user, nil
 }
 
 // Login tries to login a user into the vetlab system
 func (userService User) Login(ctx context.Context, userName string, password string) (*model.User, error) {
-	return nil, nil
+	if ctx == nil {
+		return nil, errors.New(MissingContext)
+	}
+
+	if len(userName) < 1 || len(password) < 1 {
+		return nil, errors.New(UserOrPasswordFail)
+	}
+
+	user, err := userService.UserRepo.GetByUserName(userName)
+	if err != nil {
+		return nil, errors.New(UserOrPasswordFail)
+	}
+
+	if !equalPasswords(user.PasswordHash, password) {
+		return nil, errors.New(UserOrPasswordFail)
+	}
+
+	return user, nil
 }
 
 // FindUsersByVetOrg attempts to find users by the veterinary organization

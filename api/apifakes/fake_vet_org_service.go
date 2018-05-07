@@ -10,11 +10,11 @@ import (
 )
 
 type FakeVetOrgService struct {
-	CreateVetOrgStub        func(context.Context, model.VetOrg) (*model.VetOrg, error)
+	CreateVetOrgStub        func(ctx context.Context, vetOrg model.VetOrg) (*model.VetOrg, error)
 	createVetOrgMutex       sync.RWMutex
 	createVetOrgArgsForCall []struct {
-		arg1 context.Context
-		arg2 model.VetOrg
+		ctx    context.Context
+		vetOrg model.VetOrg
 	}
 	createVetOrgReturns struct {
 		result1 *model.VetOrg
@@ -24,11 +24,11 @@ type FakeVetOrgService struct {
 		result1 *model.VetOrg
 		result2 error
 	}
-	UpdateVetOrgStub        func(context.Context, model.VetOrg) (*model.VetOrg, error)
+	UpdateVetOrgStub        func(ctx context.Context, vetOrg model.VetOrg) (*model.VetOrg, error)
 	updateVetOrgMutex       sync.RWMutex
 	updateVetOrgArgsForCall []struct {
-		arg1 context.Context
-		arg2 model.VetOrg
+		ctx    context.Context
+		vetOrg model.VetOrg
 	}
 	updateVetOrgReturns struct {
 		result1 *model.VetOrg
@@ -38,11 +38,11 @@ type FakeVetOrgService struct {
 		result1 *model.VetOrg
 		result2 error
 	}
-	DeteleVetOrgStub        func(context.Context, model.VetOrg) error
+	DeteleVetOrgStub        func(ctx context.Context, vetOrg model.VetOrg) error
 	deteleVetOrgMutex       sync.RWMutex
 	deteleVetOrgArgsForCall []struct {
-		arg1 context.Context
-		arg2 model.VetOrg
+		ctx    context.Context
+		vetOrg model.VetOrg
 	}
 	deteleVetOrgReturns struct {
 		result1 error
@@ -50,12 +50,12 @@ type FakeVetOrgService struct {
 	deteleVetOrgReturnsOnCall map[int]struct {
 		result1 error
 	}
-	AddUserToVetOrgStub        func(context.Context, model.User, model.VetOrg) (*model.User, error)
+	AddUserToVetOrgStub        func(ctx context.Context, user model.User, vetOrg model.VetOrg) (*model.User, error)
 	addUserToVetOrgMutex       sync.RWMutex
 	addUserToVetOrgArgsForCall []struct {
-		arg1 context.Context
-		arg2 model.User
-		arg3 model.VetOrg
+		ctx    context.Context
+		user   model.User
+		vetOrg model.VetOrg
 	}
 	addUserToVetOrgReturns struct {
 		result1 *model.User
@@ -65,11 +65,11 @@ type FakeVetOrgService struct {
 		result1 *model.User
 		result2 error
 	}
-	FindVetOrgByNameStub        func(context.Context, string) (*model.VetOrg, error)
+	FindVetOrgByNameStub        func(ctx context.Context, orgName string) (*model.VetOrg, error)
 	findVetOrgByNameMutex       sync.RWMutex
 	findVetOrgByNameArgsForCall []struct {
-		arg1 context.Context
-		arg2 string
+		ctx     context.Context
+		orgName string
 	}
 	findVetOrgByNameReturns struct {
 		result1 *model.VetOrg
@@ -79,11 +79,11 @@ type FakeVetOrgService struct {
 		result1 *model.VetOrg
 		result2 error
 	}
-	FindVetOrgByIDStub        func(context.Context, string) (*model.VetOrg, error)
+	FindVetOrgByIDStub        func(ctx context.Context, orgID string) (*model.VetOrg, error)
 	findVetOrgByIDMutex       sync.RWMutex
 	findVetOrgByIDArgsForCall []struct {
-		arg1 context.Context
-		arg2 string
+		ctx   context.Context
+		orgID string
 	}
 	findVetOrgByIDReturns struct {
 		result1 *model.VetOrg
@@ -97,17 +97,17 @@ type FakeVetOrgService struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeVetOrgService) CreateVetOrg(arg1 context.Context, arg2 model.VetOrg) (*model.VetOrg, error) {
+func (fake *FakeVetOrgService) CreateVetOrg(ctx context.Context, vetOrg model.VetOrg) (*model.VetOrg, error) {
 	fake.createVetOrgMutex.Lock()
 	ret, specificReturn := fake.createVetOrgReturnsOnCall[len(fake.createVetOrgArgsForCall)]
 	fake.createVetOrgArgsForCall = append(fake.createVetOrgArgsForCall, struct {
-		arg1 context.Context
-		arg2 model.VetOrg
-	}{arg1, arg2})
-	fake.recordInvocation("CreateVetOrg", []interface{}{arg1, arg2})
+		ctx    context.Context
+		vetOrg model.VetOrg
+	}{ctx, vetOrg})
+	fake.recordInvocation("CreateVetOrg", []interface{}{ctx, vetOrg})
 	fake.createVetOrgMutex.Unlock()
 	if fake.CreateVetOrgStub != nil {
-		return fake.CreateVetOrgStub(arg1, arg2)
+		return fake.CreateVetOrgStub(ctx, vetOrg)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -124,7 +124,7 @@ func (fake *FakeVetOrgService) CreateVetOrgCallCount() int {
 func (fake *FakeVetOrgService) CreateVetOrgArgsForCall(i int) (context.Context, model.VetOrg) {
 	fake.createVetOrgMutex.RLock()
 	defer fake.createVetOrgMutex.RUnlock()
-	return fake.createVetOrgArgsForCall[i].arg1, fake.createVetOrgArgsForCall[i].arg2
+	return fake.createVetOrgArgsForCall[i].ctx, fake.createVetOrgArgsForCall[i].vetOrg
 }
 
 func (fake *FakeVetOrgService) CreateVetOrgReturns(result1 *model.VetOrg, result2 error) {
@@ -149,17 +149,17 @@ func (fake *FakeVetOrgService) CreateVetOrgReturnsOnCall(i int, result1 *model.V
 	}{result1, result2}
 }
 
-func (fake *FakeVetOrgService) UpdateVetOrg(arg1 context.Context, arg2 model.VetOrg) (*model.VetOrg, error) {
+func (fake *FakeVetOrgService) UpdateVetOrg(ctx context.Context, vetOrg model.VetOrg) (*model.VetOrg, error) {
 	fake.updateVetOrgMutex.Lock()
 	ret, specificReturn := fake.updateVetOrgReturnsOnCall[len(fake.updateVetOrgArgsForCall)]
 	fake.updateVetOrgArgsForCall = append(fake.updateVetOrgArgsForCall, struct {
-		arg1 context.Context
-		arg2 model.VetOrg
-	}{arg1, arg2})
-	fake.recordInvocation("UpdateVetOrg", []interface{}{arg1, arg2})
+		ctx    context.Context
+		vetOrg model.VetOrg
+	}{ctx, vetOrg})
+	fake.recordInvocation("UpdateVetOrg", []interface{}{ctx, vetOrg})
 	fake.updateVetOrgMutex.Unlock()
 	if fake.UpdateVetOrgStub != nil {
-		return fake.UpdateVetOrgStub(arg1, arg2)
+		return fake.UpdateVetOrgStub(ctx, vetOrg)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -176,7 +176,7 @@ func (fake *FakeVetOrgService) UpdateVetOrgCallCount() int {
 func (fake *FakeVetOrgService) UpdateVetOrgArgsForCall(i int) (context.Context, model.VetOrg) {
 	fake.updateVetOrgMutex.RLock()
 	defer fake.updateVetOrgMutex.RUnlock()
-	return fake.updateVetOrgArgsForCall[i].arg1, fake.updateVetOrgArgsForCall[i].arg2
+	return fake.updateVetOrgArgsForCall[i].ctx, fake.updateVetOrgArgsForCall[i].vetOrg
 }
 
 func (fake *FakeVetOrgService) UpdateVetOrgReturns(result1 *model.VetOrg, result2 error) {
@@ -201,17 +201,17 @@ func (fake *FakeVetOrgService) UpdateVetOrgReturnsOnCall(i int, result1 *model.V
 	}{result1, result2}
 }
 
-func (fake *FakeVetOrgService) DeteleVetOrg(arg1 context.Context, arg2 model.VetOrg) error {
+func (fake *FakeVetOrgService) DeteleVetOrg(ctx context.Context, vetOrg model.VetOrg) error {
 	fake.deteleVetOrgMutex.Lock()
 	ret, specificReturn := fake.deteleVetOrgReturnsOnCall[len(fake.deteleVetOrgArgsForCall)]
 	fake.deteleVetOrgArgsForCall = append(fake.deteleVetOrgArgsForCall, struct {
-		arg1 context.Context
-		arg2 model.VetOrg
-	}{arg1, arg2})
-	fake.recordInvocation("DeteleVetOrg", []interface{}{arg1, arg2})
+		ctx    context.Context
+		vetOrg model.VetOrg
+	}{ctx, vetOrg})
+	fake.recordInvocation("DeteleVetOrg", []interface{}{ctx, vetOrg})
 	fake.deteleVetOrgMutex.Unlock()
 	if fake.DeteleVetOrgStub != nil {
-		return fake.DeteleVetOrgStub(arg1, arg2)
+		return fake.DeteleVetOrgStub(ctx, vetOrg)
 	}
 	if specificReturn {
 		return ret.result1
@@ -228,7 +228,7 @@ func (fake *FakeVetOrgService) DeteleVetOrgCallCount() int {
 func (fake *FakeVetOrgService) DeteleVetOrgArgsForCall(i int) (context.Context, model.VetOrg) {
 	fake.deteleVetOrgMutex.RLock()
 	defer fake.deteleVetOrgMutex.RUnlock()
-	return fake.deteleVetOrgArgsForCall[i].arg1, fake.deteleVetOrgArgsForCall[i].arg2
+	return fake.deteleVetOrgArgsForCall[i].ctx, fake.deteleVetOrgArgsForCall[i].vetOrg
 }
 
 func (fake *FakeVetOrgService) DeteleVetOrgReturns(result1 error) {
@@ -250,18 +250,18 @@ func (fake *FakeVetOrgService) DeteleVetOrgReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeVetOrgService) AddUserToVetOrg(arg1 context.Context, arg2 model.User, arg3 model.VetOrg) (*model.User, error) {
+func (fake *FakeVetOrgService) AddUserToVetOrg(ctx context.Context, user model.User, vetOrg model.VetOrg) (*model.User, error) {
 	fake.addUserToVetOrgMutex.Lock()
 	ret, specificReturn := fake.addUserToVetOrgReturnsOnCall[len(fake.addUserToVetOrgArgsForCall)]
 	fake.addUserToVetOrgArgsForCall = append(fake.addUserToVetOrgArgsForCall, struct {
-		arg1 context.Context
-		arg2 model.User
-		arg3 model.VetOrg
-	}{arg1, arg2, arg3})
-	fake.recordInvocation("AddUserToVetOrg", []interface{}{arg1, arg2, arg3})
+		ctx    context.Context
+		user   model.User
+		vetOrg model.VetOrg
+	}{ctx, user, vetOrg})
+	fake.recordInvocation("AddUserToVetOrg", []interface{}{ctx, user, vetOrg})
 	fake.addUserToVetOrgMutex.Unlock()
 	if fake.AddUserToVetOrgStub != nil {
-		return fake.AddUserToVetOrgStub(arg1, arg2, arg3)
+		return fake.AddUserToVetOrgStub(ctx, user, vetOrg)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -278,7 +278,7 @@ func (fake *FakeVetOrgService) AddUserToVetOrgCallCount() int {
 func (fake *FakeVetOrgService) AddUserToVetOrgArgsForCall(i int) (context.Context, model.User, model.VetOrg) {
 	fake.addUserToVetOrgMutex.RLock()
 	defer fake.addUserToVetOrgMutex.RUnlock()
-	return fake.addUserToVetOrgArgsForCall[i].arg1, fake.addUserToVetOrgArgsForCall[i].arg2, fake.addUserToVetOrgArgsForCall[i].arg3
+	return fake.addUserToVetOrgArgsForCall[i].ctx, fake.addUserToVetOrgArgsForCall[i].user, fake.addUserToVetOrgArgsForCall[i].vetOrg
 }
 
 func (fake *FakeVetOrgService) AddUserToVetOrgReturns(result1 *model.User, result2 error) {
@@ -303,17 +303,17 @@ func (fake *FakeVetOrgService) AddUserToVetOrgReturnsOnCall(i int, result1 *mode
 	}{result1, result2}
 }
 
-func (fake *FakeVetOrgService) FindVetOrgByName(arg1 context.Context, arg2 string) (*model.VetOrg, error) {
+func (fake *FakeVetOrgService) FindVetOrgByName(ctx context.Context, orgName string) (*model.VetOrg, error) {
 	fake.findVetOrgByNameMutex.Lock()
 	ret, specificReturn := fake.findVetOrgByNameReturnsOnCall[len(fake.findVetOrgByNameArgsForCall)]
 	fake.findVetOrgByNameArgsForCall = append(fake.findVetOrgByNameArgsForCall, struct {
-		arg1 context.Context
-		arg2 string
-	}{arg1, arg2})
-	fake.recordInvocation("FindVetOrgByName", []interface{}{arg1, arg2})
+		ctx     context.Context
+		orgName string
+	}{ctx, orgName})
+	fake.recordInvocation("FindVetOrgByName", []interface{}{ctx, orgName})
 	fake.findVetOrgByNameMutex.Unlock()
 	if fake.FindVetOrgByNameStub != nil {
-		return fake.FindVetOrgByNameStub(arg1, arg2)
+		return fake.FindVetOrgByNameStub(ctx, orgName)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -330,7 +330,7 @@ func (fake *FakeVetOrgService) FindVetOrgByNameCallCount() int {
 func (fake *FakeVetOrgService) FindVetOrgByNameArgsForCall(i int) (context.Context, string) {
 	fake.findVetOrgByNameMutex.RLock()
 	defer fake.findVetOrgByNameMutex.RUnlock()
-	return fake.findVetOrgByNameArgsForCall[i].arg1, fake.findVetOrgByNameArgsForCall[i].arg2
+	return fake.findVetOrgByNameArgsForCall[i].ctx, fake.findVetOrgByNameArgsForCall[i].orgName
 }
 
 func (fake *FakeVetOrgService) FindVetOrgByNameReturns(result1 *model.VetOrg, result2 error) {
@@ -355,17 +355,17 @@ func (fake *FakeVetOrgService) FindVetOrgByNameReturnsOnCall(i int, result1 *mod
 	}{result1, result2}
 }
 
-func (fake *FakeVetOrgService) FindVetOrgByID(arg1 context.Context, arg2 string) (*model.VetOrg, error) {
+func (fake *FakeVetOrgService) FindVetOrgByID(ctx context.Context, orgID string) (*model.VetOrg, error) {
 	fake.findVetOrgByIDMutex.Lock()
 	ret, specificReturn := fake.findVetOrgByIDReturnsOnCall[len(fake.findVetOrgByIDArgsForCall)]
 	fake.findVetOrgByIDArgsForCall = append(fake.findVetOrgByIDArgsForCall, struct {
-		arg1 context.Context
-		arg2 string
-	}{arg1, arg2})
-	fake.recordInvocation("FindVetOrgByID", []interface{}{arg1, arg2})
+		ctx   context.Context
+		orgID string
+	}{ctx, orgID})
+	fake.recordInvocation("FindVetOrgByID", []interface{}{ctx, orgID})
 	fake.findVetOrgByIDMutex.Unlock()
 	if fake.FindVetOrgByIDStub != nil {
-		return fake.FindVetOrgByIDStub(arg1, arg2)
+		return fake.FindVetOrgByIDStub(ctx, orgID)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -382,7 +382,7 @@ func (fake *FakeVetOrgService) FindVetOrgByIDCallCount() int {
 func (fake *FakeVetOrgService) FindVetOrgByIDArgsForCall(i int) (context.Context, string) {
 	fake.findVetOrgByIDMutex.RLock()
 	defer fake.findVetOrgByIDMutex.RUnlock()
-	return fake.findVetOrgByIDArgsForCall[i].arg1, fake.findVetOrgByIDArgsForCall[i].arg2
+	return fake.findVetOrgByIDArgsForCall[i].ctx, fake.findVetOrgByIDArgsForCall[i].orgID
 }
 
 func (fake *FakeVetOrgService) FindVetOrgByIDReturns(result1 *model.VetOrg, result2 error) {

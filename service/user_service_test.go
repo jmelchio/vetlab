@@ -199,8 +199,80 @@ var _ = Describe("UserService", func() {
 		})
 	})
 	Describe("Login", func() {
-		It("proper test cases and implementation of code", func() {
-			Expect("this").To(Equal("something"))
+		var (
+			userName   string
+			password   string
+			sampleUser model.User
+		)
+		BeforeEach(func() {
+			userName = "user"
+			password = "somepwdd"
+		})
+		Context("Username, password and context are all correct", func() {
+			BeforeEach(func() {
+				passwordHash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+				sampleUser = model.User{
+					UserID:       "some-userid",
+					UserName:     userName,
+					PasswordHash: string(passwordHash),
+				}
+				userRepo.GetByUserNameReturns(&sampleUser, nil)
+			})
+			It("Returns an authenticated user", func() {
+				user, err := userService.Login(context.TODO(), userName, password)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(user).NotTo(BeNil())
+				Expect(user.UserID).To(Equal(sampleUser.UserID))
+				Expect(userRepo.GetByUserNameCallCount()).To(Equal(1))
+			})
+		})
+		Context("No context provided", func() {
+			It("Returns an error", func() {
+				user, err := userService.Login(nil, userName, password)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal(MissingContext))
+				Expect(user).To(BeNil())
+				Expect(userRepo.GetByUserNameCallCount()).To(Equal(0))
+			})
+		})
+		Context("Username or password are not provided", func() {
+			It("Returns an error", func() {
+				user, err := userService.Login(context.TODO(), "", "")
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal(UserOrPasswordFail))
+				Expect(user).To(BeNil())
+				Expect(userRepo.GetByUserNameCallCount()).To(Equal(0))
+			})
+		})
+		Context("Wrong password is provided", func() {
+			BeforeEach(func() {
+				passwordHash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+				sampleUser = model.User{
+					UserID:       "some-userid",
+					UserName:     userName,
+					PasswordHash: string(passwordHash),
+				}
+				userRepo.GetByUserNameReturns(&sampleUser, nil)
+			})
+			It("Returns an error", func() {
+				user, err := userService.Login(context.TODO(), userName, "some-other-pwd")
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal(UserOrPasswordFail))
+				Expect(user).To(BeNil())
+				Expect(userRepo.GetByUserNameCallCount()).To(Equal(1))
+			})
+		})
+		Context("Underlying repository returns an error", func() {
+			BeforeEach(func() {
+				userRepo.GetByUserNameReturns(nil, errors.New("some-error"))
+			})
+			It("Returns an error", func() {
+				user, err := userService.Login(context.TODO(), userName, password)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal(UserOrPasswordFail))
+				Expect(user).To(BeNil())
+				Expect(userRepo.GetByUserNameCallCount()).To(Equal(1))
+			})
 		})
 	})
 	Describe("Find a user by veterinary practice", func() {
