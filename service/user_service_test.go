@@ -305,6 +305,18 @@ var _ = Describe("UserService", func() {
 				Expect(users[0].OrgID).To(Equal(vetOrg.OrgID))
 			})
 		})
+		Context("VetOrg provided but Context missing", func() {
+
+		})
+		Context("Context provided but VetOrg missing", func() {
+
+		})
+		Context("Context provided but VetOrg lacks ID", func() {
+
+		})
+		Context("Context and Vetorg are correct but Repo returns error", func() {
+
+		})
 	})
 	Describe("Find a user by name", func() {
 		It("proper test cases and implementation of code", func() {
