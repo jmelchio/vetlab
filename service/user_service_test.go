@@ -276,8 +276,34 @@ var _ = Describe("UserService", func() {
 		})
 	})
 	Describe("Find a user by veterinary practice", func() {
-		It("proper test cases and implementation of code", func() {
-			Expect("this").To(Equal("something"))
+		var (
+			vetOrg model.VetOrg
+			user   model.User
+		)
+		BeforeEach(func() {
+			vetOrg = model.VetOrg{
+				OrgID: "some-org-id",
+			}
+
+			user = model.User{
+				UserID:    "some-user-id",
+				UserName:  "some-user-name",
+				FirstName: "john",
+				LastName:  "doe",
+				OrgID:     "some-org-id",
+			}
+
+			userRepo.GetByOrgIDReturns([]model.User{user}, nil)
+		})
+		Context("Context and VetOrg are correct", func() {
+			It("Returns a list of users that are part of the given VetOrg", func() {
+				users, err := userService.FindUsersByVetOrg(context.TODO(), vetOrg)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(users).NotTo(BeNil())
+				Expect(users).To(HaveLen(1))
+				Expect(userRepo.GetByOrgIDCallCount()).To(Equal(1))
+				Expect(users[0].OrgID).To(Equal(vetOrg.OrgID))
+			})
 		})
 	})
 	Describe("Find a user by name", func() {

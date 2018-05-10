@@ -100,7 +100,7 @@ func (userService User) Login(ctx context.Context, userName string, password str
 
 // FindUsersByVetOrg attempts to find users by the veterinary organization
 func (userService User) FindUsersByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.User, error) {
-	return nil, nil
+	return userService.UserRepo.GetByOrgID(vetOrg.OrgID)
 }
 
 // FindUsersByName attempts to find users by their name
