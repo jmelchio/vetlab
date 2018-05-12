@@ -94,18 +94,18 @@ type FakeUserService struct {
 		result1 []model.User
 		result2 error
 	}
-	FindUsersByNameStub        func(ctx context.Context, userName string) ([]model.User, error)
-	findUsersByNameMutex       sync.RWMutex
-	findUsersByNameArgsForCall []struct {
+	FindUserByUserNameStub        func(ctx context.Context, userName string) (*model.User, error)
+	findUserByUserNameMutex       sync.RWMutex
+	findUserByUserNameArgsForCall []struct {
 		ctx      context.Context
 		userName string
 	}
-	findUsersByNameReturns struct {
-		result1 []model.User
+	findUserByUserNameReturns struct {
+		result1 *model.User
 		result2 error
 	}
-	findUsersByNameReturnsOnCall map[int]struct {
-		result1 []model.User
+	findUserByUserNameReturnsOnCall map[int]struct {
+		result1 *model.User
 		result2 error
 	}
 	FindUserByIDStub        func(ctx context.Context, userID string) (*model.User, error)
@@ -437,54 +437,54 @@ func (fake *FakeUserService) FindUsersByVetOrgReturnsOnCall(i int, result1 []mod
 	}{result1, result2}
 }
 
-func (fake *FakeUserService) FindUsersByName(ctx context.Context, userName string) ([]model.User, error) {
-	fake.findUsersByNameMutex.Lock()
-	ret, specificReturn := fake.findUsersByNameReturnsOnCall[len(fake.findUsersByNameArgsForCall)]
-	fake.findUsersByNameArgsForCall = append(fake.findUsersByNameArgsForCall, struct {
+func (fake *FakeUserService) FindUserByUserName(ctx context.Context, userName string) (*model.User, error) {
+	fake.findUserByUserNameMutex.Lock()
+	ret, specificReturn := fake.findUserByUserNameReturnsOnCall[len(fake.findUserByUserNameArgsForCall)]
+	fake.findUserByUserNameArgsForCall = append(fake.findUserByUserNameArgsForCall, struct {
 		ctx      context.Context
 		userName string
 	}{ctx, userName})
-	fake.recordInvocation("FindUsersByName", []interface{}{ctx, userName})
-	fake.findUsersByNameMutex.Unlock()
-	if fake.FindUsersByNameStub != nil {
-		return fake.FindUsersByNameStub(ctx, userName)
+	fake.recordInvocation("FindUserByUserName", []interface{}{ctx, userName})
+	fake.findUserByUserNameMutex.Unlock()
+	if fake.FindUserByUserNameStub != nil {
+		return fake.FindUserByUserNameStub(ctx, userName)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.findUsersByNameReturns.result1, fake.findUsersByNameReturns.result2
+	return fake.findUserByUserNameReturns.result1, fake.findUserByUserNameReturns.result2
 }
 
-func (fake *FakeUserService) FindUsersByNameCallCount() int {
-	fake.findUsersByNameMutex.RLock()
-	defer fake.findUsersByNameMutex.RUnlock()
-	return len(fake.findUsersByNameArgsForCall)
+func (fake *FakeUserService) FindUserByUserNameCallCount() int {
+	fake.findUserByUserNameMutex.RLock()
+	defer fake.findUserByUserNameMutex.RUnlock()
+	return len(fake.findUserByUserNameArgsForCall)
 }
 
-func (fake *FakeUserService) FindUsersByNameArgsForCall(i int) (context.Context, string) {
-	fake.findUsersByNameMutex.RLock()
-	defer fake.findUsersByNameMutex.RUnlock()
-	return fake.findUsersByNameArgsForCall[i].ctx, fake.findUsersByNameArgsForCall[i].userName
+func (fake *FakeUserService) FindUserByUserNameArgsForCall(i int) (context.Context, string) {
+	fake.findUserByUserNameMutex.RLock()
+	defer fake.findUserByUserNameMutex.RUnlock()
+	return fake.findUserByUserNameArgsForCall[i].ctx, fake.findUserByUserNameArgsForCall[i].userName
 }
 
-func (fake *FakeUserService) FindUsersByNameReturns(result1 []model.User, result2 error) {
-	fake.FindUsersByNameStub = nil
-	fake.findUsersByNameReturns = struct {
-		result1 []model.User
+func (fake *FakeUserService) FindUserByUserNameReturns(result1 *model.User, result2 error) {
+	fake.FindUserByUserNameStub = nil
+	fake.findUserByUserNameReturns = struct {
+		result1 *model.User
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeUserService) FindUsersByNameReturnsOnCall(i int, result1 []model.User, result2 error) {
-	fake.FindUsersByNameStub = nil
-	if fake.findUsersByNameReturnsOnCall == nil {
-		fake.findUsersByNameReturnsOnCall = make(map[int]struct {
-			result1 []model.User
+func (fake *FakeUserService) FindUserByUserNameReturnsOnCall(i int, result1 *model.User, result2 error) {
+	fake.FindUserByUserNameStub = nil
+	if fake.findUserByUserNameReturnsOnCall == nil {
+		fake.findUserByUserNameReturnsOnCall = make(map[int]struct {
+			result1 *model.User
 			result2 error
 		})
 	}
-	fake.findUsersByNameReturnsOnCall[i] = struct {
-		result1 []model.User
+	fake.findUserByUserNameReturnsOnCall[i] = struct {
+		result1 *model.User
 		result2 error
 	}{result1, result2}
 }
@@ -556,8 +556,8 @@ func (fake *FakeUserService) Invocations() map[string][][]interface{} {
 	defer fake.loginMutex.RUnlock()
 	fake.findUsersByVetOrgMutex.RLock()
 	defer fake.findUsersByVetOrgMutex.RUnlock()
-	fake.findUsersByNameMutex.RLock()
-	defer fake.findUsersByNameMutex.RUnlock()
+	fake.findUserByUserNameMutex.RLock()
+	defer fake.findUserByUserNameMutex.RUnlock()
 	fake.findUserByIDMutex.RLock()
 	defer fake.findUserByIDMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}

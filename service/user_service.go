@@ -19,6 +19,7 @@ const (
 	PasswordTooShort   = "Password should be at least 8 characters"
 	HashingFailed      = "Failed to salt and hash password: %s"
 	UserOrPasswordFail = "User or Password mismatch"
+	VetOrgRequired     = "VetOrg ID is required"
 )
 
 // CreateUser creates a new model.User in the vetlab system
@@ -56,6 +57,9 @@ func (userService User) DeleteUser(ctx context.Context, user model.User) error {
 	return err
 }
 
+// UpdatePassword allows for the change of a user password
+// We do not check the old password when changing to a new one since we assume the user
+// has been authenticated
 func (userService User) UpdatePassword(ctx context.Context, user model.User, password string) (*model.User, error) {
 	if ctx == nil {
 		return nil, errors.New(MissingContext)
@@ -82,7 +86,7 @@ func (userService User) Login(ctx context.Context, userName string, password str
 		return nil, errors.New(MissingContext)
 	}
 
-	if len(userName) < 1 || len(password) < 1 {
+	if userName == "" || password == "" {
 		return nil, errors.New(UserOrPasswordFail)
 	}
 
@@ -100,17 +104,29 @@ func (userService User) Login(ctx context.Context, userName string, password str
 
 // FindUsersByVetOrg attempts to find users by the veterinary organization
 func (userService User) FindUsersByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.User, error) {
+	if ctx == nil {
+		return nil, errors.New(MissingContext)
+	}
+	if vetOrg.OrgID == "" {
+		return nil, errors.New(VetOrgRequired)
+	}
 	return userService.UserRepo.GetByOrgID(vetOrg.OrgID)
 }
 
-// FindUsersByName attempts to find users by their name
-func (userService User) FindUsersByName(ctx context.Context, userName string) ([]model.User, error) {
-	return nil, nil
+// FindUserByUserName attempts to find users by their name
+func (userService User) FindUserByUserName(ctx context.Context, userName string) (*model.User, error) {
+	if ctx == nil {
+		return nil, errors.New(MissingContext)
+	}
+	return userService.UserRepo.GetByUserName(userName)
 }
 
 // FindUserByID finds users by their unique ID
 func (userService User) FindUserByID(ctx context.Context, userID string) (*model.User, error) {
-	return nil, nil
+	if ctx == nil {
+		return nil, errors.New(MissingContext)
+	}
+	return userService.UserRepo.GetByID(userID)
 }
 
 func hashAndSalt(pwd string) (*string, error) {

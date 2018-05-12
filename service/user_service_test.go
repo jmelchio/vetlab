@@ -306,26 +306,148 @@ var _ = Describe("UserService", func() {
 			})
 		})
 		Context("VetOrg provided but Context missing", func() {
-
-		})
-		Context("Context provided but VetOrg missing", func() {
+			It("Returns and error", func() {
+				users, err := userService.FindUsersByVetOrg(nil, vetOrg)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal(MissingContext))
+				Expect(users).To(BeNil())
+			})
 
 		})
 		Context("Context provided but VetOrg lacks ID", func() {
-
+			It("Returns an error", func() {
+				users, err := userService.FindUsersByVetOrg(context.TODO(), model.VetOrg{})
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal(VetOrgRequired))
+				Expect(users).To(BeNil())
+			})
 		})
 		Context("Context and Vetorg are correct but Repo returns error", func() {
-
+			BeforeEach(func() {
+				userRepo.GetByOrgIDReturns(nil, errors.New("BAM!"))
+			})
+			It("Returns an error", func() {
+				users, err := userService.FindUsersByVetOrg(context.TODO(), vetOrg)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal("BAM!"))
+				Expect(users).To(BeNil())
+			})
 		})
 	})
-	Describe("Find a user by name", func() {
-		It("proper test cases and implementation of code", func() {
-			Expect("this").To(Equal("something"))
+	Describe("Find a user by username", func() {
+		var (
+			user     model.User
+			userName string
+		)
+		BeforeEach(func() {
+			user = model.User{
+				UserID:    "some-user-id",
+				UserName:  "some-user-name",
+				FirstName: "john",
+				LastName:  "doe",
+				OrgID:     "some-org-id",
+			}
+
+			userName = "some-user-name"
+
+			userRepo.GetByUserNameReturns(&user, nil)
+		})
+		Context("Context is correct and username exists", func() {
+			It("Returns a user with the given username", func() {
+				foundUser, err := userService.FindUserByUserName(context.TODO(), userName)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(user).NotTo(BeNil())
+				Expect(userRepo.GetByUserNameCallCount()).To(Equal(1))
+				Expect(foundUser.UserName).To(Equal(userName))
+			})
+		})
+		Context("UserName provided but Context missing", func() {
+			It("Returns and error", func() {
+				foundUser, err := userService.FindUserByUserName(nil, userName)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal(MissingContext))
+				Expect(foundUser).To(BeNil())
+			})
+
+		})
+		Context("Context and userName provided but user is not found", func() {
+			BeforeEach(func() {
+				userRepo.GetByUserNameReturns(nil, nil)
+			})
+			It("Returns no error and no user", func() {
+				foundUser, err := userService.FindUserByUserName(context.TODO(), "john doe")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(foundUser).To(BeNil())
+			})
+		})
+		Context("Context and userName are correct but Repo returns error", func() {
+			BeforeEach(func() {
+				userRepo.GetByUserNameReturns(nil, errors.New("BAM!"))
+			})
+			It("Returns an error", func() {
+				foundUser, err := userService.FindUserByUserName(context.TODO(), userName)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal("BAM!"))
+				Expect(foundUser).To(BeNil())
+			})
 		})
 	})
 	Describe("Find a user by ID", func() {
-		It("proper test cases and implementation of code", func() {
-			Expect("this").To(Equal("something"))
+		var (
+			user   model.User
+			userID string
+		)
+		BeforeEach(func() {
+			user = model.User{
+				UserID:    "some-user-id",
+				UserName:  "some-user-name",
+				FirstName: "john",
+				LastName:  "doe",
+				OrgID:     "some-org-id",
+			}
+
+			userID = "some-user-id"
+
+			userRepo.GetByIDReturns(&user, nil)
+		})
+		Context("Context is correct and userID exists", func() {
+			It("Returns a user with the given userID", func() {
+				foundUser, err := userService.FindUserByID(context.TODO(), userID)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(user).NotTo(BeNil())
+				Expect(userRepo.GetByIDCallCount()).To(Equal(1))
+				Expect(foundUser.UserID).To(Equal(userID))
+			})
+		})
+		Context("UserName provided but Context missing", func() {
+			It("Returns and error", func() {
+				foundUser, err := userService.FindUserByID(nil, userID)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal(MissingContext))
+				Expect(foundUser).To(BeNil())
+			})
+
+		})
+		Context("Context and userID provided but user is not found", func() {
+			BeforeEach(func() {
+				userRepo.GetByIDReturns(nil, nil)
+			})
+			It("Returns no error and no user", func() {
+				foundUser, err := userService.FindUserByID(context.TODO(), "john doe")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(foundUser).To(BeNil())
+			})
+		})
+		Context("Context and userID are correct but Repo returns error", func() {
+			BeforeEach(func() {
+				userRepo.GetByIDReturns(nil, errors.New("BAM!"))
+			})
+			It("Returns an error", func() {
+				foundUser, err := userService.FindUserByID(context.TODO(), userID)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal("BAM!"))
+				Expect(foundUser).To(BeNil())
+			})
 		})
 	})
 })
