@@ -113,7 +113,7 @@ func (userService User) FindUsersByVetOrg(ctx context.Context, vetOrg model.VetO
 	return userService.UserRepo.GetByOrgID(vetOrg.OrgID)
 }
 
-// FindUserByUserName attempts to find users by their name
+// FindUserByUserName attempts to find users by their userName
 func (userService User) FindUserByUserName(ctx context.Context, userName string) (*model.User, error) {
 	if ctx == nil {
 		return nil, errors.New(MissingContext)
