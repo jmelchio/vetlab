@@ -11,11 +11,13 @@ import (
 )
 
 var _ = Describe("DiagnosticReport", func() {
+
 	Describe("Diagnostic report can be transformed from and to Json", func() {
 		var (
 			goDiagnosticReport   DiagnosticReport
 			jsonDiagnosticReport string
 		)
+
 		BeforeEach(func() {
 			goDiagnosticReport = DiagnosticReport{
 				ReportID:   "some-report-id",
@@ -29,7 +31,9 @@ var _ = Describe("DiagnosticReport", func() {
 			}
 			jsonDiagnosticReport = `{"report_id":"some-report-id","request_id":"some-request-id","org_id":"some-org-id","customer_id":"some-customer-id","user_id":"some-user-id","date":"0001-01-01T00:00:00Z","report_body":"some-report-body","report_file":"some-report-file"}`
 		})
+
 		Context("From Golang to Json", func() {
+
 			It("Transforms without errors", func() {
 				diagnosticReportBytes, err := json.Marshal(goDiagnosticReport)
 				Expect(err).NotTo(HaveOccurred())
@@ -38,7 +42,9 @@ var _ = Describe("DiagnosticReport", func() {
 				Expect(jsonResult).To(Equal(jsonDiagnosticReport))
 			})
 		})
+
 		Context("From Json to Golang", func() {
+
 			It("Transforms without errors", func() {
 				var unmarshalDiagnosticReport DiagnosticReport
 				err := json.Unmarshal([]byte(jsonDiagnosticReport), &unmarshalDiagnosticReport)
