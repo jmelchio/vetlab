@@ -3,6 +3,7 @@ package service_test
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/jmelchio/vetlab/model"
 	. "github.com/jmelchio/vetlab/service"
@@ -30,7 +31,7 @@ var _ = Describe("UserService", func() {
 			FirstName:    "first-name",
 			LastName:     "last-name",
 			Email:        "email@domain.com",
-			PasswordHash: "passord-hash",
+			PasswordHash: "password-hash",
 			OrgID:        "org-id",
 			AdminUser:    false,
 		}
@@ -55,7 +56,23 @@ var _ = Describe("UserService", func() {
 				zeUser, err := userService.CreateUser(context.TODO(), user)
 				Expect(err).ToNot(HaveOccurred())
 				Expect(zeUser.UserID).To(Equal("created-user-id"))
+				Expect(err).ToNot(HaveOccurred())
 				Expect(userRepo.CreateCallCount()).To(Equal(1))
+			})
+		})
+
+		Context("User password is too short but we have a valid context", func() {
+
+			BeforeEach(func() {
+				user.PasswordHash = "uhSeven"
+			})
+
+			It("Returns an error and does not call UserRepo.Create", func() {
+				zeUser, err := userService.CreateUser(context.TODO(), user)
+				Expect(err).To(HaveOccurred())
+				Expect(zeUser).To(BeNil())
+				Expect(err.Error()).To(Equal(PasswordTooShort))
+				Expect(userRepo.CreateCallCount()).To(Equal(0))
 			})
 		})
 
@@ -236,7 +253,7 @@ var _ = Describe("UserService", func() {
 				updatedUser, err := userService.UpdatePassword(context.TODO(), user, newPwd)
 				Expect(err).To(HaveOccurred())
 				Expect(updatedUser).To(BeNil())
-				Expect(err.Error()).To(Equal(PasswordTooShort))
+				Expect(err.Error()).To(Equal(fmt.Sprintf(HashingFailed, PasswordTooShort)))
 				Expect(userRepo.UpdateCallCount()).To(Equal(0))
 			})
 		})

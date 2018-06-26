@@ -23,11 +23,19 @@ const (
 )
 
 // CreateUser creates a new model.User in the vetlab system
+// The assumption is that for a new user, the password has not been encrypted
+// up until this point so this is done before storing it in the repository.
 func (userService User) CreateUser(ctx context.Context, user model.User) (*model.User, error) {
 	if ctx == nil {
 		return nil, errors.New(MissingContext)
 	}
 
+	pwdHash, err := hashAndSalt(user.PasswordHash)
+	if err != nil {
+		return nil, err
+	}
+
+	user.PasswordHash = *pwdHash
 	newUser, err := userService.UserRepo.Create(user)
 	if err != nil {
 		return nil, err
@@ -64,13 +72,12 @@ func (userService User) UpdatePassword(ctx context.Context, user model.User, pas
 	if ctx == nil {
 		return nil, errors.New(MissingContext)
 	}
-	if len(password) < 8 {
-		return nil, errors.New(PasswordTooShort)
-	}
+
 	pwdHash, err := hashAndSalt(password)
 	if err != nil {
 		return nil, fmt.Errorf(HashingFailed, err.Error())
 	}
+
 	user.PasswordHash = *pwdHash
 	_, uerr := userService.UserRepo.Update(user)
 	if uerr != nil {
@@ -130,6 +137,9 @@ func (userService User) FindUserByID(ctx context.Context, userID string) (*model
 }
 
 func hashAndSalt(pwd string) (*string, error) {
+	if len(pwd) < 8 {
+		return nil, errors.New(PasswordTooShort)
+	}
 	hash, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err

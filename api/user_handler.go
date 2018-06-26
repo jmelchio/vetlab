@@ -1,11 +1,16 @@
 package api
 
 import (
+	"context"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/concourse/src/github.com/tedsuo/rata"
+	"github.com/jmelchio/vetlab/model"
 )
 
+// UserServer struct allows the UserService injection into the REST handler
 type UserServer struct {
 	UserService UserService
 }
@@ -16,8 +21,13 @@ const (
 	DeleteUser = "DeleteUser"
 	Login      = "Login"
 	FindUser   = "FindUser"
+
+	EmptyBody          = "Body of the request is empty"
+	InvalidBody        = "Body of the request is invalid"
+	UnableToCreateUser = "Unable to create a user"
 )
 
+// UserRoutes are the REST endpoint routes for the user REST interface
 var UserRoutes = rata.Routes{
 	{Path: "/user/create", Method: "POST", Name: CreateUser},
 	{Path: "/user/update", Method: "PUT", Name: UpdateUser},
@@ -26,6 +36,7 @@ var UserRoutes = rata.Routes{
 	{Path: "/user/find", Method: "GET", Name: FindUser},
 }
 
+// NewUserHandler provides the factory function to create the REST interface for user actions
 func NewUserHandler(userService UserService) (http.Handler, error) {
 	userServer := &UserServer{UserService: userService}
 
@@ -40,7 +51,33 @@ func NewUserHandler(userService UserService) (http.Handler, error) {
 	return rata.NewRouter(UserRoutes, handlers)
 }
 
+// CreateUser is the REST endpoint function that allows for the creation of users in the system
 func (userServer *UserServer) CreateUser(writer http.ResponseWriter, request *http.Request) {
+	if request.Body == nil {
+		http.Error(writer, EmptyBody, http.StatusBadRequest)
+		return
+	}
+
+	requestBody, err := ioutil.ReadAll(request.Body)
+	if err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var createUser model.User
+	err = json.Unmarshal(requestBody, &createUser)
+	if err != nil {
+		http.Error(writer, InvalidBody, http.StatusBadRequest)
+		return
+	}
+	newUser, err := userServer.UserService.CreateUser(context.TODO(), createUser)
+	if err != nil {
+		http.Error(writer, UnableToCreateUser, http.StatusInternalServerError)
+		return
+	}
+
+	writer.WriteHeader(http.StatusCreated)
+	json.NewEncoder(writer).Encode(newUser)
 }
 
 func (userServer *UserServer) UpdateUser(writer http.ResponseWriter, request *http.Request) {
