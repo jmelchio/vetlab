@@ -176,6 +176,63 @@ var _ = Describe("UserHandler", func() {
 				Expect(userService.UpdateUserCallCount()).To(Equal(1))
 			})
 		})
+
+		Context("Valid user information is passed but downstream call fails", func() {
+
+			BeforeEach(func() {
+				userService.UpdateUserReturns(nil, errors.New("Whoot?"))
+				userBytes, err := json.Marshal(updateUser)
+				Expect(err).NotTo(HaveOccurred())
+				recorder = httptest.NewRecorder()
+				request, _ := http.NewRequest("PUT", "/user/update", bytes.NewReader(userBytes))
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Fails to return a users and returns 500 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(err).NotTo(HaveOccurred())
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToUpdateUser))
+				Expect(userService.UpdateUserCallCount()).To(Equal(1))
+			})
+		})
+
+		Context("Body of the request is empty", func() {
+
+			BeforeEach(func() {
+				recorder = httptest.NewRecorder()
+				request, _ := http.NewRequest("PUT", "/user/update", nil)
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Fails to update a user and returns a 400 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(EmptyBody))
+				Expect(userService.UpdateUserCallCount()).To(Equal(0))
+			})
+		})
+
+		Context("Body of the request contains invalid data", func() {
+
+			BeforeEach(func() {
+				userBytes, err := json.Marshal("updateUser")
+				Expect(err).NotTo(HaveOccurred())
+				recorder = httptest.NewRecorder()
+				request, _ := http.NewRequest("PUT", "/user/update", bytes.NewReader(userBytes))
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Fails to update a user and returns a 400 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(InvalidBody))
+				Expect(userService.UpdateUserCallCount()).To(Equal(0))
+			})
+		})
 	})
 
 	Describe("Delete a user", func() {

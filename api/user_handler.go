@@ -25,6 +25,8 @@ const (
 	EmptyBody          = "Body of the request is empty"
 	InvalidBody        = "Body of the request is invalid"
 	UnableToCreateUser = "Unable to create a user"
+	UnableToUpdateUser = "Unable to update a user"
+	UnableToParseBody  = "Unable to parse request body"
 )
 
 // UserRoutes are the REST endpoint routes for the user REST interface
@@ -60,7 +62,7 @@ func (userServer *UserServer) CreateUser(writer http.ResponseWriter, request *ht
 
 	requestBody, err := ioutil.ReadAll(request.Body)
 	if err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
+		http.Error(writer, UnableToParseBody, http.StatusBadRequest)
 		return
 	}
 
@@ -100,7 +102,7 @@ func (userServer *UserServer) UpdateUser(writer http.ResponseWriter, request *ht
 	}
 	newUser, err := userServer.UserService.UpdateUser(context.TODO(), updateUser)
 	if err != nil {
-		http.Error(writer, UnableToCreateUser, http.StatusInternalServerError)
+		http.Error(writer, UnableToUpdateUser, http.StatusInternalServerError)
 		return
 	}
 
