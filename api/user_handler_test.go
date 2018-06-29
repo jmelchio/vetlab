@@ -135,6 +135,47 @@ var _ = Describe("UserHandler", func() {
 	})
 
 	Describe("Update a user", func() {
+		var (
+			updateUser model.User
+		)
+
+		BeforeEach(func() {
+			updateUser = model.User{
+				UserName:     "user_name",
+				FirstName:    "first_name",
+				LastName:     "last_name",
+				Email:        "some_email",
+				PasswordHash: "some_hash",
+				OrgID:        "some_org_id",
+				AdminUser:    false,
+			}
+		})
+
+		Context("Valid user information is passed", func() {
+
+			BeforeEach(func() {
+				userService.UpdateUserReturns(&updateUser, nil)
+				userBytes, err := json.Marshal(updateUser)
+				Expect(err).NotTo(HaveOccurred())
+				recorder = httptest.NewRecorder()
+				request, _ := http.NewRequest("PUT", "/user/update", bytes.NewReader(userBytes))
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Updates a user and returns 200 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+
+				var newUser model.User
+				err = json.Unmarshal(respBody, &newUser)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(newUser).NotTo(BeNil())
+				Expect(newUser.FirstName).To(Equal(updateUser.FirstName))
+				Expect(newUser.LastName).To(Equal(updateUser.LastName))
+				Expect(userService.UpdateUserCallCount()).To(Equal(1))
+			})
+		})
 	})
 
 	Describe("Delete a user", func() {

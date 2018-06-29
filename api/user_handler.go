@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/concourse/src/github.com/tedsuo/rata"
 	"github.com/jmelchio/vetlab/model"
+	"github.com/tedsuo/rata"
 )
 
 // UserServer struct allows the UserService injection into the REST handler
@@ -81,6 +81,31 @@ func (userServer *UserServer) CreateUser(writer http.ResponseWriter, request *ht
 }
 
 func (userServer *UserServer) UpdateUser(writer http.ResponseWriter, request *http.Request) {
+	if request.Body == nil {
+		http.Error(writer, EmptyBody, http.StatusBadRequest)
+		return
+	}
+
+	requestBody, err := ioutil.ReadAll(request.Body)
+	if err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var updateUser model.User
+	err = json.Unmarshal(requestBody, &updateUser)
+	if err != nil {
+		http.Error(writer, InvalidBody, http.StatusBadRequest)
+		return
+	}
+	newUser, err := userServer.UserService.UpdateUser(context.TODO(), updateUser)
+	if err != nil {
+		http.Error(writer, UnableToCreateUser, http.StatusInternalServerError)
+		return
+	}
+
+	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(newUser)
 }
 
 func (userServer *UserServer) DeleteUser(writer http.ResponseWriter, request *http.Request) {
