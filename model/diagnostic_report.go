@@ -4,11 +4,11 @@ import "time"
 
 // DiagnosticReport describes the structure of a veterinary lab report
 type DiagnosticReport struct {
-	ReportID   string    `json:"report_id"`
-	RequestID  string    `json:"request_id"`
-	OrgID      string    `json:"org_id"`
-	CustomerID string    `json:"customer_id"`
-	UserID     string    `json:"user_id"`
+	ID         uint      `json:"id",gorm:"primary_key"`
+	RequestID  uint      `json:"request_id"`
+	OrgID      uint      `json:"org_id"`
+	CustomerID uint      `json:"customer_id"`
+	UserID     uint      `json:"user_id"`
 	Date       time.Time `json:"date"`
 	ReportBody string    `json:"report_body"`
 	ReportFile string    `json:"report_file"`

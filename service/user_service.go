@@ -114,10 +114,10 @@ func (userService User) FindUsersByVetOrg(ctx context.Context, vetOrg model.VetO
 	if ctx == nil {
 		return nil, errors.New(MissingContext)
 	}
-	if vetOrg.OrgID == "" {
+	if vetOrg.ID == 0 {
 		return nil, errors.New(VetOrgRequired)
 	}
-	return userService.UserRepo.GetByOrgID(vetOrg.OrgID)
+	return userService.UserRepo.GetByOrgID(vetOrg.ID)
 }
 
 // FindUserByUserName attempts to find users by their userName
@@ -129,7 +129,7 @@ func (userService User) FindUserByUserName(ctx context.Context, userName string)
 }
 
 // FindUserByID finds users by their unique ID
-func (userService User) FindUserByID(ctx context.Context, userID string) (*model.User, error) {
+func (userService User) FindUserByID(ctx context.Context, userID uint) (*model.User, error) {
 	if ctx == nil {
 		return nil, errors.New(MissingContext)
 	}

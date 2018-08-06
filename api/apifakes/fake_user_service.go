@@ -108,11 +108,11 @@ type FakeUserService struct {
 		result1 *model.User
 		result2 error
 	}
-	FindUserByIDStub        func(ctx context.Context, userID string) (*model.User, error)
+	FindUserByIDStub        func(ctx context.Context, userID uint) (*model.User, error)
 	findUserByIDMutex       sync.RWMutex
 	findUserByIDArgsForCall []struct {
 		ctx    context.Context
-		userID string
+		userID uint
 	}
 	findUserByIDReturns struct {
 		result1 *model.User
@@ -489,12 +489,12 @@ func (fake *FakeUserService) FindUserByUserNameReturnsOnCall(i int, result1 *mod
 	}{result1, result2}
 }
 
-func (fake *FakeUserService) FindUserByID(ctx context.Context, userID string) (*model.User, error) {
+func (fake *FakeUserService) FindUserByID(ctx context.Context, userID uint) (*model.User, error) {
 	fake.findUserByIDMutex.Lock()
 	ret, specificReturn := fake.findUserByIDReturnsOnCall[len(fake.findUserByIDArgsForCall)]
 	fake.findUserByIDArgsForCall = append(fake.findUserByIDArgsForCall, struct {
 		ctx    context.Context
-		userID string
+		userID uint
 	}{ctx, userID})
 	fake.recordInvocation("FindUserByID", []interface{}{ctx, userID})
 	fake.findUserByIDMutex.Unlock()
@@ -513,7 +513,7 @@ func (fake *FakeUserService) FindUserByIDCallCount() int {
 	return len(fake.findUserByIDArgsForCall)
 }
 
-func (fake *FakeUserService) FindUserByIDArgsForCall(i int) (context.Context, string) {
+func (fake *FakeUserService) FindUserByIDArgsForCall(i int) (context.Context, uint) {
 	fake.findUserByIDMutex.RLock()
 	defer fake.findUserByIDMutex.RUnlock()
 	return fake.findUserByIDArgsForCall[i].ctx, fake.findUserByIDArgsForCall[i].userID

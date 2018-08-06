@@ -46,10 +46,10 @@ type FakeVetOrgRepo struct {
 	deleteReturnsOnCall map[int]struct {
 		result1 error
 	}
-	GetByIDStub        func(string) (*model.VetOrg, error)
+	GetByIDStub        func(uint) (*model.VetOrg, error)
 	getByIDMutex       sync.RWMutex
 	getByIDArgsForCall []struct {
-		arg1 string
+		arg1 uint
 	}
 	getByIDReturns struct {
 		result1 *model.VetOrg
@@ -226,11 +226,11 @@ func (fake *FakeVetOrgRepo) DeleteReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeVetOrgRepo) GetByID(arg1 string) (*model.VetOrg, error) {
+func (fake *FakeVetOrgRepo) GetByID(arg1 uint) (*model.VetOrg, error) {
 	fake.getByIDMutex.Lock()
 	ret, specificReturn := fake.getByIDReturnsOnCall[len(fake.getByIDArgsForCall)]
 	fake.getByIDArgsForCall = append(fake.getByIDArgsForCall, struct {
-		arg1 string
+		arg1 uint
 	}{arg1})
 	fake.recordInvocation("GetByID", []interface{}{arg1})
 	fake.getByIDMutex.Unlock()
@@ -249,7 +249,7 @@ func (fake *FakeVetOrgRepo) GetByIDCallCount() int {
 	return len(fake.getByIDArgsForCall)
 }
 
-func (fake *FakeVetOrgRepo) GetByIDArgsForCall(i int) string {
+func (fake *FakeVetOrgRepo) GetByIDArgsForCall(i int) uint {
 	fake.getByIDMutex.RLock()
 	defer fake.getByIDMutex.RUnlock()
 	return fake.getByIDArgsForCall[i].arg1

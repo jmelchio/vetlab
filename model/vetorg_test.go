@@ -19,7 +19,7 @@ var _ = Describe("Vetorg", func() {
 
 		BeforeEach(func() {
 			goVetorg = VetOrg{
-				OrgID:       "some-org-id",
+				ID:          12345,
 				OrgName:     "some-org-name",
 				Street:      "some-street",
 				HouseNumber: "some-house-number",
@@ -31,7 +31,7 @@ var _ = Describe("Vetorg", func() {
 				Phone:       "some-phone",
 				Fax:         "shadow-fax",
 			}
-			jsonVetorg = `{"org_id":"some-org-id","org_name":"some-org-name","street":"some-street","house_number":"some-house-number","city":"some-city","province":"some-province","country":"some-country","postal_code":"some-postal-code","email":"person@domain.com","phone":"some-phone","fax":"shadow-fax"}`
+			jsonVetorg = `{"id":12345,"org_name":"some-org-name","street":"some-street","house_number":"some-house-number","city":"some-city","province":"some-province","country":"some-country","postal_code":"some-postal-code","email":"person@domain.com","phone":"some-phone","fax":"shadow-fax"}`
 		})
 
 		Context("From Golang to Json", func() {

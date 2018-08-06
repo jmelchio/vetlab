@@ -32,7 +32,7 @@ var _ = Describe("UserService", func() {
 			LastName:     "last-name",
 			Email:        "email@domain.com",
 			PasswordHash: "password-hash",
-			OrgID:        "org-id",
+			OrgID:        12345,
 			AdminUser:    false,
 		}
 	})
@@ -45,7 +45,7 @@ var _ = Describe("UserService", func() {
 
 		BeforeEach(func() {
 			createdUser = user
-			createdUser.UserID = "created-user-id"
+			createdUser.ID = 12345
 
 			userRepo.CreateReturns(&createdUser, nil)
 		})
@@ -55,7 +55,7 @@ var _ = Describe("UserService", func() {
 			It("Returns a user with a new user ID and calls UserRepo.Create", func() {
 				zeUser, err := userService.CreateUser(context.TODO(), user)
 				Expect(err).ToNot(HaveOccurred())
-				Expect(zeUser.UserID).To(Equal("created-user-id"))
+				Expect(zeUser.ID).To(Equal(uint(12345)))
 				Expect(err).ToNot(HaveOccurred())
 				Expect(userRepo.CreateCallCount()).To(Equal(1))
 			})
@@ -277,7 +277,7 @@ var _ = Describe("UserService", func() {
 			BeforeEach(func() {
 				passwordHash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 				sampleUser = model.User{
-					UserID:       "some-userid",
+					ID:           12345,
 					UserName:     userName,
 					PasswordHash: string(passwordHash),
 				}
@@ -288,7 +288,7 @@ var _ = Describe("UserService", func() {
 				user, err := userService.Login(context.TODO(), userName, password)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(user).NotTo(BeNil())
-				Expect(user.UserID).To(Equal(sampleUser.UserID))
+				Expect(user.ID).To(Equal(sampleUser.ID))
 				Expect(userRepo.GetByUserNameCallCount()).To(Equal(1))
 			})
 		})
@@ -320,7 +320,7 @@ var _ = Describe("UserService", func() {
 			BeforeEach(func() {
 				passwordHash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 				sampleUser = model.User{
-					UserID:       "some-userid",
+					ID:           12345,
 					UserName:     userName,
 					PasswordHash: string(passwordHash),
 				}
@@ -361,15 +361,15 @@ var _ = Describe("UserService", func() {
 
 		BeforeEach(func() {
 			vetOrg = model.VetOrg{
-				OrgID: "some-org-id",
+				ID: 12345,
 			}
 
 			user = model.User{
-				UserID:    "some-user-id",
+				ID:        12345,
 				UserName:  "some-user-name",
 				FirstName: "john",
 				LastName:  "doe",
-				OrgID:     "some-org-id",
+				OrgID:     12345,
 			}
 
 			userRepo.GetByOrgIDReturns([]model.User{user}, nil)
@@ -383,7 +383,7 @@ var _ = Describe("UserService", func() {
 				Expect(users).NotTo(BeNil())
 				Expect(users).To(HaveLen(1))
 				Expect(userRepo.GetByOrgIDCallCount()).To(Equal(1))
-				Expect(users[0].OrgID).To(Equal(vetOrg.OrgID))
+				Expect(users[0].OrgID).To(Equal(vetOrg.ID))
 			})
 		})
 
@@ -431,11 +431,11 @@ var _ = Describe("UserService", func() {
 
 		BeforeEach(func() {
 			user = model.User{
-				UserID:    "some-user-id",
+				ID:        12345,
 				UserName:  "some-user-name",
 				FirstName: "john",
 				LastName:  "doe",
-				OrgID:     "some-org-id",
+				OrgID:     12345,
 			}
 
 			userName = "some-user-name"
@@ -496,19 +496,19 @@ var _ = Describe("UserService", func() {
 
 		var (
 			user   model.User
-			userID string
+			userID uint
 		)
 
 		BeforeEach(func() {
 			user = model.User{
-				UserID:    "some-user-id",
+				ID:        12345,
 				UserName:  "some-user-name",
 				FirstName: "john",
 				LastName:  "doe",
-				OrgID:     "some-org-id",
+				OrgID:     12345,
 			}
 
-			userID = "some-user-id"
+			userID = 12345
 
 			userRepo.GetByIDReturns(&user, nil)
 		})
@@ -520,7 +520,7 @@ var _ = Describe("UserService", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(user).NotTo(BeNil())
 				Expect(userRepo.GetByIDCallCount()).To(Equal(1))
-				Expect(foundUser.UserID).To(Equal(userID))
+				Expect(foundUser.ID).To(Equal(userID))
 			})
 		})
 
@@ -542,7 +542,7 @@ var _ = Describe("UserService", func() {
 			})
 
 			It("Returns no error and no user", func() {
-				foundUser, err := userService.FindUserByID(context.TODO(), "john doe")
+				foundUser, err := userService.FindUserByID(context.TODO(), 12345)
 				Expect(err).ToNot(HaveOccurred())
 				Expect(foundUser).To(BeNil())
 			})

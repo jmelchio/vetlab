@@ -44,7 +44,7 @@ var _ = Describe("UserHandler", func() {
 				LastName:     "last_name",
 				Email:        "some_email",
 				PasswordHash: "some_hash",
-				OrgID:        "some_org_id",
+				OrgID:        12345,
 				AdminUser:    false,
 			}
 		})
@@ -146,7 +146,7 @@ var _ = Describe("UserHandler", func() {
 				LastName:     "last_name",
 				Email:        "some_email",
 				PasswordHash: "some_hash",
-				OrgID:        "some_org_id",
+				OrgID:        12345,
 				AdminUser:    false,
 			}
 		})

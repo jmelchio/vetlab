@@ -46,10 +46,10 @@ type FakeUserRepo struct {
 	deleteReturnsOnCall map[int]struct {
 		result1 error
 	}
-	GetByIDStub        func(string) (*model.User, error)
+	GetByIDStub        func(uint) (*model.User, error)
 	getByIDMutex       sync.RWMutex
 	getByIDArgsForCall []struct {
-		arg1 string
+		arg1 uint
 	}
 	getByIDReturns struct {
 		result1 *model.User
@@ -59,10 +59,10 @@ type FakeUserRepo struct {
 		result1 *model.User
 		result2 error
 	}
-	GetByOrgIDStub        func(string) ([]model.User, error)
+	GetByOrgIDStub        func(uint) ([]model.User, error)
 	getByOrgIDMutex       sync.RWMutex
 	getByOrgIDArgsForCall []struct {
-		arg1 string
+		arg1 uint
 	}
 	getByOrgIDReturns struct {
 		result1 []model.User
@@ -239,11 +239,11 @@ func (fake *FakeUserRepo) DeleteReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeUserRepo) GetByID(arg1 string) (*model.User, error) {
+func (fake *FakeUserRepo) GetByID(arg1 uint) (*model.User, error) {
 	fake.getByIDMutex.Lock()
 	ret, specificReturn := fake.getByIDReturnsOnCall[len(fake.getByIDArgsForCall)]
 	fake.getByIDArgsForCall = append(fake.getByIDArgsForCall, struct {
-		arg1 string
+		arg1 uint
 	}{arg1})
 	fake.recordInvocation("GetByID", []interface{}{arg1})
 	fake.getByIDMutex.Unlock()
@@ -262,7 +262,7 @@ func (fake *FakeUserRepo) GetByIDCallCount() int {
 	return len(fake.getByIDArgsForCall)
 }
 
-func (fake *FakeUserRepo) GetByIDArgsForCall(i int) string {
+func (fake *FakeUserRepo) GetByIDArgsForCall(i int) uint {
 	fake.getByIDMutex.RLock()
 	defer fake.getByIDMutex.RUnlock()
 	return fake.getByIDArgsForCall[i].arg1
@@ -290,11 +290,11 @@ func (fake *FakeUserRepo) GetByIDReturnsOnCall(i int, result1 *model.User, resul
 	}{result1, result2}
 }
 
-func (fake *FakeUserRepo) GetByOrgID(arg1 string) ([]model.User, error) {
+func (fake *FakeUserRepo) GetByOrgID(arg1 uint) ([]model.User, error) {
 	fake.getByOrgIDMutex.Lock()
 	ret, specificReturn := fake.getByOrgIDReturnsOnCall[len(fake.getByOrgIDArgsForCall)]
 	fake.getByOrgIDArgsForCall = append(fake.getByOrgIDArgsForCall, struct {
-		arg1 string
+		arg1 uint
 	}{arg1})
 	fake.recordInvocation("GetByOrgID", []interface{}{arg1})
 	fake.getByOrgIDMutex.Unlock()
@@ -313,7 +313,7 @@ func (fake *FakeUserRepo) GetByOrgIDCallCount() int {
 	return len(fake.getByOrgIDArgsForCall)
 }
 
-func (fake *FakeUserRepo) GetByOrgIDArgsForCall(i int) string {
+func (fake *FakeUserRepo) GetByOrgIDArgsForCall(i int) uint {
 	fake.getByOrgIDMutex.RLock()
 	defer fake.getByOrgIDMutex.RUnlock()
 	return fake.getByOrgIDArgsForCall[i].arg1

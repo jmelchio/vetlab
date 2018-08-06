@@ -20,14 +20,14 @@ var _ = Describe("DiagnosticRequest", func() {
 
 		BeforeEach(func() {
 			goDiagnosticRequest = DiagnosticRequest{
-				RequestID:   "some-request-id",
-				OrgID:       "some-org-id",
-				CustomerID:  "some-customer-id",
-				UserID:      "some-user-id",
+				ID:          12345,
+				OrgID:       12345,
+				CustomerID:  12345,
+				UserID:      12345,
 				Date:        time.Time{},
 				Description: "some-description",
 			}
-			jsonDiagnosticRequest = `{"request_id":"some-request-id","org_id":"some-org-id","customer_id":"some-customer-id","user_id":"some-user-id","date":"0001-01-01T00:00:00Z","description":"some-description"}`
+			jsonDiagnosticRequest = `{"id":12345,"org_id":12345,"customer_id":12345,"user_id":12345,"date":"0001-01-01T00:00:00Z","description":"some-description"}`
 		})
 
 		Context("From Golang to Json", func() {

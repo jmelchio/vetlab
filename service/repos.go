@@ -9,8 +9,8 @@ type UserRepo interface {
 	Create(model.User) (*model.User, error)
 	Update(model.User) (*model.User, error)
 	Delete(model.User) error
-	GetByID(string) (*model.User, error)
-	GetByOrgID(string) ([]model.User, error)
+	GetByID(uint) (*model.User, error)
+	GetByOrgID(uint) ([]model.User, error)
 	GetByUserName(string) (*model.User, error)
 }
 
@@ -21,9 +21,9 @@ type DiagnosticReportRepo interface {
 	Create(model.DiagnosticReport) (*model.DiagnosticReport, error)
 	Update(model.DiagnosticReport) (*model.DiagnosticReport, error)
 	Delete(string) error
-	GetByID(string) (*model.DiagnosticReport, error)
-	GetByOrgID(string) ([]model.DiagnosticReport, error)
-	GetByUserID(string) ([]model.DiagnosticRequest, error)
+	GetByID(uint) (*model.DiagnosticReport, error)
+	GetByOrgID(uint) ([]model.DiagnosticReport, error)
+	GetByUserID(uint) ([]model.DiagnosticRequest, error)
 }
 
 //go:generate counterfeiter . DiagnosticRequestRepo
@@ -33,9 +33,9 @@ type DiagnosticRequestRepo interface {
 	Create(model.DiagnosticRequest) (*model.DiagnosticRequest, error)
 	Update(model.DiagnosticRequest) (*model.DiagnosticRequest, error)
 	Delete(model.DiagnosticRequest) error
-	GetByID(string) (*model.DiagnosticRequest, error)
-	GetByOrgID(string) ([]model.DiagnosticRequest, error)
-	GetByUserID(string) ([]model.DiagnosticRequest, error)
+	GetByID(uint) (*model.DiagnosticRequest, error)
+	GetByOrgID(uint) ([]model.DiagnosticRequest, error)
+	GetByUserID(uint) ([]model.DiagnosticRequest, error)
 }
 
 //go:generate counterfeiter . VetOrgRepo
@@ -45,6 +45,6 @@ type VetOrgRepo interface {
 	Create(model.VetOrg) (*model.VetOrg, error)
 	Update(model.VetOrg) (*model.VetOrg, error)
 	Delete(model.VetOrg) error
-	GetByID(string) (*model.VetOrg, error)
+	GetByID(uint) (*model.VetOrg, error)
 	GetByName(string) ([]model.VetOrg, error)
 }

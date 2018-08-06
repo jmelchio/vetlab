@@ -20,16 +20,16 @@ var _ = Describe("User", func() {
 
 		BeforeEach(func() {
 			goUser = User{
-				UserID:       "some-user-id",
+				ID:           12345,
 				UserName:     "some-user-name",
 				FirstName:    "some-first-name",
 				LastName:     "some-last-name",
 				Email:        "user@server.com",
 				PasswordHash: "some-password-hashed",
-				OrgID:        "some-org-id",
+				OrgID:        12345,
 				AdminUser:    false,
 			}
-			jsonUser = `{"user_id":"some-user-id","user_name":"some-user-name","first_name":"some-first-name","last_name":"some-last-name","email":"user@server.com","password_hash":"some-password-hashed","org_id":"some-org-id","admin_user":false}`
+			jsonUser = `{"id":12345,"user_name":"some-user-name","first_name":"some-first-name","last_name":"some-last-name","email":"user@server.com","password_hash":"some-password-hashed","org_id":12345,"admin_user":false}`
 		})
 
 		Context("From Golang to Json", func() {

@@ -20,7 +20,7 @@ type UserService interface {
 
 	FindUsersByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.User, error)
 	FindUserByUserName(ctx context.Context, userName string) (*model.User, error)
-	FindUserByID(ctx context.Context, userID string) (*model.User, error)
+	FindUserByID(ctx context.Context, userID uint) (*model.User, error)
 }
 
 //go:generate counterfeiter . ReportService
@@ -30,12 +30,12 @@ type UserService interface {
 type ReportService interface {
 	SubmitDiagnosticRequest(ctx context.Context, diagReq model.DiagnosticRequest) (*model.DiagnosticRequest, error)
 	FindReportByDateRange(ctx context.Context, start time.Time, end time.Time, vetOrg model.VetOrg) ([]model.DiagnosticReport, error)
-	FindReportByID(ctx context.Context, reportID string) (model.DiagnosticReport, error)
+	FindReportByID(ctx context.Context, reportID uint) (model.DiagnosticReport, error)
 	FindReportByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.DiagnosticReport, error)
 	FindReportByUser(ctx context.Context, user model.User) ([]model.DiagnosticReport, error)
 
 	FindRequestByDateRange(ctx context.Context, start time.Time, end time.Time, vetOrg model.VetOrg) ([]model.DiagnosticRequest, error)
-	FindRequestByID(ctx context.Context, requestID string) (*model.DiagnosticRequest, error)
+	FindRequestByID(ctx context.Context, requestID uint) (*model.DiagnosticRequest, error)
 	FindRequestByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.DiagnosticRequest, error)
 	FindRequestByUser(ctx context.Context, user model.User) ([]model.DiagnosticRequest, error)
 }
@@ -52,5 +52,5 @@ type VetOrgService interface {
 	AddUserToVetOrg(ctx context.Context, user model.User, vetOrg model.VetOrg) (*model.User, error)
 
 	FindVetOrgByName(ctx context.Context, orgName string) (*model.VetOrg, error)
-	FindVetOrgByID(ctx context.Context, orgID string) (*model.VetOrg, error)
+	FindVetOrgByID(ctx context.Context, orgID uint) (*model.VetOrg, error)
 }
