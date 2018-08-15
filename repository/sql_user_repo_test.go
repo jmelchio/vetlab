@@ -1,6 +1,7 @@
 package repository_test
 
 import (
+	"github.com/jmelchio/vetlab/model"
 	. "github.com/jmelchio/vetlab/repository"
 
 	. "github.com/onsi/ginkgo"
@@ -15,9 +16,22 @@ var _ = Describe("SqlUserRepo", func() {
 
 	BeforeEach(func() {
 		userRepo = new(SQLUserRepo)
+		userRepo.Database = database
+
 	})
 
-	Describe("Create", func() {
+	Describe("User table", func() {
+
+		Context("User table has been created during in BeforeSuite", func() {
+
+			It("Has a user table", func() {
+				hasUserTable := userRepo.Database.HasTable(&model.User{})
+				Expect(hasUserTable).To(BeTrue())
+			})
+		})
+	})
+
+	Describe("Create a user", func() {
 
 		Context("When a username is not taken yet", func() {
 
@@ -34,7 +48,7 @@ var _ = Describe("SqlUserRepo", func() {
 		})
 	})
 
-	Describe("Update", func() {
+	Describe("Update a user", func() {
 
 		Context("When a user is found", func() {
 
@@ -51,7 +65,7 @@ var _ = Describe("SqlUserRepo", func() {
 		})
 	})
 
-	Describe("Delete", func() {
+	Describe("Delete a user", func() {
 
 		Context("When the use is found", func() {
 
@@ -68,7 +82,7 @@ var _ = Describe("SqlUserRepo", func() {
 		})
 	})
 
-	Describe("GetByID", func() {
+	Describe("Get a user by ID", func() {
 
 		Context("When the user is found", func() {
 
@@ -85,7 +99,7 @@ var _ = Describe("SqlUserRepo", func() {
 		})
 	})
 
-	Describe("GetByOrgID", func() {
+	Describe("Get a user by OrgID", func() {
 
 		Context("When the user is found", func() {
 
