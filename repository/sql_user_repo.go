@@ -1,14 +1,14 @@
 package repository
 
 import (
-	"database/sql"
-
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/jmelchio/vetlab/model"
 )
 
 // SQLUserRepo describes the sql database that persists the User
 type SQLUserRepo struct {
-	Database *sql.DB
+	Database *gorm.DB
 }
 
 // Create creates a persistent User row in the sql datastore
