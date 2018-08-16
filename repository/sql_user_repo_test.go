@@ -12,12 +12,12 @@ var _ = Describe("SqlUserRepo", func() {
 
 	var (
 		userRepo *SQLUserRepo
+		userOne  model.User
 	)
 
 	BeforeEach(func() {
 		userRepo = new(SQLUserRepo)
 		userRepo.Database = database
-
 	})
 
 	Describe("User table", func() {
@@ -34,9 +34,23 @@ var _ = Describe("SqlUserRepo", func() {
 	Describe("Create a user", func() {
 
 		Context("When a username is not taken yet", func() {
+			BeforeEach(func() {
+				userOne = model.User{
+					UserName:     "user_name",
+					FirstName:    "first_name",
+					LastName:     "last_name",
+					Email:        "first.last@gmail.com",
+					PasswordHash: "want_some_hash?",
+					AdminUser:    false,
+				}
+			})
 
 			It("Creates a new user record", func() {
-				Expect("this").NotTo(Equal("this"))
+				newUser, err := userRepo.Create(userOne)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(newUser).NotTo(BeNil())
+				Expect(newUser.ID).NotTo(Equal(0))
+				Expect(newUser.Email).To(Equal(userOne.Email))
 			})
 		})
 

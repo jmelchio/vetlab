@@ -27,7 +27,6 @@ var _ = BeforeSuite(func() {
 })
 
 var _ = AfterSuite(func() {
-	// TODO: cleanup database
 	database.DropTable(&model.User{})
 
 	err = database.Close()

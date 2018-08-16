@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/jmelchio/vetlab/model"
@@ -13,7 +15,14 @@ type SQLUserRepo struct {
 
 // Create creates a persistent User row in the sql datastore
 func (sqlUserRepo SQLUserRepo) Create(user model.User) (*model.User, error) {
-	return nil, nil
+	if sqlUserRepo.Database.NewRecord(user) {
+		if err := sqlUserRepo.Database.Create(&user).Error; err != nil {
+			return nil, err
+		} else {
+			return &user, nil
+		}
+	}
+	return nil, errors.New("Record already in database")
 }
 
 // Update modifies a User row in the sql datastore
