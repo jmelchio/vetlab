@@ -13,11 +13,17 @@ var _ = Describe("SqlUserRepo", func() {
 	var (
 		userRepo *SQLUserRepo
 		userOne  model.User
+		userTwo  model.User
 	)
 
 	BeforeEach(func() {
 		userRepo = new(SQLUserRepo)
 		userRepo.Database = database
+	})
+
+	AfterEach(func() {
+		err := userRepo.Database.Where("1 = 1").Delete(&model.User{}).Error
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	Describe("User table", func() {
@@ -31,7 +37,7 @@ var _ = Describe("SqlUserRepo", func() {
 		})
 	})
 
-	Describe("Create a user", func() {
+	FDescribe("Create a user", func() {
 
 		Context("When a username is not taken yet", func() {
 			BeforeEach(func() {
@@ -56,8 +62,23 @@ var _ = Describe("SqlUserRepo", func() {
 
 		Context("When a username is taken already", func() {
 
-			It("It updates the user record", func() {
-				Expect("this").NotTo(Equal("this"))
+			BeforeEach(func() {
+				userOne = model.User{
+					UserName:     "user_name",
+					FirstName:    "first_name",
+					LastName:     "last_name",
+					Email:        "first.last@gmail.com",
+					PasswordHash: "want_some_hash?",
+					AdminUser:    false,
+				}
+				userTwo = userOne
+			})
+
+			It("It returns an error", func() {
+				_, err := userRepo.Create(userOne)
+				Expect(err).NotTo(HaveOccurred())
+				_, err = userRepo.Create(userTwo)
+				Expect(err).To(HaveOccurred())
 			})
 		})
 	})

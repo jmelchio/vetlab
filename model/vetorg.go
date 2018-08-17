@@ -2,7 +2,7 @@ package model
 
 // VetOrg declares the structure for veterinary practice data
 type VetOrg struct {
-	ID          uint   `json:"id",gorm:"primary_key"`
+	ID          uint   `json:"id" gorm:"primary_key"`
 	OrgName     string `json:"org_name"`
 	Street      string `json:"street"`
 	HouseNumber string `json:"house_number"`
