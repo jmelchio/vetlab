@@ -37,7 +37,7 @@ var _ = Describe("SqlUserRepo", func() {
 		})
 	})
 
-	FDescribe("Create a user", func() {
+	Describe("Create a user", func() {
 
 		Context("When a username is not taken yet", func() {
 			BeforeEach(func() {
