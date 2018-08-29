@@ -83,7 +83,7 @@ var _ = Describe("SqlUserRepo", func() {
 		})
 	})
 
-	Describe("Update a user", func() {
+	PDescribe("Update a user", func() {
 
 		Context("When a user is found", func() {
 
@@ -100,7 +100,7 @@ var _ = Describe("SqlUserRepo", func() {
 		})
 	})
 
-	Describe("Delete a user", func() {
+	PDescribe("Delete a user", func() {
 
 		Context("When the use is found", func() {
 
@@ -117,7 +117,7 @@ var _ = Describe("SqlUserRepo", func() {
 		})
 	})
 
-	Describe("Get a user by ID", func() {
+	PDescribe("Get a user by ID", func() {
 
 		Context("When the user is found", func() {
 
@@ -134,7 +134,7 @@ var _ = Describe("SqlUserRepo", func() {
 		})
 	})
 
-	Describe("Get a user by OrgID", func() {
+	PDescribe("Get a user by OrgID", func() {
 
 		Context("When the user is found", func() {
 
