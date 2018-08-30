@@ -27,7 +27,10 @@ func (sqlUserRepo SQLUserRepo) Create(user model.User) (*model.User, error) {
 
 // Update modifies a User row in the sql datastore
 func (sqlUserRepo SQLUserRepo) Update(user model.User) (*model.User, error) {
-	return nil, nil
+	if err := sqlUserRepo.Database.Save(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
 
 // Delete removes a User row in the sql datastore

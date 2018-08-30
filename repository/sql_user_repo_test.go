@@ -49,13 +49,14 @@ var _ = Describe("SqlUserRepo", func() {
 					PasswordHash: "want_some_hash?",
 					AdminUser:    false,
 				}
+				Expect(userOne.ID).To(Equal(uint(0)))
 			})
 
 			It("Creates a new user record", func() {
 				newUser, err := userRepo.Create(userOne)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(newUser).NotTo(BeNil())
-				Expect(newUser.ID).NotTo(Equal(0))
+				Expect(newUser.ID).NotTo(Equal(uint(0)))
 				Expect(newUser.Email).To(Equal(userOne.Email))
 			})
 		})
@@ -83,16 +84,42 @@ var _ = Describe("SqlUserRepo", func() {
 		})
 	})
 
-	PDescribe("Update a user", func() {
+	Describe("Update a user", func() {
 
 		Context("When a user is found", func() {
 
+			var (
+				createUser *model.User
+				updateUser *model.User
+				createErr  error
+				updateErr  error
+			)
+
+			BeforeEach(func() {
+				userOne = model.User{
+					UserName:     "user_name",
+					FirstName:    "first_name",
+					LastName:     "last_name",
+					Email:        "first.last@gmail.com",
+					PasswordHash: "want_some_hash?",
+					AdminUser:    false,
+				}
+				createUser, createErr = userRepo.Create(userOne)
+				Expect(createErr).NotTo(HaveOccurred())
+				Expect(createUser.ID).NotTo(Equal(uint(0)))
+			})
+
 			It("It updates the user record and returns updated user", func() {
-				Expect("this").NotTo(Equal("this"))
+				createUser.UserName = "new_user_name"
+				updateUser, updateErr = userRepo.Update(*createUser)
+				Expect(updateErr).NotTo(HaveOccurred())
+				Expect(updateUser).NotTo(BeNil())
+				Expect(updateUser.ID).To(Equal(createUser.ID))
+				Expect(updateUser.UserName).To(Equal(createUser.UserName))
 			})
 		})
 
-		Context("When the user does not exist", func() {
+		PContext("When the user does not exist", func() {
 
 			It("Returns an error and nil for the user", func() {
 				Expect("this").NotTo(Equal("this"))
