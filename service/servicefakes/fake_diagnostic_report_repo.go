@@ -9,31 +9,27 @@ import (
 )
 
 type FakeDiagnosticReportRepo struct {
-	CreateStub        func(model.DiagnosticReport) (*model.DiagnosticReport, error)
+	CreateStub        func(*model.DiagnosticReport) error
 	createMutex       sync.RWMutex
 	createArgsForCall []struct {
-		arg1 model.DiagnosticReport
+		arg1 *model.DiagnosticReport
 	}
 	createReturns struct {
-		result1 *model.DiagnosticReport
-		result2 error
+		result1 error
 	}
 	createReturnsOnCall map[int]struct {
-		result1 *model.DiagnosticReport
-		result2 error
+		result1 error
 	}
-	UpdateStub        func(model.DiagnosticReport) (*model.DiagnosticReport, error)
+	UpdateStub        func(*model.DiagnosticReport) error
 	updateMutex       sync.RWMutex
 	updateArgsForCall []struct {
-		arg1 model.DiagnosticReport
+		arg1 *model.DiagnosticReport
 	}
 	updateReturns struct {
-		result1 *model.DiagnosticReport
-		result2 error
+		result1 error
 	}
 	updateReturnsOnCall map[int]struct {
-		result1 *model.DiagnosticReport
-		result2 error
+		result1 error
 	}
 	DeleteStub        func(string) error
 	deleteMutex       sync.RWMutex
@@ -89,11 +85,11 @@ type FakeDiagnosticReportRepo struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeDiagnosticReportRepo) Create(arg1 model.DiagnosticReport) (*model.DiagnosticReport, error) {
+func (fake *FakeDiagnosticReportRepo) Create(arg1 *model.DiagnosticReport) error {
 	fake.createMutex.Lock()
 	ret, specificReturn := fake.createReturnsOnCall[len(fake.createArgsForCall)]
 	fake.createArgsForCall = append(fake.createArgsForCall, struct {
-		arg1 model.DiagnosticReport
+		arg1 *model.DiagnosticReport
 	}{arg1})
 	fake.recordInvocation("Create", []interface{}{arg1})
 	fake.createMutex.Unlock()
@@ -101,9 +97,9 @@ func (fake *FakeDiagnosticReportRepo) Create(arg1 model.DiagnosticReport) (*mode
 		return fake.CreateStub(arg1)
 	}
 	if specificReturn {
-		return ret.result1, ret.result2
+		return ret.result1
 	}
-	return fake.createReturns.result1, fake.createReturns.result2
+	return fake.createReturns.result1
 }
 
 func (fake *FakeDiagnosticReportRepo) CreateCallCount() int {
@@ -112,39 +108,36 @@ func (fake *FakeDiagnosticReportRepo) CreateCallCount() int {
 	return len(fake.createArgsForCall)
 }
 
-func (fake *FakeDiagnosticReportRepo) CreateArgsForCall(i int) model.DiagnosticReport {
+func (fake *FakeDiagnosticReportRepo) CreateArgsForCall(i int) *model.DiagnosticReport {
 	fake.createMutex.RLock()
 	defer fake.createMutex.RUnlock()
 	return fake.createArgsForCall[i].arg1
 }
 
-func (fake *FakeDiagnosticReportRepo) CreateReturns(result1 *model.DiagnosticReport, result2 error) {
+func (fake *FakeDiagnosticReportRepo) CreateReturns(result1 error) {
 	fake.CreateStub = nil
 	fake.createReturns = struct {
-		result1 *model.DiagnosticReport
-		result2 error
-	}{result1, result2}
+		result1 error
+	}{result1}
 }
 
-func (fake *FakeDiagnosticReportRepo) CreateReturnsOnCall(i int, result1 *model.DiagnosticReport, result2 error) {
+func (fake *FakeDiagnosticReportRepo) CreateReturnsOnCall(i int, result1 error) {
 	fake.CreateStub = nil
 	if fake.createReturnsOnCall == nil {
 		fake.createReturnsOnCall = make(map[int]struct {
-			result1 *model.DiagnosticReport
-			result2 error
+			result1 error
 		})
 	}
 	fake.createReturnsOnCall[i] = struct {
-		result1 *model.DiagnosticReport
-		result2 error
-	}{result1, result2}
+		result1 error
+	}{result1}
 }
 
-func (fake *FakeDiagnosticReportRepo) Update(arg1 model.DiagnosticReport) (*model.DiagnosticReport, error) {
+func (fake *FakeDiagnosticReportRepo) Update(arg1 *model.DiagnosticReport) error {
 	fake.updateMutex.Lock()
 	ret, specificReturn := fake.updateReturnsOnCall[len(fake.updateArgsForCall)]
 	fake.updateArgsForCall = append(fake.updateArgsForCall, struct {
-		arg1 model.DiagnosticReport
+		arg1 *model.DiagnosticReport
 	}{arg1})
 	fake.recordInvocation("Update", []interface{}{arg1})
 	fake.updateMutex.Unlock()
@@ -152,9 +145,9 @@ func (fake *FakeDiagnosticReportRepo) Update(arg1 model.DiagnosticReport) (*mode
 		return fake.UpdateStub(arg1)
 	}
 	if specificReturn {
-		return ret.result1, ret.result2
+		return ret.result1
 	}
-	return fake.updateReturns.result1, fake.updateReturns.result2
+	return fake.updateReturns.result1
 }
 
 func (fake *FakeDiagnosticReportRepo) UpdateCallCount() int {
@@ -163,32 +156,29 @@ func (fake *FakeDiagnosticReportRepo) UpdateCallCount() int {
 	return len(fake.updateArgsForCall)
 }
 
-func (fake *FakeDiagnosticReportRepo) UpdateArgsForCall(i int) model.DiagnosticReport {
+func (fake *FakeDiagnosticReportRepo) UpdateArgsForCall(i int) *model.DiagnosticReport {
 	fake.updateMutex.RLock()
 	defer fake.updateMutex.RUnlock()
 	return fake.updateArgsForCall[i].arg1
 }
 
-func (fake *FakeDiagnosticReportRepo) UpdateReturns(result1 *model.DiagnosticReport, result2 error) {
+func (fake *FakeDiagnosticReportRepo) UpdateReturns(result1 error) {
 	fake.UpdateStub = nil
 	fake.updateReturns = struct {
-		result1 *model.DiagnosticReport
-		result2 error
-	}{result1, result2}
+		result1 error
+	}{result1}
 }
 
-func (fake *FakeDiagnosticReportRepo) UpdateReturnsOnCall(i int, result1 *model.DiagnosticReport, result2 error) {
+func (fake *FakeDiagnosticReportRepo) UpdateReturnsOnCall(i int, result1 error) {
 	fake.UpdateStub = nil
 	if fake.updateReturnsOnCall == nil {
 		fake.updateReturnsOnCall = make(map[int]struct {
-			result1 *model.DiagnosticReport
-			result2 error
+			result1 error
 		})
 	}
 	fake.updateReturnsOnCall[i] = struct {
-		result1 *model.DiagnosticReport
-		result2 error
-	}{result1, result2}
+		result1 error
+	}{result1}
 }
 
 func (fake *FakeDiagnosticReportRepo) Delete(arg1 string) error {

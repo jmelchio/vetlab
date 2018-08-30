@@ -9,36 +9,32 @@ import (
 )
 
 type FakeUserRepo struct {
-	CreateStub        func(model.User) (*model.User, error)
+	CreateStub        func(*model.User) error
 	createMutex       sync.RWMutex
 	createArgsForCall []struct {
-		arg1 model.User
+		arg1 *model.User
 	}
 	createReturns struct {
-		result1 *model.User
-		result2 error
+		result1 error
 	}
 	createReturnsOnCall map[int]struct {
-		result1 *model.User
-		result2 error
+		result1 error
 	}
-	UpdateStub        func(model.User) (*model.User, error)
+	UpdateStub        func(*model.User) error
 	updateMutex       sync.RWMutex
 	updateArgsForCall []struct {
-		arg1 model.User
+		arg1 *model.User
 	}
 	updateReturns struct {
-		result1 *model.User
-		result2 error
+		result1 error
 	}
 	updateReturnsOnCall map[int]struct {
-		result1 *model.User
-		result2 error
+		result1 error
 	}
-	DeleteStub        func(model.User) error
+	DeleteStub        func(*model.User) error
 	deleteMutex       sync.RWMutex
 	deleteArgsForCall []struct {
-		arg1 model.User
+		arg1 *model.User
 	}
 	deleteReturns struct {
 		result1 error
@@ -89,11 +85,11 @@ type FakeUserRepo struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeUserRepo) Create(arg1 model.User) (*model.User, error) {
+func (fake *FakeUserRepo) Create(arg1 *model.User) error {
 	fake.createMutex.Lock()
 	ret, specificReturn := fake.createReturnsOnCall[len(fake.createArgsForCall)]
 	fake.createArgsForCall = append(fake.createArgsForCall, struct {
-		arg1 model.User
+		arg1 *model.User
 	}{arg1})
 	fake.recordInvocation("Create", []interface{}{arg1})
 	fake.createMutex.Unlock()
@@ -101,9 +97,9 @@ func (fake *FakeUserRepo) Create(arg1 model.User) (*model.User, error) {
 		return fake.CreateStub(arg1)
 	}
 	if specificReturn {
-		return ret.result1, ret.result2
+		return ret.result1
 	}
-	return fake.createReturns.result1, fake.createReturns.result2
+	return fake.createReturns.result1
 }
 
 func (fake *FakeUserRepo) CreateCallCount() int {
@@ -112,39 +108,36 @@ func (fake *FakeUserRepo) CreateCallCount() int {
 	return len(fake.createArgsForCall)
 }
 
-func (fake *FakeUserRepo) CreateArgsForCall(i int) model.User {
+func (fake *FakeUserRepo) CreateArgsForCall(i int) *model.User {
 	fake.createMutex.RLock()
 	defer fake.createMutex.RUnlock()
 	return fake.createArgsForCall[i].arg1
 }
 
-func (fake *FakeUserRepo) CreateReturns(result1 *model.User, result2 error) {
+func (fake *FakeUserRepo) CreateReturns(result1 error) {
 	fake.CreateStub = nil
 	fake.createReturns = struct {
-		result1 *model.User
-		result2 error
-	}{result1, result2}
+		result1 error
+	}{result1}
 }
 
-func (fake *FakeUserRepo) CreateReturnsOnCall(i int, result1 *model.User, result2 error) {
+func (fake *FakeUserRepo) CreateReturnsOnCall(i int, result1 error) {
 	fake.CreateStub = nil
 	if fake.createReturnsOnCall == nil {
 		fake.createReturnsOnCall = make(map[int]struct {
-			result1 *model.User
-			result2 error
+			result1 error
 		})
 	}
 	fake.createReturnsOnCall[i] = struct {
-		result1 *model.User
-		result2 error
-	}{result1, result2}
+		result1 error
+	}{result1}
 }
 
-func (fake *FakeUserRepo) Update(arg1 model.User) (*model.User, error) {
+func (fake *FakeUserRepo) Update(arg1 *model.User) error {
 	fake.updateMutex.Lock()
 	ret, specificReturn := fake.updateReturnsOnCall[len(fake.updateArgsForCall)]
 	fake.updateArgsForCall = append(fake.updateArgsForCall, struct {
-		arg1 model.User
+		arg1 *model.User
 	}{arg1})
 	fake.recordInvocation("Update", []interface{}{arg1})
 	fake.updateMutex.Unlock()
@@ -152,9 +145,9 @@ func (fake *FakeUserRepo) Update(arg1 model.User) (*model.User, error) {
 		return fake.UpdateStub(arg1)
 	}
 	if specificReturn {
-		return ret.result1, ret.result2
+		return ret.result1
 	}
-	return fake.updateReturns.result1, fake.updateReturns.result2
+	return fake.updateReturns.result1
 }
 
 func (fake *FakeUserRepo) UpdateCallCount() int {
@@ -163,39 +156,36 @@ func (fake *FakeUserRepo) UpdateCallCount() int {
 	return len(fake.updateArgsForCall)
 }
 
-func (fake *FakeUserRepo) UpdateArgsForCall(i int) model.User {
+func (fake *FakeUserRepo) UpdateArgsForCall(i int) *model.User {
 	fake.updateMutex.RLock()
 	defer fake.updateMutex.RUnlock()
 	return fake.updateArgsForCall[i].arg1
 }
 
-func (fake *FakeUserRepo) UpdateReturns(result1 *model.User, result2 error) {
+func (fake *FakeUserRepo) UpdateReturns(result1 error) {
 	fake.UpdateStub = nil
 	fake.updateReturns = struct {
-		result1 *model.User
-		result2 error
-	}{result1, result2}
+		result1 error
+	}{result1}
 }
 
-func (fake *FakeUserRepo) UpdateReturnsOnCall(i int, result1 *model.User, result2 error) {
+func (fake *FakeUserRepo) UpdateReturnsOnCall(i int, result1 error) {
 	fake.UpdateStub = nil
 	if fake.updateReturnsOnCall == nil {
 		fake.updateReturnsOnCall = make(map[int]struct {
-			result1 *model.User
-			result2 error
+			result1 error
 		})
 	}
 	fake.updateReturnsOnCall[i] = struct {
-		result1 *model.User
-		result2 error
-	}{result1, result2}
+		result1 error
+	}{result1}
 }
 
-func (fake *FakeUserRepo) Delete(arg1 model.User) error {
+func (fake *FakeUserRepo) Delete(arg1 *model.User) error {
 	fake.deleteMutex.Lock()
 	ret, specificReturn := fake.deleteReturnsOnCall[len(fake.deleteArgsForCall)]
 	fake.deleteArgsForCall = append(fake.deleteArgsForCall, struct {
-		arg1 model.User
+		arg1 *model.User
 	}{arg1})
 	fake.recordInvocation("Delete", []interface{}{arg1})
 	fake.deleteMutex.Unlock()
@@ -214,7 +204,7 @@ func (fake *FakeUserRepo) DeleteCallCount() int {
 	return len(fake.deleteArgsForCall)
 }
 
-func (fake *FakeUserRepo) DeleteArgsForCall(i int) model.User {
+func (fake *FakeUserRepo) DeleteArgsForCall(i int) *model.User {
 	fake.deleteMutex.RLock()
 	defer fake.deleteMutex.RUnlock()
 	return fake.deleteArgsForCall[i].arg1

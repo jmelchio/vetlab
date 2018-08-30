@@ -36,11 +36,11 @@ func (userService User) CreateUser(ctx context.Context, user model.User) (*model
 	}
 
 	user.PasswordHash = *pwdHash
-	newUser, err := userService.UserRepo.Create(user)
+	err = userService.UserRepo.Create(&user)
 	if err != nil {
 		return nil, err
 	}
-	return newUser, nil
+	return &user, nil
 }
 
 // UpdateUser updates a model.User in the vetlab system
@@ -49,11 +49,11 @@ func (userService User) UpdateUser(ctx context.Context, user model.User) (*model
 		return nil, errors.New(MissingContext)
 	}
 
-	newUser, err := userService.UserRepo.Update(user)
+	err := userService.UserRepo.Update(&user)
 	if err != nil {
 		return nil, err
 	}
-	return newUser, nil
+	return &user, nil
 }
 
 // DeleteUser delets a model.User from the vetlab system
@@ -61,7 +61,7 @@ func (userService User) DeleteUser(ctx context.Context, user model.User) error {
 	if ctx == nil {
 		return errors.New(MissingContext)
 	}
-	err := userService.UserRepo.Delete(user)
+	err := userService.UserRepo.Delete(&user)
 	return err
 }
 
@@ -79,9 +79,9 @@ func (userService User) UpdatePassword(ctx context.Context, user model.User, pas
 	}
 
 	user.PasswordHash = *pwdHash
-	_, uerr := userService.UserRepo.Update(user)
-	if uerr != nil {
-		return nil, uerr
+	err = userService.UserRepo.Update(&user)
+	if err != nil {
+		return nil, err
 	}
 
 	return &user, nil

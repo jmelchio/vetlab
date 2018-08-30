@@ -39,15 +39,8 @@ var _ = Describe("UserService", func() {
 
 	Describe("Create a user", func() {
 
-		var (
-			createdUser model.User
-		)
-
 		BeforeEach(func() {
-			createdUser = user
-			createdUser.ID = 12345
-
-			userRepo.CreateReturns(&createdUser, nil)
+			userRepo.CreateReturns(nil)
 		})
 
 		Context("We have a valid user and 'todo' context", func() {
@@ -55,8 +48,7 @@ var _ = Describe("UserService", func() {
 			It("Returns a user with a new user ID and calls UserRepo.Create", func() {
 				zeUser, err := userService.CreateUser(context.TODO(), user)
 				Expect(err).ToNot(HaveOccurred())
-				Expect(zeUser.ID).To(Equal(uint(12345)))
-				Expect(err).ToNot(HaveOccurred())
+				Expect(zeUser).NotTo(BeNil())
 				Expect(userRepo.CreateCallCount()).To(Equal(1))
 			})
 		})
@@ -90,7 +82,7 @@ var _ = Describe("UserService", func() {
 		Context("We have a user and Context but repo cannot create user", func() {
 
 			BeforeEach(func() {
-				userRepo.CreateReturns(nil, errors.New("Unable to create user"))
+				userRepo.CreateReturns(errors.New("Unable to create user"))
 			})
 
 			It("Returns an error after calling UserRepo.Create", func() {
@@ -105,16 +97,8 @@ var _ = Describe("UserService", func() {
 
 	Describe("Update a user", func() {
 
-		var (
-			updatedUser model.User
-		)
-
 		BeforeEach(func() {
-			updatedUser = user
-			updatedUser.UserName = "updated-username"
-			updatedUser.FirstName = "second-first-name"
-
-			userRepo.UpdateReturns(&updatedUser, nil)
+			userRepo.UpdateReturns(nil)
 		})
 
 		Context("We have a valid user and context", func() {
@@ -123,7 +107,7 @@ var _ = Describe("UserService", func() {
 				zeUser, err := userService.UpdateUser(context.TODO(), user)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(userRepo.UpdateCallCount()).To(Equal(1))
-				Expect(zeUser.FirstName).To(Equal("second-first-name"))
+				Expect(zeUser).NotTo(BeNil())
 			})
 		})
 
@@ -141,7 +125,7 @@ var _ = Describe("UserService", func() {
 		Context("We have a user and Context but repo cannot create user", func() {
 
 			BeforeEach(func() {
-				userRepo.UpdateReturns(nil, errors.New("Unable to update user"))
+				userRepo.UpdateReturns(errors.New("Unable to update user"))
 			})
 
 			It("Returns an error after calling UserRepo.Create", func() {
@@ -202,7 +186,7 @@ var _ = Describe("UserService", func() {
 
 		BeforeEach(func() {
 			newPwd = "some-magic-password"
-			userRepo.UpdateReturns(&user, nil)
+			userRepo.UpdateReturns(nil)
 		})
 
 		Context("We have a valid user, password and context", func() {
@@ -230,7 +214,7 @@ var _ = Describe("UserService", func() {
 		Context("We have a valid user, password and context but update fails", func() {
 
 			BeforeEach(func() {
-				userRepo.UpdateReturns(nil, errors.New("Unable to update user"))
+				userRepo.UpdateReturns(errors.New("Unable to update user"))
 			})
 
 			It("returns an error", func() {
@@ -246,7 +230,7 @@ var _ = Describe("UserService", func() {
 
 			BeforeEach(func() {
 				newPwd = "uhseven"
-				userRepo.UpdateReturns(nil, errors.New("Unable to update user"))
+				userRepo.UpdateReturns(errors.New("Unable to update user"))
 			})
 
 			It("returns an error", func() {
