@@ -14,33 +14,33 @@ type SQLUserRepo struct {
 }
 
 // Create creates a persistent User row in the sql datastore
-func (sqlUserRepo SQLUserRepo) Create(user model.User) (*model.User, error) {
+func (sqlUserRepo SQLUserRepo) Create(user *model.User) error {
 	if sqlUserRepo.Database.NewRecord(user) {
-		if err := sqlUserRepo.Database.Create(&user).Error; err != nil {
-			return nil, err
+		if err := sqlUserRepo.Database.Create(user).Error; err != nil {
+			return err
 		} else {
-			return &user, nil
+			return nil
 		}
 	}
-	return nil, errors.New("Record already in database")
+	return errors.New("Record already in database")
 }
 
 // Update modifies a User row in the sql datastore
-func (sqlUserRepo SQLUserRepo) Update(user model.User) (*model.User, error) {
-	if err := sqlUserRepo.Database.Save(&user).Error; err != nil {
-		return nil, err
+func (sqlUserRepo SQLUserRepo) Update(user *model.User) error {
+	if err := sqlUserRepo.Database.Save(user).Error; err != nil {
+		return err
 	}
-	return &user, nil
+	return nil
 }
 
 // Delete removes a User row in the sql datastore
-func (sqlUserRepo SQLUserRepo) Delete(user model.User) error {
+func (sqlUserRepo SQLUserRepo) Delete(user *model.User) error {
 	return nil
 }
 
 // GetByID fetches a User from the sql datastore
-func (sqlUserRepo SQLUserRepo) GetByID(userID string) (*model.User, error) {
-	return nil, nil
+func (sqlUserRepo SQLUserRepo) GetByID(userID string) error {
+	return nil
 }
 
 // GetByOrgID fetches all users for a vet org from the sql datastore
