@@ -39,8 +39,8 @@ func (sqlUserRepo SQLUserRepo) Delete(user *model.User) error {
 }
 
 // GetByID fetches a User from the sql datastore
-func (sqlUserRepo SQLUserRepo) GetByID(userID string) error {
-	return nil
+func (sqlUserRepo SQLUserRepo) GetByID(userID string) (*model.User, error) {
+	return nil, nil
 }
 
 // GetByOrgID fetches all users for a vet org from the sql datastore
