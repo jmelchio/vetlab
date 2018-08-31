@@ -107,44 +107,88 @@ var _ = Describe("SqlUserRepo", func() {
 			})
 		})
 
-		PContext("When the user does not exist", func() {
+		Context("When the user does not exist", func() {
+
+			BeforeEach(func() {
+				userOne = model.User{
+					UserName:     "user_name",
+					FirstName:    "first_name",
+					LastName:     "last_name",
+					Email:        "first.last@gmail.com",
+					PasswordHash: "want_some_hash?",
+					AdminUser:    false,
+				}
+			})
 
 			It("Returns an error and nil for the user", func() {
-				Expect("this").NotTo(Equal("this"))
+				err = userRepo.Update(&userOne)
+				Expect(err).To(HaveOccurred())
 			})
 		})
 	})
 
-	PDescribe("Delete a user", func() {
+	Describe("Delete a user", func() {
 
 		Context("When the use is found", func() {
 
-			It("Deletes the record and returns no error", func() {
-				Expect("this").NotTo(Equal("this"))
+			BeforeEach(func() {
+				userOne = model.User{
+					UserName:     "user_name",
+					FirstName:    "first_name",
+					LastName:     "last_name",
+					Email:        "first.last@gmail.com",
+					PasswordHash: "want_some_hash?",
+					AdminUser:    false,
+				}
+				err = userRepo.Create(&userOne)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(userOne.ID).NotTo(Equal(uint(0)))
 			})
-		})
 
-		Context("When the user does not exist", func() {
-
-			It("Returns an error", func() {
-				Expect("this").NotTo(Equal("this"))
+			It("Deletes the record and returns no error", func() {
+				err = userRepo.Delete(&userOne)
+				Expect(err).NotTo(HaveOccurred())
+				// Todo: need to fetch and see if it finds in DB
 			})
 		})
 	})
 
-	PDescribe("Get a user by ID", func() {
+	Describe("Get a user by ID", func() {
 
 		Context("When the user is found", func() {
 
+			var foundUser *model.User
+
+			BeforeEach(func() {
+				userOne = model.User{
+					UserName:     "user_name",
+					FirstName:    "first_name",
+					LastName:     "last_name",
+					Email:        "first.last@gmail.com",
+					PasswordHash: "want_some_hash?",
+					AdminUser:    false,
+				}
+				err = userRepo.Create(&userOne)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(userOne.ID).NotTo(Equal(uint(0)))
+			})
+
 			It("It returns the user and nil for error", func() {
-				Expect("this").NotTo(Equal("this"))
+				foundUser, err = userRepo.GetByID(userOne.ID)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(foundUser).NotTo(BeNil())
+				Expect(foundUser.UserName).To(Equal(userOne.UserName))
 			})
 		})
 
 		Context("When the user is not found", func() {
 
-			It("It returns nil for the user and nil for an error", func() {
-				Expect("this").NotTo(Equal("this"))
+			var foundUser *model.User
+
+			It("It returns and error and nil for the user", func() {
+				foundUser, err = userRepo.GetByID(uint(10))
+				Expect(err).To(HaveOccurred())
+				Expect(foundUser).To(BeNil())
 			})
 		})
 	})
@@ -162,6 +206,23 @@ var _ = Describe("SqlUserRepo", func() {
 
 			It("It returns nil for user and nil for error", func() {
 				Expect("this").NotTo(Equal("this"))
+			})
+		})
+
+		PDescribe("Get a user by UserName", func() {
+
+			Context("When the user is found", func() {
+
+				It("It returns the user and nil for the error", func() {
+					Expect("this").NotTo(Equal("this"))
+				})
+			})
+
+			Context("When the user is not found", func() {
+
+				It("It returns nil for user and nil for error", func() {
+					Expect("this").NotTo(Equal("this"))
+				})
 			})
 		})
 	})

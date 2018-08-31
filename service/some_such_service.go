@@ -13,7 +13,7 @@ type SomeSuchService struct {
 }
 
 // Login will log you in to the system or not (maybe?)
-func (someService SomeSuchService) Login(userID, password string) (*model.User, error) {
+func (someService SomeSuchService) Login(userID uint, password string) (*model.User, error) {
 	user, err := someService.userRepo.GetByID(userID)
 	if err != nil {
 		return nil, err
