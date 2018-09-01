@@ -55,10 +55,23 @@ func (sqlUserRepo SQLUserRepo) GetByID(userID uint) (*model.User, error) {
 
 // GetByOrgID fetches all users for a vet org from the sql datastore
 func (sqlUserRepo SQLUserRepo) GetByOrgID(orgID uint) ([]model.User, error) {
-	return nil, nil
+	var users []model.User
+
+	if err := sqlUserRepo.Database.Where("org_id = ?", orgID).Find(&users).Error; err != nil {
+		return nil, err
+	}
+	if len(users) > 0 {
+		return users, nil
+	}
+	return nil, errors.New("Zero records found that match given org_id")
 }
 
 // GetByUserName fetches all users by UserName from the sql datastore
-func (sqlUserRepo SQLUserRepo) GetByUserName(orgID uint) ([]model.User, error) {
-	return nil, nil
+func (sqlUserRepo SQLUserRepo) GetByUserName(userName string) (*model.User, error) {
+	var user model.User
+
+	if err := sqlUserRepo.Database.Where("user_name = ?", userName).Find(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

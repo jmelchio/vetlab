@@ -193,35 +193,91 @@ var _ = Describe("SqlUserRepo", func() {
 		})
 	})
 
-	PDescribe("Get a user by OrgID", func() {
+	Describe("Get a user by OrgID", func() {
 
 		Context("When the user is found", func() {
 
-			It("It returns the user and nil for the error", func() {
-				Expect("this").NotTo(Equal("this"))
+			var foundUsers []model.User
+
+			BeforeEach(func() {
+				userOne = model.User{
+					UserName:     "user_name",
+					FirstName:    "first_name",
+					LastName:     "last_name",
+					Email:        "first.last@gmail.com",
+					PasswordHash: "want_some_hash?",
+					OrgID:        uint(10),
+					AdminUser:    false,
+				}
+				err = userRepo.Create(&userOne)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(userOne.ID).NotTo(Equal(uint(0)))
+			})
+
+			It("It returns the user and nil for error", func() {
+				foundUsers, err = userRepo.GetByOrgID(uint(10))
+				Expect(err).NotTo(HaveOccurred())
+				Expect(foundUsers).NotTo(BeNil())
+				Expect(len(foundUsers)).To(Equal(1))
+				Expect(foundUsers[0].OrgID).To(Equal(uint(10)))
+				Expect(foundUsers[0].UserName).To(Equal(userOne.UserName))
 			})
 		})
 
 		Context("When the user is not found", func() {
 
-			It("It returns nil for user and nil for error", func() {
-				Expect("this").NotTo(Equal("this"))
+			var foundUsers []model.User
+
+			BeforeEach(func() {
+			})
+
+			It("It returns nil for result and an error", func() {
+				foundUsers, err = userRepo.GetByOrgID(uint(10))
+				Expect(err).To(HaveOccurred())
+				Expect(foundUsers).To(BeNil())
 			})
 		})
 
-		PDescribe("Get a user by UserName", func() {
+		Describe("Get a user by UserName", func() {
 
 			Context("When the user is found", func() {
 
-				It("It returns the user and nil for the error", func() {
-					Expect("this").NotTo(Equal("this"))
+				var foundUser *model.User
+
+				BeforeEach(func() {
+					userOne = model.User{
+						UserName:     "user_name",
+						FirstName:    "first_name",
+						LastName:     "last_name",
+						Email:        "first.last@gmail.com",
+						PasswordHash: "want_some_hash?",
+						AdminUser:    false,
+					}
+					err = userRepo.Create(&userOne)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(userOne.ID).NotTo(Equal(uint(0)))
+				})
+
+				It("It returns the user and nil for error", func() {
+					foundUser, err = userRepo.GetByUserName(userOne.UserName)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(foundUser).NotTo(BeNil())
+					Expect(foundUser.ID).To(Equal(userOne.ID))
+					Expect(foundUser.UserName).To(Equal(userOne.UserName))
 				})
 			})
 
 			Context("When the user is not found", func() {
 
-				It("It returns nil for user and nil for error", func() {
-					Expect("this").NotTo(Equal("this"))
+				var foundUser *model.User
+
+				BeforeEach(func() {
+				})
+
+				It("It returns the user and nil for error", func() {
+					foundUser, err = userRepo.GetByUserName("some_user_name")
+					Expect(err).To(HaveOccurred())
+					Expect(foundUser).To(BeNil())
 				})
 			})
 		})
