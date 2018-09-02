@@ -44,7 +44,7 @@ var _ = Describe("UserHandler", func() {
 				LastName:     "last_name",
 				Email:        "some_email",
 				PasswordHash: "some_hash",
-				OrgID:        12345,
+				OrgID:        uint(12345),
 				AdminUser:    false,
 			}
 		})
@@ -141,12 +141,13 @@ var _ = Describe("UserHandler", func() {
 
 		BeforeEach(func() {
 			updateUser = model.User{
+				ID:           uint(12345),
 				UserName:     "user_name",
 				FirstName:    "first_name",
 				LastName:     "last_name",
 				Email:        "some_email",
 				PasswordHash: "some_hash",
-				OrgID:        12345,
+				OrgID:        uint(12345),
 				AdminUser:    false,
 			}
 		})
@@ -236,6 +237,96 @@ var _ = Describe("UserHandler", func() {
 	})
 
 	Describe("Delete a user", func() {
+		var (
+			deleteUser model.User
+		)
+
+		BeforeEach(func() {
+			deleteUser = model.User{
+				ID:           uint(12345),
+				UserName:     "user_name",
+				FirstName:    "first_name",
+				LastName:     "last_name",
+				Email:        "some_email",
+				PasswordHash: "some_hash",
+				OrgID:        uint(12345),
+				AdminUser:    false,
+			}
+		})
+
+		Context("Valid user information is passed", func() {
+
+			BeforeEach(func() {
+				userService.DeleteUserReturns(nil)
+				userBytes, err := json.Marshal(deleteUser)
+				Expect(err).NotTo(HaveOccurred())
+				recorder = httptest.NewRecorder()
+				request, _ := http.NewRequest("DELETE", "/user/delete", bytes.NewReader(userBytes))
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Deletes a user and returns 204 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusNoContent))
+				Expect(userService.DeleteUserCallCount()).To(Equal(1))
+			})
+		})
+
+		Context("Valid user information is passed but downstream call fails", func() {
+
+			BeforeEach(func() {
+				userService.DeleteUserReturns(errors.New("Whoot?"))
+				userBytes, err := json.Marshal(deleteUser)
+				Expect(err).NotTo(HaveOccurred())
+				recorder = httptest.NewRecorder()
+				request, _ := http.NewRequest("DELETE", "/user/delete", bytes.NewReader(userBytes))
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Fails to delete a user and returns a 500 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(err).NotTo(HaveOccurred())
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToDeleteUser))
+				Expect(userService.DeleteUserCallCount()).To(Equal(1))
+			})
+		})
+
+		Context("Body of the request is empty", func() {
+
+			BeforeEach(func() {
+				recorder = httptest.NewRecorder()
+				request, _ := http.NewRequest("DELETE", "/user/delete", nil)
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Fails to delete a user and returns a 400 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(EmptyBody))
+				Expect(userService.DeleteUserCallCount()).To(Equal(0))
+			})
+		})
+
+		Context("Body of the request contains invalid data", func() {
+
+			BeforeEach(func() {
+				userBytes, err := json.Marshal("deleteUser")
+				Expect(err).NotTo(HaveOccurred())
+				recorder = httptest.NewRecorder()
+				request, _ := http.NewRequest("DELETE", "/user/delete", bytes.NewReader(userBytes))
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Fails to delete a user and returns a 400 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(InvalidBody))
+				Expect(userService.DeleteUserCallCount()).To(Equal(0))
+			})
+		})
 	})
 
 	Describe("Login a user", func() {

@@ -26,6 +26,7 @@ const (
 	InvalidBody        = "Body of the request is invalid"
 	UnableToCreateUser = "Unable to create a user"
 	UnableToUpdateUser = "Unable to update a user"
+	UnableToDeleteUser = "Unable to delete a user"
 	UnableToParseBody  = "Unable to parse request body"
 )
 
@@ -111,6 +112,30 @@ func (userServer *UserServer) UpdateUser(writer http.ResponseWriter, request *ht
 }
 
 func (userServer *UserServer) DeleteUser(writer http.ResponseWriter, request *http.Request) {
+	if request.Body == nil {
+		http.Error(writer, EmptyBody, http.StatusBadRequest)
+		return
+	}
+
+	requestBody, err := ioutil.ReadAll(request.Body)
+	if err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var deleteUser model.User
+	err = json.Unmarshal(requestBody, &deleteUser)
+	if err != nil {
+		http.Error(writer, InvalidBody, http.StatusBadRequest)
+		return
+	}
+	err = userServer.UserService.DeleteUser(context.TODO(), deleteUser)
+	if err != nil {
+		http.Error(writer, UnableToDeleteUser, http.StatusInternalServerError)
+		return
+	}
+
+	writer.WriteHeader(http.StatusNoContent)
 }
 
 func (userServer *UserServer) Login(writer http.ResponseWriter, request *http.Request) {
