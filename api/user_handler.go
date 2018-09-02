@@ -28,6 +28,7 @@ const (
 	UnableToUpdateUser = "Unable to update a user"
 	UnableToDeleteUser = "Unable to delete a user"
 	UnableToParseBody  = "Unable to parse request body"
+	UnableToLoginUser  = "Unable to login the user"
 )
 
 // UserRoutes are the REST endpoint routes for the user REST interface
@@ -139,6 +140,31 @@ func (userServer *UserServer) DeleteUser(writer http.ResponseWriter, request *ht
 }
 
 func (userServer *UserServer) Login(writer http.ResponseWriter, request *http.Request) {
+	if request.Body == nil {
+		http.Error(writer, EmptyBody, http.StatusBadRequest)
+		return
+	}
+
+	requestBody, err := ioutil.ReadAll(request.Body)
+	if err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var loginRequest model.LoginRequest
+	err = json.Unmarshal(requestBody, &loginRequest)
+	if err != nil {
+		http.Error(writer, InvalidBody, http.StatusBadRequest)
+		return
+	}
+	loginUser, err := userServer.UserService.Login(context.TODO(), loginRequest.UserName, loginRequest.Password)
+	if err != nil {
+		http.Error(writer, UnableToLoginUser, http.StatusInternalServerError)
+		return
+	}
+
+	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(loginUser)
 }
 
 func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http.Request) {

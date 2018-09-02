@@ -286,7 +286,6 @@ var _ = Describe("UserHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToDeleteUser))
 				Expect(userService.DeleteUserCallCount()).To(Equal(1))
 			})
@@ -330,6 +329,111 @@ var _ = Describe("UserHandler", func() {
 	})
 
 	Describe("Login a user", func() {
+
+		var (
+			loginRequest model.LoginRequest
+			loginUser    model.User
+		)
+
+		BeforeEach(func() {
+			loginRequest = model.LoginRequest{
+				UserName: "user_name",
+				Password: "some_password",
+			}
+
+			loginUser = model.User{
+				ID:           uint(12345),
+				UserName:     "user_name",
+				FirstName:    "first_name",
+				LastName:     "lastName",
+				Email:        "some_email",
+				PasswordHash: "some_hash",
+				OrgID:        uint(12345),
+				AdminUser:    false,
+			}
+		})
+
+		Context("Valid user information is passed", func() {
+
+			BeforeEach(func() {
+				userService.LoginReturns(&loginUser, nil)
+				userBytes, err := json.Marshal(loginRequest)
+				Expect(err).NotTo(HaveOccurred())
+				recorder = httptest.NewRecorder()
+				request, _ := http.NewRequest("POST", "/user/login", bytes.NewReader(userBytes))
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Logs a user in and returns 200 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+
+				var newUser model.User
+				err = json.Unmarshal(respBody, &newUser)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(newUser).NotTo(BeNil())
+				Expect(newUser.FirstName).To(Equal(loginUser.FirstName))
+				Expect(newUser.LastName).To(Equal(loginUser.LastName))
+				Expect(userService.LoginCallCount()).To(Equal(1))
+			})
+		})
+
+		Context("Valid user information is passed but downstream call fails", func() {
+
+			BeforeEach(func() {
+				userService.LoginReturns(nil, errors.New("Whoot?"))
+				userBytes, err := json.Marshal(loginRequest)
+				Expect(err).NotTo(HaveOccurred())
+				recorder = httptest.NewRecorder()
+				request, _ := http.NewRequest("POST", "/user/login", bytes.NewReader(userBytes))
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Fails to login a user and returns a 500 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToLoginUser))
+				Expect(userService.LoginCallCount()).To(Equal(1))
+			})
+		})
+
+		Context("Body of the request is empty", func() {
+
+			BeforeEach(func() {
+				recorder = httptest.NewRecorder()
+				request, _ := http.NewRequest("POST", "/user/login", nil)
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Fails to login a user and returns a 400 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(EmptyBody))
+				Expect(userService.DeleteUserCallCount()).To(Equal(0))
+			})
+		})
+
+		Context("Body of the request contains invalid data", func() {
+
+			BeforeEach(func() {
+				userBytes, err := json.Marshal("loginRequest")
+				Expect(err).NotTo(HaveOccurred())
+				recorder = httptest.NewRecorder()
+				request, _ := http.NewRequest("POST", "/user/login", bytes.NewReader(userBytes))
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Fails to login a user and returns a 400 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(InvalidBody))
+				Expect(userService.DeleteUserCallCount()).To(Equal(0))
+			})
+		})
 	})
 
 	Describe("Find a user", func() {
