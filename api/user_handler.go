@@ -29,6 +29,7 @@ const (
 	UnableToDeleteUser = "Unable to delete a user"
 	UnableToParseBody  = "Unable to parse request body"
 	UnableToLoginUser  = "Unable to login the user"
+	NoParamsFound      = "No parameters found on request"
 )
 
 // UserRoutes are the REST endpoint routes for the user REST interface
@@ -168,4 +169,8 @@ func (userServer *UserServer) Login(writer http.ResponseWriter, request *http.Re
 }
 
 func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http.Request) {
+	if err := request.ParseForm(); err != nil {
+		http.Error(writer, NoParamsFound, http.StatusBadRequest)
+		return
+	}
 }
