@@ -29,6 +29,7 @@ const (
 	UnableToDeleteUser = "Unable to delete a user"
 	UnableToParseBody  = "Unable to parse request body"
 	UnableToLoginUser  = "Unable to login the user"
+	UnableToFindUser   = "Unable to find the user(s)"
 	NoParamsFound      = "No parameters found on request"
 )
 
@@ -50,7 +51,7 @@ func NewUserHandler(userService UserService) (http.Handler, error) {
 		UpdateUser: http.HandlerFunc(userServer.UpdateUser),
 		DeleteUser: http.HandlerFunc(userServer.DeleteUser),
 		Login:      http.HandlerFunc(userServer.Login),
-		FindUser:   http.HandlerFunc(userServer.Login),
+		FindUser:   http.HandlerFunc(userServer.FindUser),
 	}
 
 	return rata.NewRouter(UserRoutes, handlers)
