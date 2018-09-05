@@ -174,4 +174,9 @@ func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http
 		http.Error(writer, NoParamsFound, http.StatusBadRequest)
 		return
 	}
+
+	if len(request.Form) != 1 {
+		http.Error(writer, NoParamsFound, http.StatusBadRequest)
+		return
+	}
 }
