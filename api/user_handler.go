@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/jmelchio/vetlab/model"
 	"github.com/tedsuo/rata"
@@ -179,4 +180,52 @@ func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http
 		http.Error(writer, NoParamsFound, http.StatusBadRequest)
 		return
 	}
+
+	possibleParams := []string{"user_name", "user_id", "vet_org_id"}
+	for _, param := range possibleParams {
+		valueFound := request.Form.Get(param)
+		if len(valueFound) > 0 {
+			switch param {
+			case "user_name":
+				foundUser, err := userServer.UserService.FindUserByUserName(context.TODO(), valueFound)
+				if err != nil {
+					http.Error(writer, UnableToFindUser, http.StatusInternalServerError)
+					return
+				}
+				writer.WriteHeader(http.StatusOK)
+				json.NewEncoder(writer).Encode(foundUser)
+				return
+			case "user_id":
+				if uintValue, err := strconv.ParseUint(valueFound, 10, 32); err == nil {
+					// Extra conversion to uint seems needed to bug in strconv.ParseUint
+					foundUser, err := userServer.UserService.FindUserByID(context.TODO(), uint(uintValue))
+					if err != nil {
+						http.Error(writer, UnableToFindUser, http.StatusInternalServerError)
+						return
+					}
+					writer.WriteHeader(http.StatusOK)
+					json.NewEncoder(writer).Encode(foundUser)
+					return
+				}
+				http.Error(writer, NoParamsFound, http.StatusBadRequest)
+				return
+			case "vet_org_id":
+				if uintValue, err := strconv.ParseUint(valueFound, 10, 32); err == nil {
+					// Extra conversion to uint seems needed to bug in strconv.ParseUint
+					foundUsers, err := userServer.UserService.FindUsersByVetOrgID(context.TODO(), uint(uintValue))
+					if err != nil {
+						http.Error(writer, UnableToFindUser, http.StatusInternalServerError)
+						return
+					}
+					writer.WriteHeader(http.StatusOK)
+					json.NewEncoder(writer).Encode(foundUsers)
+					return
+				}
+				http.Error(writer, NoParamsFound, http.StatusBadRequest)
+				return
+			}
+		}
+	}
+	http.Error(writer, NoParamsFound, http.StatusBadRequest)
+	return
 }

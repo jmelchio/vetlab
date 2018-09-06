@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -495,7 +496,7 @@ var _ = Describe("UserHandler", func() {
 				recorder = httptest.NewRecorder()
 				request, _ := http.NewRequest("GET", "/user/find", nil)
 				q := url.Values{}
-				q.Add("user_id", string(userID))
+				q.Add("user_id", fmt.Sprint(userID))
 				request.URL.RawQuery = q.Encode()
 				handler.ServeHTTP(recorder, request)
 			})
@@ -515,7 +516,7 @@ var _ = Describe("UserHandler", func() {
 			})
 		})
 
-		Context("Valid orgID is passed", func() {
+		Context("Valid vetOrgID is passed", func() {
 
 			BeforeEach(func() {
 				userSlice := []model.User{sampleUser}
@@ -524,22 +525,22 @@ var _ = Describe("UserHandler", func() {
 				recorder = httptest.NewRecorder()
 				request, _ := http.NewRequest("GET", "/user/find", nil)
 				q := url.Values{}
-				q.Add("vet_org_id", string(vetOrgID))
+				q.Add("vet_org_id", fmt.Sprint(vetOrgID))
 				request.URL.RawQuery = q.Encode()
 				handler.ServeHTTP(recorder, request)
 			})
 
-			It("Finds and returns a user and returns 200 status code", func() {
+			It("Finds and returns a slice of user and returns 200 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 
-				var foundUser model.User
-				err = json.Unmarshal(respBody, &foundUser)
+				var foundUsers []model.User
+				err = json.Unmarshal(respBody, &foundUsers)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(foundUser).NotTo(BeNil())
-				Expect(foundUser.FirstName).To(Equal(sampleUser.FirstName))
-				Expect(foundUser.LastName).To(Equal(sampleUser.LastName))
+				Expect(foundUsers).NotTo(BeNil())
+				Expect(foundUsers[0].FirstName).To(Equal(sampleUser.FirstName))
+				Expect(foundUsers[0].LastName).To(Equal(sampleUser.LastName))
 				Expect(userService.FindUsersByVetOrgIDCallCount()).To(Equal(1))
 			})
 		})
@@ -562,7 +563,7 @@ var _ = Describe("UserHandler", func() {
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToFindUser))
-				Expect(userService.LoginCallCount()).To(Equal(1))
+				Expect(userService.FindUserByUserNameCallCount()).To(Equal(1))
 			})
 		})
 
