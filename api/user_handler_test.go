@@ -508,11 +508,7 @@ var _ = Describe("UserHandler", func() {
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 
-					var errorMessage string
-					err = json.Unmarshal(respBody, &errorMessage)
-					Expect(err).To(HaveOccurred())
-					Expect(errorMessage).NotTo(BeNil())
-					Expect(errorMessage).To(Equal(UnableToFindUser))
+					Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToFindUser))
 					Expect(userService.FindUserByUserNameCallCount()).To(Equal(1))
 				})
 			})
@@ -594,8 +590,8 @@ var _ = Describe("UserHandler", func() {
 				handler.ServeHTTP(recorder, request)
 			})
 
-			It("Fails to find a user and returns a 500 status code", func() {
-				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
+			It("Fails to find a user and returns a 404 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToFindUser))
