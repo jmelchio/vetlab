@@ -462,86 +462,122 @@ var _ = Describe("UserHandler", func() {
 
 		Context("Valid userName is passed", func() {
 
-			BeforeEach(func() {
-				userService.FindUserByUserNameReturns(&sampleUser, nil)
-				userName = "user_name"
-				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("GET", "/user/find", nil)
-				q := url.Values{}
-				q.Add("user_name", userName)
-				request.URL.RawQuery = q.Encode()
-				handler.ServeHTTP(recorder, request)
+			Context("User with userName exists", func() {
+
+				BeforeEach(func() {
+					userService.FindUserByUserNameReturns(&sampleUser, nil)
+					userName = "user_name"
+					recorder = httptest.NewRecorder()
+					request, _ := http.NewRequest("GET", "/user/find", nil)
+					q := url.Values{}
+					q.Add("user_name", userName)
+					request.URL.RawQuery = q.Encode()
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Finds and returns a user and returns 200 status code", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+
+					var foundUser model.User
+					err = json.Unmarshal(respBody, &foundUser)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(foundUser).NotTo(BeNil())
+					Expect(foundUser.FirstName).To(Equal(sampleUser.FirstName))
+					Expect(foundUser.LastName).To(Equal(sampleUser.LastName))
+					Expect(userService.FindUserByUserNameCallCount()).To(Equal(1))
+				})
 			})
 
-			It("Finds and returns a user and returns 200 status code", func() {
-				Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
-				Expect(err).NotTo(HaveOccurred())
+			Context("User with userName does not exist", func() {
 
-				var foundUser model.User
-				err = json.Unmarshal(respBody, &foundUser)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(foundUser).NotTo(BeNil())
-				Expect(foundUser.FirstName).To(Equal(sampleUser.FirstName))
-				Expect(foundUser.LastName).To(Equal(sampleUser.LastName))
-				Expect(userService.FindUserByUserNameCallCount()).To(Equal(1))
+				BeforeEach(func() {
+					userService.FindUserByUserNameReturns(nil, errors.New("Whoot?"))
+					userName = "user_name"
+					recorder = httptest.NewRecorder()
+					request, _ := http.NewRequest("GET", "/user/find", nil)
+					q := url.Values{}
+					q.Add("user_name", userName)
+					request.URL.RawQuery = q.Encode()
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Doesn't find a user and returns 404 status code", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+
+					var errorMessage string
+					err = json.Unmarshal(respBody, &errorMessage)
+					Expect(err).To(HaveOccurred())
+					Expect(errorMessage).NotTo(BeNil())
+					Expect(errorMessage).To(Equal(UnableToFindUser))
+					Expect(userService.FindUserByUserNameCallCount()).To(Equal(1))
+				})
 			})
 		})
 
 		Context("Valid userID is passed", func() {
 
-			BeforeEach(func() {
-				userService.FindUserByIDReturns(&sampleUser, nil)
-				userID = uint(12345)
-				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("GET", "/user/find", nil)
-				q := url.Values{}
-				q.Add("user_id", fmt.Sprint(userID))
-				request.URL.RawQuery = q.Encode()
-				handler.ServeHTTP(recorder, request)
-			})
+			Context("User with userID exists", func() {
 
-			It("Finds and returns a user and returns 200 status code", func() {
-				Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
-				Expect(err).NotTo(HaveOccurred())
+				BeforeEach(func() {
+					userService.FindUserByIDReturns(&sampleUser, nil)
+					userID = uint(12345)
+					recorder = httptest.NewRecorder()
+					request, _ := http.NewRequest("GET", "/user/find", nil)
+					q := url.Values{}
+					q.Add("user_id", fmt.Sprint(userID))
+					request.URL.RawQuery = q.Encode()
+					handler.ServeHTTP(recorder, request)
+				})
 
-				var foundUser model.User
-				err = json.Unmarshal(respBody, &foundUser)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(foundUser).NotTo(BeNil())
-				Expect(foundUser.FirstName).To(Equal(sampleUser.FirstName))
-				Expect(foundUser.LastName).To(Equal(sampleUser.LastName))
-				Expect(userService.FindUserByIDCallCount()).To(Equal(1))
+				It("Finds and returns a user and returns 200 status code", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+
+					var foundUser model.User
+					err = json.Unmarshal(respBody, &foundUser)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(foundUser).NotTo(BeNil())
+					Expect(foundUser.FirstName).To(Equal(sampleUser.FirstName))
+					Expect(foundUser.LastName).To(Equal(sampleUser.LastName))
+					Expect(userService.FindUserByIDCallCount()).To(Equal(1))
+				})
 			})
 		})
 
 		Context("Valid vetOrgID is passed", func() {
 
-			BeforeEach(func() {
-				userSlice := []model.User{sampleUser}
-				userService.FindUsersByVetOrgIDReturns(userSlice, nil)
-				vetOrgID = uint(12345)
-				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("GET", "/user/find", nil)
-				q := url.Values{}
-				q.Add("vet_org_id", fmt.Sprint(vetOrgID))
-				request.URL.RawQuery = q.Encode()
-				handler.ServeHTTP(recorder, request)
-			})
+			Context("User with vetOrgID exists", func() {
 
-			It("Finds and returns a slice of user and returns 200 status code", func() {
-				Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
-				Expect(err).NotTo(HaveOccurred())
+				BeforeEach(func() {
+					userSlice := []model.User{sampleUser}
+					userService.FindUsersByVetOrgIDReturns(userSlice, nil)
+					vetOrgID = uint(12345)
+					recorder = httptest.NewRecorder()
+					request, _ := http.NewRequest("GET", "/user/find", nil)
+					q := url.Values{}
+					q.Add("vet_org_id", fmt.Sprint(vetOrgID))
+					request.URL.RawQuery = q.Encode()
+					handler.ServeHTTP(recorder, request)
+				})
 
-				var foundUsers []model.User
-				err = json.Unmarshal(respBody, &foundUsers)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(foundUsers).NotTo(BeNil())
-				Expect(foundUsers[0].FirstName).To(Equal(sampleUser.FirstName))
-				Expect(foundUsers[0].LastName).To(Equal(sampleUser.LastName))
-				Expect(userService.FindUsersByVetOrgIDCallCount()).To(Equal(1))
+				It("Finds and returns a slice of user and returns 200 status code", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+
+					var foundUsers []model.User
+					err = json.Unmarshal(respBody, &foundUsers)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(foundUsers).NotTo(BeNil())
+					Expect(foundUsers[0].FirstName).To(Equal(sampleUser.FirstName))
+					Expect(foundUsers[0].LastName).To(Equal(sampleUser.LastName))
+					Expect(userService.FindUsersByVetOrgIDCallCount()).To(Equal(1))
+				})
 			})
 		})
 
