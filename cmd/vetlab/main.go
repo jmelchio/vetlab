@@ -1,4 +1,4 @@
-package vetlab
+package main
 
 import "fmt"
 
