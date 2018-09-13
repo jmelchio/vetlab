@@ -17,11 +17,11 @@ type UserServer struct {
 }
 
 const (
-	CreateUser = "CreateUser"
-	UpdateUser = "UpdateUser"
-	DeleteUser = "DeleteUser"
-	Login      = "Login"
-	FindUser   = "FindUser"
+	CreateUser = "create_user"
+	UpdateUser = "update_user"
+	DeleteUser = "delete_user"
+	Login      = "login"
+	FindUser   = "find_user"
 
 	EmptyBody          = "Body of the request is empty"
 	InvalidBody        = "Body of the request is invalid"
@@ -36,11 +36,11 @@ const (
 
 // UserRoutes are the REST endpoint routes for the user REST interface
 var UserRoutes = rata.Routes{
-	{Path: "/user/create", Method: "POST", Name: CreateUser},
-	{Path: "/user/update", Method: "PUT", Name: UpdateUser},
-	{Path: "/user/delete", Method: "DELETE", Name: DeleteUser},
-	{Path: "/user/login", Method: "POST", Name: Login},
-	{Path: "/user/find", Method: "GET", Name: FindUser},
+	{Path: "/user/create", Method: rata.POST, Name: CreateUser},
+	{Path: "/user/update", Method: rata.PUT, Name: UpdateUser},
+	{Path: "/user/delete", Method: rata.DELETE, Name: DeleteUser},
+	{Path: "/user/login", Method: rata.POST, Name: Login},
+	{Path: "/user/find", Method: rata.GET, Name: FindUser},
 }
 
 // NewUserHandler provides the factory function to create the REST interface for user actions
