@@ -12,6 +12,7 @@ import (
 
 	"github.com/jmelchio/vetlab/api/apifakes"
 	"github.com/jmelchio/vetlab/model"
+	"github.com/tedsuo/rata"
 
 	. "github.com/jmelchio/vetlab/api"
 
@@ -21,15 +22,17 @@ import (
 
 var _ = Describe("UserHandler", func() {
 	var (
-		handler     http.Handler
-		recorder    *httptest.ResponseRecorder
-		err         error
-		userService *apifakes.FakeUserService
+		handler          http.Handler
+		recorder         *httptest.ResponseRecorder
+		err              error
+		userService      *apifakes.FakeUserService
+		requestGenerator *rata.RequestGenerator
 	)
 
 	BeforeEach(func() {
 		userService = new(apifakes.FakeUserService)
 		handler, err = NewUserHandler(userService)
+		requestGenerator = rata.NewRequestGenerator("", UserRoutes)
 		Expect(err).NotTo(HaveOccurred())
 	})
 
@@ -58,7 +61,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal(createUser)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("POST", "/user/create", bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(CreateUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -85,7 +88,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal(createUser)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("POST", "/user/create", bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(CreateUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -103,7 +106,7 @@ var _ = Describe("UserHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("POST", "/user/create", nil)
+				request, _ := requestGenerator.CreateRequest(CreateUser, nil, nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -122,7 +125,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal("createUser")
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("POST", "/user/create", bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(CreateUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -161,7 +164,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal(updateUser)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("PUT", "/user/update", bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(UpdateUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -187,7 +190,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal(updateUser)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("PUT", "/user/update", bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(UpdateUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -205,7 +208,7 @@ var _ = Describe("UserHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("PUT", "/user/update", nil)
+				request, _ := requestGenerator.CreateRequest(UpdateUser, nil, nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -224,7 +227,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal("updateUser")
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("PUT", "/user/update", bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(UpdateUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -263,7 +266,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal(deleteUser)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("DELETE", "/user/delete", bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(DeleteUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -280,7 +283,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal(deleteUser)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("DELETE", "/user/delete", bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(DeleteUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -297,7 +300,7 @@ var _ = Describe("UserHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("DELETE", "/user/delete", nil)
+				request, _ := requestGenerator.CreateRequest(DeleteUser, nil, nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -316,7 +319,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal("deleteUser")
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("DELETE", "/user/delete", bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(DeleteUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -362,7 +365,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal(loginRequest)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("POST", "/user/login", bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(Login, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -388,7 +391,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal(loginRequest)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("POST", "/user/login", bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(Login, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -405,7 +408,7 @@ var _ = Describe("UserHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("POST", "/user/login", nil)
+				request, _ := requestGenerator.CreateRequest(Login, nil, nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -424,7 +427,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal("loginRequest")
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("POST", "/user/login", bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(Login, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -468,7 +471,8 @@ var _ = Describe("UserHandler", func() {
 					userService.FindUserByUserNameReturns(&sampleUser, nil)
 					userName = "user_name"
 					recorder = httptest.NewRecorder()
-					request, _ := http.NewRequest("GET", "/user/find", nil)
+					request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
+					// request, _ := http.NewRequest("GET", "/user/find", nil)
 					q := url.Values{}
 					q.Add("user_name", userName)
 					request.URL.RawQuery = q.Encode()
