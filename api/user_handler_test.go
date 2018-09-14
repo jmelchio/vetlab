@@ -500,7 +500,7 @@ var _ = Describe("UserHandler", func() {
 					userService.FindUserByUserNameReturns(nil, errors.New("Whoot?"))
 					userName = "user_name"
 					recorder = httptest.NewRecorder()
-					request, _ := http.NewRequest("GET", "/user/find", nil)
+					request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
 					q := url.Values{}
 					q.Add("user_name", userName)
 					request.URL.RawQuery = q.Encode()
@@ -526,7 +526,7 @@ var _ = Describe("UserHandler", func() {
 					userService.FindUserByIDReturns(&sampleUser, nil)
 					userID = uint(12345)
 					recorder = httptest.NewRecorder()
-					request, _ := http.NewRequest("GET", "/user/find", nil)
+					request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
 					q := url.Values{}
 					q.Add("user_id", fmt.Sprint(userID))
 					request.URL.RawQuery = q.Encode()
@@ -558,7 +558,7 @@ var _ = Describe("UserHandler", func() {
 					userService.FindUsersByVetOrgIDReturns(userSlice, nil)
 					vetOrgID = uint(12345)
 					recorder = httptest.NewRecorder()
-					request, _ := http.NewRequest("GET", "/user/find", nil)
+					request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
 					q := url.Values{}
 					q.Add("vet_org_id", fmt.Sprint(vetOrgID))
 					request.URL.RawQuery = q.Encode()
@@ -587,7 +587,7 @@ var _ = Describe("UserHandler", func() {
 				userService.FindUserByUserNameReturns(nil, errors.New("Whoot?"))
 				userName = "user_name"
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("GET", "/user/find", nil)
+				request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
 				q := url.Values{}
 				q.Add("user_name", userName)
 				request.URL.RawQuery = q.Encode()
@@ -607,7 +607,7 @@ var _ = Describe("UserHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("GET", "/user/find", nil)
+				request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -626,7 +626,7 @@ var _ = Describe("UserHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := http.NewRequest("GET", "/user/find", nil)
+				request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
 				q := url.Values{}
 				q.Add("first_name", "nobody")
 				request.URL.RawQuery = q.Encode()
