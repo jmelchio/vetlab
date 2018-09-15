@@ -197,7 +197,6 @@ func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http
 				return
 			case "user_id":
 				if uintValue, err := strconv.ParseUint(valueFound, 10, 32); err == nil {
-					// Extra conversion to uint seems needed to bug in strconv.ParseUint
 					foundUser, err := userServer.UserService.FindUserByID(context.TODO(), uint(uintValue))
 					if err != nil {
 						http.Error(writer, UnableToFindUser, http.StatusNotFound)
@@ -211,7 +210,6 @@ func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http
 				return
 			case "vet_org_id":
 				if uintValue, err := strconv.ParseUint(valueFound, 10, 32); err == nil {
-					// Extra conversion to uint seems needed to bug in strconv.ParseUint
 					foundUsers, err := userServer.UserService.FindUsersByVetOrgID(context.TODO(), uint(uintValue))
 					if err != nil {
 						http.Error(writer, UnableToFindUser, http.StatusNotFound)
