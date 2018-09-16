@@ -362,7 +362,7 @@ var _ = Describe("UserService", func() {
 		Context("Context and VetOrg are correct", func() {
 
 			It("Returns a list of users that are part of the given VetOrg", func() {
-				users, err := userService.FindUsersByVetOrg(context.TODO(), vetOrg)
+				users, err := userService.FindUsersByVetOrgID(context.TODO(), vetOrg.ID)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(users).NotTo(BeNil())
 				Expect(users).To(HaveLen(1))
@@ -374,7 +374,7 @@ var _ = Describe("UserService", func() {
 		Context("VetOrg provided but Context missing", func() {
 
 			It("Returns and error", func() {
-				users, err := userService.FindUsersByVetOrg(nil, vetOrg)
+				users, err := userService.FindUsersByVetOrgID(nil, vetOrg.ID)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(Equal(MissingContext))
 				Expect(users).To(BeNil())
@@ -384,7 +384,7 @@ var _ = Describe("UserService", func() {
 		Context("Context provided but VetOrg lacks ID", func() {
 
 			It("Returns an error", func() {
-				users, err := userService.FindUsersByVetOrg(context.TODO(), model.VetOrg{})
+				users, err := userService.FindUsersByVetOrgID(context.TODO(), uint(0))
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(Equal(VetOrgRequired))
 				Expect(users).To(BeNil())
@@ -398,7 +398,7 @@ var _ = Describe("UserService", func() {
 			})
 
 			It("Returns an error", func() {
-				users, err := userService.FindUsersByVetOrg(context.TODO(), vetOrg)
+				users, err := userService.FindUsersByVetOrgID(context.TODO(), vetOrg.ID)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(Equal("BAM!"))
 				Expect(users).To(BeNil())
