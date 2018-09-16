@@ -10,12 +10,14 @@ import (
 	"github.com/jmelchio/vetlab/service"
 )
 
-var err error
-var database *gorm.DB
-var userHandler http.Handler
+var (
+	err         error
+	database    *gorm.DB
+	userHandler http.Handler
+)
 
 func Run() {
-	database, err = gorm.Open("postgres", "host=localhost", "user=postgres", "sslmode=disable")
+	database, err = gorm.Open("postgres", "host=localhost user=postgres sslmode=disable")
 	if err != nil {
 		panic(fmt.Sprintf("Unable to connect to database: %s", err.Error()))
 	}
@@ -26,7 +28,7 @@ func Run() {
 	if err != nil {
 		panic(fmt.Sprintf("Unable to create the user handler: %s", err.Error()))
 	}
-	http.Handle("", userHandler)
+	http.Handle("/", userHandler)
 
 	http.ListenAndServe(":8080", nil)
 }

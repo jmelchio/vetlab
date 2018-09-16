@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/jmelchio/vetlab/vetlabcmd"
 
 func main() {
-	fmt.Println("Ze main thang")
+	vetlabcmd.Run()
 }
