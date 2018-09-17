@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -84,7 +85,9 @@ func (userServer *UserServer) CreateUser(writer http.ResponseWriter, request *ht
 	}
 
 	writer.WriteHeader(http.StatusCreated)
-	json.NewEncoder(writer).Encode(newUser)
+	if err := json.NewEncoder(writer).Encode(newUser); err != nil {
+		log.Printf("Problem encoding new user: %s", err.Error())
+	}
 }
 
 func (userServer *UserServer) UpdateUser(writer http.ResponseWriter, request *http.Request) {
@@ -112,7 +115,9 @@ func (userServer *UserServer) UpdateUser(writer http.ResponseWriter, request *ht
 	}
 
 	writer.WriteHeader(http.StatusOK)
-	json.NewEncoder(writer).Encode(newUser)
+	if err := json.NewEncoder(writer).Encode(newUser); err != nil {
+		log.Printf("Problem encoding new user: %s", err.Error())
+	}
 }
 
 func (userServer *UserServer) DeleteUser(writer http.ResponseWriter, request *http.Request) {
@@ -167,7 +172,9 @@ func (userServer *UserServer) Login(writer http.ResponseWriter, request *http.Re
 	}
 
 	writer.WriteHeader(http.StatusOK)
-	json.NewEncoder(writer).Encode(loginUser)
+	if err := json.NewEncoder(writer).Encode(loginUser); err != nil {
+		log.Printf("Problem encoding login user: %s", err.Error())
+	}
 }
 
 func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http.Request) {
@@ -193,7 +200,9 @@ func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http
 					return
 				}
 				writer.WriteHeader(http.StatusOK)
-				json.NewEncoder(writer).Encode(foundUser)
+				if err := json.NewEncoder(writer).Encode(foundUser); err != nil {
+					log.Printf("Problem encoding found user: %s", err.Error())
+				}
 				return
 			case "user_id":
 				if uintValue, err := strconv.ParseUint(valueFound, 10, 32); err == nil {
@@ -203,7 +212,9 @@ func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http
 						return
 					}
 					writer.WriteHeader(http.StatusOK)
-					json.NewEncoder(writer).Encode(foundUser)
+					if err := json.NewEncoder(writer).Encode(foundUser); err != nil {
+						log.Printf("Problem encoding found user: %s", err.Error())
+					}
 					return
 				}
 				http.Error(writer, NoParamsFound, http.StatusBadRequest)
@@ -216,7 +227,9 @@ func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http
 						return
 					}
 					writer.WriteHeader(http.StatusOK)
-					json.NewEncoder(writer).Encode(foundUsers)
+					if err := json.NewEncoder(writer).Encode(foundUsers); err != nil {
+						log.Printf("Problem encoding found user: %s", err.Error())
+					}
 					return
 				}
 				http.Error(writer, NoParamsFound, http.StatusBadRequest)
