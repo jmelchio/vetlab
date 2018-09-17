@@ -109,7 +109,7 @@ func (userService User) Login(ctx context.Context, userName string, password str
 	return user, nil
 }
 
-// FindUsersByVetOrg attempts to find users by the veterinary organization
+// FindUsersByVetOrgID attempts to find users by the veterinary organization
 func (userService User) FindUsersByVetOrgID(ctx context.Context, vetOrgID uint) ([]model.User, error) {
 	if ctx == nil {
 		return nil, errors.New(MissingContext)

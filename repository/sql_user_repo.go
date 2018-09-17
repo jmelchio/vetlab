@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/jinzhu/gorm"
+	// import the proper dialect for Gorm
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/jmelchio/vetlab/model"
 )
