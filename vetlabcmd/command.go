@@ -6,6 +6,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/jmelchio/vetlab/api"
+	"github.com/jmelchio/vetlab/model"
 	"github.com/jmelchio/vetlab/repository"
 	"github.com/jmelchio/vetlab/service"
 )
@@ -21,6 +22,8 @@ func Run() {
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %s", err.Error())
 	}
+
+	database.AutoMigrate(&model.User{})
 
 	userRepo := repository.SQLUserRepo{Database: database}
 	userService := service.User{UserRepo: userRepo}
