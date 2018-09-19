@@ -26,10 +26,26 @@ func (sqlUserRepo SQLUserRepo) Create(user *model.User) error {
 }
 
 // Update modifies a User row in the sql datastore
+// If the password is less than 50 characters long it's probably not hashed and
+// should therefore not be saved to the database
 func (sqlUserRepo SQLUserRepo) Update(user *model.User) error {
 	if !sqlUserRepo.Database.NewRecord(user) {
-		if err := sqlUserRepo.Database.Save(user).Error; err != nil {
-			return err
+		if len(user.PasswordHash) < 25 {
+			if err := sqlUserRepo.Database.Model(user).Updates(
+				model.User{
+					UserName:  user.UserName,
+					FirstName: user.FirstName,
+					LastName:  user.LastName,
+					Email:     user.Email,
+					OrgID:     user.OrgID,
+					AdminUser: user.AdminUser,
+				}).Error; err != nil {
+				return err
+			}
+		} else {
+			if err := sqlUserRepo.Database.Save(user).Error; err != nil {
+				return err
+			}
 		}
 		return nil
 	}

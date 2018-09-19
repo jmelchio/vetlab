@@ -100,10 +100,32 @@ var _ = Describe("SqlUserRepo", func() {
 				Expect(userOne.ID).NotTo(Equal(uint(0)))
 			})
 
-			It("It updates the user record and returns updated user", func() {
-				userOne.UserName = "new_user_name"
-				err = userRepo.Update(&userOne)
-				Expect(err).NotTo(HaveOccurred())
+			Context("When the updated password is less than 50 characters", func() {
+
+				It("It updates the user record and returns updated user with unchanged password", func() {
+					userOne.UserName = "new_user_name"
+					userOne.PasswordHash = "short_password"
+					err = userRepo.Update(&userOne)
+					Expect(err).NotTo(HaveOccurred())
+					userFound, ferr := userRepo.GetByID(userOne.ID)
+					Expect(ferr).NotTo(HaveOccurred())
+					Expect(userFound.PasswordHash).To(Equal("want_some_hash?"))
+					Expect(userFound.UserName).To(Equal(userOne.UserName))
+				})
+			})
+
+			Context("When the updated password is more than 50 characters", func() {
+
+				It("It updates the user record and returns updated user with unchanged password", func() {
+					userOne.UserName = "new_user_name"
+					userOne.PasswordHash = "long_password_of_more_than_fifty_characters_so_that_its"
+					err = userRepo.Update(&userOne)
+					Expect(err).NotTo(HaveOccurred())
+					userFound, ferr := userRepo.GetByID(userOne.ID)
+					Expect(ferr).NotTo(HaveOccurred())
+					Expect(userFound.PasswordHash).To(Equal(userOne.PasswordHash))
+					Expect(userFound.UserName).To(Equal(userOne.UserName))
+				})
 			})
 		})
 
