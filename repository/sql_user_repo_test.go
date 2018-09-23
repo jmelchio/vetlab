@@ -181,7 +181,10 @@ var _ = Describe("SqlUserRepo", func() {
 			It("Deletes the record and returns no error", func() {
 				err = userRepo.Delete(&userOne)
 				Expect(err).NotTo(HaveOccurred())
-				// Todo: need to fetch and see if it finds in DB
+				var foundUser *model.User
+				foundUser, err = userRepo.GetByID(userOne.ID)
+				Expect(err).To(HaveOccurred())
+				Expect(foundUser).To(BeNil())
 			})
 		})
 	})
