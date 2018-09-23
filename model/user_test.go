@@ -19,13 +19,18 @@ var _ = Describe("User", func() {
 		)
 
 		BeforeEach(func() {
+			userName := "some-user-name"
+			firstName := "some-first-name"
+			lastName := "some-last-name"
+			email := "user@server.com"
+			passwordHash := "some-password-hashed"
 			goUser = User{
 				ID:           12345,
-				UserName:     "some-user-name",
-				FirstName:    "some-first-name",
-				LastName:     "some-last-name",
-				Email:        "user@server.com",
-				PasswordHash: "some-password-hashed",
+				UserName:     &userName,
+				FirstName:    &firstName,
+				LastName:     &lastName,
+				Email:        &email,
+				PasswordHash: &passwordHash,
 				OrgID:        12345,
 				AdminUser:    false,
 			}

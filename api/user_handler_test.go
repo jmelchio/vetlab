@@ -43,12 +43,17 @@ var _ = Describe("UserHandler", func() {
 		)
 
 		BeforeEach(func() {
+			userName := "user_name"
+			firstName := "first_name"
+			lastName := "lastName"
+			email := "some_email"
+			passwordHash := "some_hash"
 			createUser = model.User{
-				UserName:     "user_name",
-				FirstName:    "first_name",
-				LastName:     "last_name",
-				Email:        "some_email",
-				PasswordHash: "some_hash",
+				UserName:     &userName,
+				FirstName:    &firstName,
+				LastName:     &lastName,
+				Email:        &email,
+				PasswordHash: &passwordHash,
 				OrgID:        uint(12345),
 				AdminUser:    false,
 			}
@@ -145,13 +150,18 @@ var _ = Describe("UserHandler", func() {
 		)
 
 		BeforeEach(func() {
+			userName := "user_name"
+			firstName := "first_name"
+			lastName := "last_name"
+			email := "some_email"
+			passwordHash := "some_hash"
 			updateUser = model.User{
 				ID:           uint(12345),
-				UserName:     "user_name",
-				FirstName:    "first_name",
-				LastName:     "last_name",
-				Email:        "some_email",
-				PasswordHash: "some_hash",
+				UserName:     &userName,
+				FirstName:    &firstName,
+				LastName:     &lastName,
+				Email:        &email,
+				PasswordHash: &passwordHash,
 				OrgID:        uint(12345),
 				AdminUser:    false,
 			}
@@ -247,13 +257,18 @@ var _ = Describe("UserHandler", func() {
 		)
 
 		BeforeEach(func() {
+			userName := "user_name"
+			firstName := "first_name"
+			lastName := "last_name"
+			email := "some_email"
+			passwordHash := "some_hash"
 			deleteUser = model.User{
 				ID:           uint(12345),
-				UserName:     "user_name",
-				FirstName:    "first_name",
-				LastName:     "last_name",
-				Email:        "some_email",
-				PasswordHash: "some_hash",
+				UserName:     &userName,
+				FirstName:    &firstName,
+				LastName:     &lastName,
+				Email:        &email,
+				PasswordHash: &passwordHash,
 				OrgID:        uint(12345),
 				AdminUser:    false,
 			}
@@ -346,13 +361,19 @@ var _ = Describe("UserHandler", func() {
 				Password: "some_password",
 			}
 
+			userName := "user_name"
+			firstName := "first_name"
+			lastName := "last_name"
+			email := "some_email"
+			passwordHash := "some_hash"
+
 			loginUser = model.User{
 				ID:           uint(12345),
-				UserName:     "user_name",
-				FirstName:    "first_name",
-				LastName:     "lastName",
-				Email:        "some_email",
-				PasswordHash: "some_hash",
+				UserName:     &userName,
+				FirstName:    &firstName,
+				LastName:     &lastName,
+				Email:        &email,
+				PasswordHash: &passwordHash,
 				OrgID:        uint(12345),
 				AdminUser:    false,
 			}
@@ -451,13 +472,19 @@ var _ = Describe("UserHandler", func() {
 		)
 
 		BeforeEach(func() {
+			suserName := "user_name"
+			firstName := "first_name"
+			lastName := "last_name"
+			email := "some_email"
+			passwordHash := "some_hash"
+
 			sampleUser = model.User{
 				ID:           uint(12345),
-				UserName:     "user_name",
-				FirstName:    "first_name",
-				LastName:     "lastName",
-				Email:        "some_email",
-				PasswordHash: "some_hash",
+				UserName:     &suserName,
+				FirstName:    &firstName,
+				LastName:     &lastName,
+				Email:        &email,
+				PasswordHash: &passwordHash,
 				OrgID:        uint(12345),
 				AdminUser:    false,
 			}

@@ -18,18 +18,28 @@ var _ = Describe("Vetorg", func() {
 		)
 
 		BeforeEach(func() {
+			orgName := "some-org-name"
+			street := "some-street"
+			houseNumber := "some-house-number"
+			city := "some-city"
+			province := "some-province"
+			country := "some-country"
+			postalCode := "some-postal-code"
+			email := "person@domain.com"
+			phone := "some-phone"
+			fax := "shadow-fax"
 			goVetorg = VetOrg{
 				ID:          12345,
-				OrgName:     "some-org-name",
-				Street:      "some-street",
-				HouseNumber: "some-house-number",
-				City:        "some-city",
-				Province:    "some-province",
-				Country:     "some-country",
-				PostalCode:  "some-postal-code",
-				Email:       "person@domain.com",
-				Phone:       "some-phone",
-				Fax:         "shadow-fax",
+				OrgName:     &orgName,
+				Street:      &street,
+				HouseNumber: &houseNumber,
+				City:        &city,
+				Province:    &province,
+				Country:     &country,
+				PostalCode:  &postalCode,
+				Email:       &email,
+				Phone:       &phone,
+				Fax:         &fax,
 			}
 			jsonVetorg = `{"id":12345,"org_name":"some-org-name","street":"some-street","house_number":"some-house-number","city":"some-city","province":"some-province","country":"some-country","postal_code":"some-postal-code","email":"person@domain.com","phone":"some-phone","fax":"shadow-fax"}`
 		})

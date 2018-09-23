@@ -30,7 +30,7 @@ func (sqlUserRepo SQLUserRepo) Create(user *model.User) error {
 // should therefore not be saved to the database
 func (sqlUserRepo SQLUserRepo) Update(user *model.User) error {
 	if !sqlUserRepo.Database.NewRecord(user) {
-		if len(user.PasswordHash) < 25 {
+		if len(*user.PasswordHash) < 25 {
 			if err := sqlUserRepo.Database.Model(user).Updates(
 				model.User{
 					UserName:  user.UserName,

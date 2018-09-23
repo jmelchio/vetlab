@@ -17,22 +17,33 @@ import (
 var _ = Describe("UserService", func() {
 
 	var (
-		userService User
-		userRepo    *servicefakes.FakeUserRepo
-		user        model.User
+		userService  User
+		userRepo     *servicefakes.FakeUserRepo
+		user         model.User
+		userName     string
+		firstName    string
+		lastName     string
+		email        string
+		passwordHash string
 	)
 
 	BeforeEach(func() {
 		userRepo = new(servicefakes.FakeUserRepo)
 		userService = User{UserRepo: userRepo}
 
+		userName = "some-name"
+		firstName = "first-name"
+		lastName = "last-name"
+		email = "email@domain.com"
+		passwordHash = "password-hash"
+
 		user = model.User{
-			UserName:     "some-name",
-			FirstName:    "first-name",
-			LastName:     "last-name",
-			Email:        "email@domain.com",
-			PasswordHash: "password-hash",
-			OrgID:        12345,
+			UserName:     &userName,
+			FirstName:    &firstName,
+			LastName:     &lastName,
+			Email:        &email,
+			PasswordHash: &passwordHash,
+			OrgID:        uint(12345),
 			AdminUser:    false,
 		}
 	})
@@ -56,7 +67,7 @@ var _ = Describe("UserService", func() {
 		Context("User password is too short but we have a valid context", func() {
 
 			BeforeEach(func() {
-				user.PasswordHash = "uhSeven"
+				*user.PasswordHash = "uhSeven"
 			})
 
 			It("Returns an error and does not call UserRepo.Create", func() {
@@ -195,7 +206,7 @@ var _ = Describe("UserService", func() {
 				updatedUser, err := userService.UpdatePassword(context.TODO(), user, newPwd)
 				Expect(err).ToNot(HaveOccurred())
 				Expect(userRepo.UpdateCallCount()).To(Equal(1))
-				err = bcrypt.CompareHashAndPassword([]byte(updatedUser.PasswordHash), []byte(newPwd))
+				err = bcrypt.CompareHashAndPassword([]byte(*updatedUser.PasswordHash), []byte(newPwd))
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
@@ -246,13 +257,13 @@ var _ = Describe("UserService", func() {
 	Describe("Login", func() {
 
 		var (
-			userName   string
+			luserName  string
 			password   string
 			sampleUser model.User
 		)
 
 		BeforeEach(func() {
-			userName = "user"
+			luserName = "user"
 			password = "somepwdd"
 		})
 
@@ -260,16 +271,17 @@ var _ = Describe("UserService", func() {
 
 			BeforeEach(func() {
 				passwordHash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+				stringPasswordHash := string(passwordHash)
 				sampleUser = model.User{
-					ID:           12345,
-					UserName:     userName,
-					PasswordHash: string(passwordHash),
+					ID:           uint(12345),
+					UserName:     &luserName,
+					PasswordHash: &stringPasswordHash,
 				}
 				userRepo.GetByUserNameReturns(&sampleUser, nil)
 			})
 
 			It("Returns an authenticated user", func() {
-				user, err := userService.Login(context.TODO(), userName, password)
+				user, err := userService.Login(context.TODO(), luserName, password)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(user).NotTo(BeNil())
 				Expect(user.ID).To(Equal(sampleUser.ID))
@@ -280,7 +292,7 @@ var _ = Describe("UserService", func() {
 		Context("No context provided", func() {
 
 			It("Returns an error", func() {
-				user, err := userService.Login(nil, userName, password)
+				user, err := userService.Login(nil, luserName, password)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(Equal(MissingContext))
 				Expect(user).To(BeNil())
@@ -303,10 +315,11 @@ var _ = Describe("UserService", func() {
 
 			BeforeEach(func() {
 				passwordHash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+				stringPasswordHash := string(passwordHash)
 				sampleUser = model.User{
-					ID:           12345,
-					UserName:     userName,
-					PasswordHash: string(passwordHash),
+					ID:           uint(12345),
+					UserName:     &luserName,
+					PasswordHash: &stringPasswordHash,
 				}
 				userRepo.GetByUserNameReturns(&sampleUser, nil)
 			})
@@ -339,21 +352,28 @@ var _ = Describe("UserService", func() {
 	Describe("Find a user by veterinary practice", func() {
 
 		var (
-			vetOrg model.VetOrg
-			user   model.User
+			vetOrg     model.VetOrg
+			user       model.User
+			fUserName  string
+			fFirstName string
+			fLastName  string
 		)
 
 		BeforeEach(func() {
 			vetOrg = model.VetOrg{
-				ID: 12345,
+				ID: uint(12345),
 			}
 
+			fUserName = "some-user-name"
+			fFirstName = "john"
+			fLastName = "doe"
+
 			user = model.User{
-				ID:        12345,
-				UserName:  "some-user-name",
-				FirstName: "john",
-				LastName:  "doe",
-				OrgID:     12345,
+				ID:        uint(12345),
+				UserName:  &fUserName,
+				FirstName: &fFirstName,
+				LastName:  &fLastName,
+				OrgID:     uint(12345),
 			}
 
 			userRepo.GetByOrgIDReturns([]model.User{user}, nil)
@@ -409,17 +429,23 @@ var _ = Describe("UserService", func() {
 	Describe("Find a user by username", func() {
 
 		var (
-			user     model.User
-			userName string
+			user       model.User
+			userName   string
+			fUserName  string
+			fFirstName string
+			fLastName  string
 		)
 
 		BeforeEach(func() {
+			fUserName = "some-user-name"
+			fFirstName = "john"
+			fLastName = "doe"
+
 			user = model.User{
-				ID:        12345,
-				UserName:  "some-user-name",
-				FirstName: "john",
-				LastName:  "doe",
-				OrgID:     12345,
+				UserName:  &fUserName,
+				FirstName: &fFirstName,
+				LastName:  &fLastName,
+				OrgID:     uint(12345),
 			}
 
 			userName = "some-user-name"
@@ -434,7 +460,7 @@ var _ = Describe("UserService", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(user).NotTo(BeNil())
 				Expect(userRepo.GetByUserNameCallCount()).To(Equal(1))
-				Expect(foundUser.UserName).To(Equal(userName))
+				Expect(*foundUser.UserName).To(Equal(userName))
 			})
 		})
 
@@ -479,17 +505,24 @@ var _ = Describe("UserService", func() {
 	Describe("Find a user by ID", func() {
 
 		var (
-			user   model.User
-			userID uint
+			user       model.User
+			userID     uint
+			fUserName  string
+			fFirstName string
+			fLastName  string
 		)
 
 		BeforeEach(func() {
+			fUserName = "some-user-name"
+			fFirstName = "john"
+			fLastName = "doe"
+
 			user = model.User{
-				ID:        12345,
-				UserName:  "some-user-name",
-				FirstName: "john",
-				LastName:  "doe",
-				OrgID:     12345,
+				ID:        uint(12345),
+				UserName:  &fUserName,
+				FirstName: &fFirstName,
+				LastName:  &fLastName,
+				OrgID:     uint(12345),
 			}
 
 			userID = 12345

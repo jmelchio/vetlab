@@ -19,13 +19,14 @@ var _ = Describe("DiagnosticRequest", func() {
 		)
 
 		BeforeEach(func() {
+			description := "some-description"
 			goDiagnosticRequest = DiagnosticRequest{
 				ID:          12345,
 				OrgID:       12345,
 				CustomerID:  12345,
 				UserID:      12345,
-				Date:        time.Time{},
-				Description: "some-description",
+				Date:        &time.Time{},
+				Description: &description,
 			}
 			jsonDiagnosticRequest = `{"id":12345,"org_id":12345,"customer_id":12345,"user_id":12345,"date":"0001-01-01T00:00:00Z","description":"some-description"}`
 		})
