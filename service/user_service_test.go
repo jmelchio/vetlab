@@ -43,7 +43,7 @@ var _ = Describe("UserService", func() {
 			LastName:     &lastName,
 			Email:        &email,
 			PasswordHash: &passwordHash,
-			OrgID:        uint(12345),
+			VetOrgID:     uint(12345),
 			AdminUser:    false,
 		}
 	})
@@ -373,10 +373,10 @@ var _ = Describe("UserService", func() {
 				UserName:  &fUserName,
 				FirstName: &fFirstName,
 				LastName:  &fLastName,
-				OrgID:     uint(12345),
+				VetOrgID:  uint(12345),
 			}
 
-			userRepo.GetByOrgIDReturns([]model.User{user}, nil)
+			userRepo.GetByVetOrgIDReturns([]model.User{user}, nil)
 		})
 
 		Context("Context and VetOrg are correct", func() {
@@ -386,8 +386,8 @@ var _ = Describe("UserService", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(users).NotTo(BeNil())
 				Expect(users).To(HaveLen(1))
-				Expect(userRepo.GetByOrgIDCallCount()).To(Equal(1))
-				Expect(users[0].OrgID).To(Equal(vetOrg.ID))
+				Expect(userRepo.GetByVetOrgIDCallCount()).To(Equal(1))
+				Expect(users[0].VetOrgID).To(Equal(vetOrg.ID))
 			})
 		})
 
@@ -414,7 +414,7 @@ var _ = Describe("UserService", func() {
 		Context("Context and Vetorg are correct but Repo returns error", func() {
 
 			BeforeEach(func() {
-				userRepo.GetByOrgIDReturns(nil, errors.New("BAM!"))
+				userRepo.GetByVetOrgIDReturns(nil, errors.New("BAM!"))
 			})
 
 			It("Returns an error", func() {
@@ -445,7 +445,7 @@ var _ = Describe("UserService", func() {
 				UserName:  &fUserName,
 				FirstName: &fFirstName,
 				LastName:  &fLastName,
-				OrgID:     uint(12345),
+				VetOrgID:  uint(12345),
 			}
 
 			userName = "some-user-name"
@@ -522,7 +522,7 @@ var _ = Describe("UserService", func() {
 				UserName:  &fUserName,
 				FirstName: &fFirstName,
 				LastName:  &fLastName,
-				OrgID:     uint(12345),
+				VetOrgID:  uint(12345),
 			}
 
 			userID = 12345

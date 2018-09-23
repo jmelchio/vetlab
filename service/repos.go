@@ -10,7 +10,7 @@ type UserRepo interface {
 	Update(*model.User) error
 	Delete(*model.User) error
 	GetByID(uint) (*model.User, error)
-	GetByOrgID(uint) ([]model.User, error)
+	GetByVetOrgID(uint) ([]model.User, error)
 	GetByUserName(string) (*model.User, error)
 }
 
@@ -22,7 +22,7 @@ type DiagnosticReportRepo interface {
 	Update(*model.DiagnosticReport) error
 	Delete(string) error
 	GetByID(uint) (*model.DiagnosticReport, error)
-	GetByOrgID(uint) ([]model.DiagnosticReport, error)
+	GetByVetOrgID(uint) ([]model.DiagnosticReport, error)
 	GetByUserID(uint) ([]model.DiagnosticRequest, error)
 }
 
@@ -34,7 +34,7 @@ type DiagnosticRequestRepo interface {
 	Update(*model.DiagnosticRequest) error
 	Delete(*model.DiagnosticRequest) error
 	GetByID(uint) (*model.DiagnosticRequest, error)
-	GetByOrgID(uint) ([]model.DiagnosticRequest, error)
+	GetByVetOrgID(uint) ([]model.DiagnosticRequest, error)
 	GetByUserID(uint) ([]model.DiagnosticRequest, error)
 }
 

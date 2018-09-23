@@ -55,16 +55,16 @@ type FakeDiagnosticReportRepo struct {
 		result1 *model.DiagnosticReport
 		result2 error
 	}
-	GetByOrgIDStub        func(uint) ([]model.DiagnosticReport, error)
-	getByOrgIDMutex       sync.RWMutex
-	getByOrgIDArgsForCall []struct {
+	GetByVetOrgIDStub        func(uint) ([]model.DiagnosticReport, error)
+	getByVetOrgIDMutex       sync.RWMutex
+	getByVetOrgIDArgsForCall []struct {
 		arg1 uint
 	}
-	getByOrgIDReturns struct {
+	getByVetOrgIDReturns struct {
 		result1 []model.DiagnosticReport
 		result2 error
 	}
-	getByOrgIDReturnsOnCall map[int]struct {
+	getByVetOrgIDReturnsOnCall map[int]struct {
 		result1 []model.DiagnosticReport
 		result2 error
 	}
@@ -280,52 +280,52 @@ func (fake *FakeDiagnosticReportRepo) GetByIDReturnsOnCall(i int, result1 *model
 	}{result1, result2}
 }
 
-func (fake *FakeDiagnosticReportRepo) GetByOrgID(arg1 uint) ([]model.DiagnosticReport, error) {
-	fake.getByOrgIDMutex.Lock()
-	ret, specificReturn := fake.getByOrgIDReturnsOnCall[len(fake.getByOrgIDArgsForCall)]
-	fake.getByOrgIDArgsForCall = append(fake.getByOrgIDArgsForCall, struct {
+func (fake *FakeDiagnosticReportRepo) GetByVetOrgID(arg1 uint) ([]model.DiagnosticReport, error) {
+	fake.getByVetOrgIDMutex.Lock()
+	ret, specificReturn := fake.getByVetOrgIDReturnsOnCall[len(fake.getByVetOrgIDArgsForCall)]
+	fake.getByVetOrgIDArgsForCall = append(fake.getByVetOrgIDArgsForCall, struct {
 		arg1 uint
 	}{arg1})
-	fake.recordInvocation("GetByOrgID", []interface{}{arg1})
-	fake.getByOrgIDMutex.Unlock()
-	if fake.GetByOrgIDStub != nil {
-		return fake.GetByOrgIDStub(arg1)
+	fake.recordInvocation("GetByVetOrgID", []interface{}{arg1})
+	fake.getByVetOrgIDMutex.Unlock()
+	if fake.GetByVetOrgIDStub != nil {
+		return fake.GetByVetOrgIDStub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.getByOrgIDReturns.result1, fake.getByOrgIDReturns.result2
+	return fake.getByVetOrgIDReturns.result1, fake.getByVetOrgIDReturns.result2
 }
 
-func (fake *FakeDiagnosticReportRepo) GetByOrgIDCallCount() int {
-	fake.getByOrgIDMutex.RLock()
-	defer fake.getByOrgIDMutex.RUnlock()
-	return len(fake.getByOrgIDArgsForCall)
+func (fake *FakeDiagnosticReportRepo) GetByVetOrgIDCallCount() int {
+	fake.getByVetOrgIDMutex.RLock()
+	defer fake.getByVetOrgIDMutex.RUnlock()
+	return len(fake.getByVetOrgIDArgsForCall)
 }
 
-func (fake *FakeDiagnosticReportRepo) GetByOrgIDArgsForCall(i int) uint {
-	fake.getByOrgIDMutex.RLock()
-	defer fake.getByOrgIDMutex.RUnlock()
-	return fake.getByOrgIDArgsForCall[i].arg1
+func (fake *FakeDiagnosticReportRepo) GetByVetOrgIDArgsForCall(i int) uint {
+	fake.getByVetOrgIDMutex.RLock()
+	defer fake.getByVetOrgIDMutex.RUnlock()
+	return fake.getByVetOrgIDArgsForCall[i].arg1
 }
 
-func (fake *FakeDiagnosticReportRepo) GetByOrgIDReturns(result1 []model.DiagnosticReport, result2 error) {
-	fake.GetByOrgIDStub = nil
-	fake.getByOrgIDReturns = struct {
+func (fake *FakeDiagnosticReportRepo) GetByVetOrgIDReturns(result1 []model.DiagnosticReport, result2 error) {
+	fake.GetByVetOrgIDStub = nil
+	fake.getByVetOrgIDReturns = struct {
 		result1 []model.DiagnosticReport
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeDiagnosticReportRepo) GetByOrgIDReturnsOnCall(i int, result1 []model.DiagnosticReport, result2 error) {
-	fake.GetByOrgIDStub = nil
-	if fake.getByOrgIDReturnsOnCall == nil {
-		fake.getByOrgIDReturnsOnCall = make(map[int]struct {
+func (fake *FakeDiagnosticReportRepo) GetByVetOrgIDReturnsOnCall(i int, result1 []model.DiagnosticReport, result2 error) {
+	fake.GetByVetOrgIDStub = nil
+	if fake.getByVetOrgIDReturnsOnCall == nil {
+		fake.getByVetOrgIDReturnsOnCall = make(map[int]struct {
 			result1 []model.DiagnosticReport
 			result2 error
 		})
 	}
-	fake.getByOrgIDReturnsOnCall[i] = struct {
+	fake.getByVetOrgIDReturnsOnCall[i] = struct {
 		result1 []model.DiagnosticReport
 		result2 error
 	}{result1, result2}
@@ -393,8 +393,8 @@ func (fake *FakeDiagnosticReportRepo) Invocations() map[string][][]interface{} {
 	defer fake.deleteMutex.RUnlock()
 	fake.getByIDMutex.RLock()
 	defer fake.getByIDMutex.RUnlock()
-	fake.getByOrgIDMutex.RLock()
-	defer fake.getByOrgIDMutex.RUnlock()
+	fake.getByVetOrgIDMutex.RLock()
+	defer fake.getByVetOrgIDMutex.RUnlock()
 	fake.getByUserIDMutex.RLock()
 	defer fake.getByUserIDMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}

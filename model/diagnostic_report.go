@@ -6,7 +6,7 @@ import "time"
 type DiagnosticReport struct {
 	ID         uint       `json:"id" gorm:"primary_key"`
 	RequestID  uint       `json:"request_id"`
-	OrgID      uint       `json:"org_id"`
+	VetOrgID   uint       `json:"vet_org_id"`
 	CustomerID uint       `json:"customer_id"`
 	UserID     uint       `json:"user_id"`
 	Date       *time.Time `json:"date"`

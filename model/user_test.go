@@ -25,16 +25,16 @@ var _ = Describe("User", func() {
 			email := "user@server.com"
 			passwordHash := "some-password-hashed"
 			goUser = User{
-				ID:           12345,
+				ID:           uint(12345),
 				UserName:     &userName,
 				FirstName:    &firstName,
 				LastName:     &lastName,
 				Email:        &email,
 				PasswordHash: &passwordHash,
-				OrgID:        12345,
+				VetOrgID:     uint(12345),
 				AdminUser:    false,
 			}
-			jsonUser = `{"id":12345,"user_name":"some-user-name","first_name":"some-first-name","last_name":"some-last-name","email":"user@server.com","password_hash":"some-password-hashed","org_id":12345,"admin_user":false}`
+			jsonUser = `{"id":12345,"user_name":"some-user-name","first_name":"some-first-name","last_name":"some-last-name","email":"user@server.com","password_hash":"some-password-hashed","vet_org_id":12345,"admin_user":false}`
 		})
 
 		Context("From Golang to Json", func() {

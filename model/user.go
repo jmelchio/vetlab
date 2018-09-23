@@ -8,6 +8,6 @@ type User struct {
 	LastName     *string `json:"last_name"`
 	Email        *string `json:"email"`
 	PasswordHash *string `json:"password_hash"`
-	OrgID        uint    `json:"org_id"`
+	VetOrgID     uint    `json:"vet_org_id"`
 	AdminUser    bool    `json:"admin_user"`
 }

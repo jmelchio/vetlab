@@ -22,16 +22,16 @@ var _ = Describe("DiagnosticReport", func() {
 			reportBody := "some-report-body"
 			reportFile := "some-report-file"
 			goDiagnosticReport = DiagnosticReport{
-				ID:         12345,
-				RequestID:  12345,
-				OrgID:      12345,
-				CustomerID: 12345,
-				UserID:     12345,
+				ID:         uint(12345),
+				RequestID:  uint(12345),
+				VetOrgID:   uint(12345),
+				CustomerID: uint(12345),
+				UserID:     uint(12345),
 				Date:       &time.Time{},
 				ReportBody: &reportBody,
 				ReportFile: &reportFile,
 			}
-			jsonDiagnosticReport = `{"id":12345,"request_id":12345,"org_id":12345,"customer_id":12345,"user_id":12345,"date":"0001-01-01T00:00:00Z","report_body":"some-report-body","report_file":"some-report-file"}`
+			jsonDiagnosticReport = `{"id":12345,"request_id":12345,"vet_org_id":12345,"customer_id":12345,"user_id":12345,"date":"0001-01-01T00:00:00Z","report_body":"some-report-body","report_file":"some-report-file"}`
 		})
 
 		Context("From Golang to Json", func() {

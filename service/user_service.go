@@ -117,7 +117,7 @@ func (userService User) FindUsersByVetOrgID(ctx context.Context, vetOrgID uint) 
 	if vetOrgID == 0 {
 		return nil, errors.New(VetOrgRequired)
 	}
-	return userService.UserRepo.GetByOrgID(vetOrgID)
+	return userService.UserRepo.GetByVetOrgID(vetOrgID)
 }
 
 // FindUserByUserName attempts to find users by their userName

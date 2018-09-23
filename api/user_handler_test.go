@@ -60,7 +60,7 @@ var _ = Describe("UserHandler", func() {
 				LastName:     &lastName,
 				Email:        &email,
 				PasswordHash: &passwordHash,
-				OrgID:        uint(12345),
+				VetOrgID:     uint(12345),
 				AdminUser:    false,
 			}
 		})
@@ -163,7 +163,7 @@ var _ = Describe("UserHandler", func() {
 				LastName:     &lastName,
 				Email:        &email,
 				PasswordHash: &passwordHash,
-				OrgID:        uint(12345),
+				VetOrgID:     uint(12345),
 				AdminUser:    false,
 			}
 		})
@@ -265,7 +265,7 @@ var _ = Describe("UserHandler", func() {
 				LastName:     &lastName,
 				Email:        &email,
 				PasswordHash: &passwordHash,
-				OrgID:        uint(12345),
+				VetOrgID:     uint(12345),
 				AdminUser:    false,
 			}
 		})
@@ -364,7 +364,7 @@ var _ = Describe("UserHandler", func() {
 				LastName:     &lastName,
 				Email:        &email,
 				PasswordHash: &passwordHash,
-				OrgID:        uint(12345),
+				VetOrgID:     uint(12345),
 				AdminUser:    false,
 			}
 		})
@@ -468,7 +468,7 @@ var _ = Describe("UserHandler", func() {
 				LastName:     &lastName,
 				Email:        &email,
 				PasswordHash: &passwordHash,
-				OrgID:        uint(12345),
+				VetOrgID:     uint(12345),
 				AdminUser:    false,
 			}
 		})

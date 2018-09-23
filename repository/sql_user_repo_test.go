@@ -239,7 +239,7 @@ var _ = Describe("SqlUserRepo", func() {
 					LastName:     &lastName,
 					Email:        &email,
 					PasswordHash: &passwordHash,
-					OrgID:        uint(10),
+					VetOrgID:     uint(10),
 					AdminUser:    false,
 				}
 				err = userRepo.Create(&userOne)
@@ -248,11 +248,11 @@ var _ = Describe("SqlUserRepo", func() {
 			})
 
 			It("It returns the user and nil for error", func() {
-				foundUsers, err = userRepo.GetByOrgID(uint(10))
+				foundUsers, err = userRepo.GetByVetOrgID(uint(10))
 				Expect(err).NotTo(HaveOccurred())
 				Expect(foundUsers).NotTo(BeNil())
 				Expect(len(foundUsers)).To(Equal(1))
-				Expect(foundUsers[0].OrgID).To(Equal(uint(10)))
+				Expect(foundUsers[0].VetOrgID).To(Equal(uint(10)))
 				Expect(foundUsers[0].UserName).To(Equal(userOne.UserName))
 			})
 		})
@@ -265,7 +265,7 @@ var _ = Describe("SqlUserRepo", func() {
 			})
 
 			It("It returns nil for result and an error", func() {
-				foundUsers, err = userRepo.GetByOrgID(uint(10))
+				foundUsers, err = userRepo.GetByVetOrgID(uint(10))
 				Expect(err).To(HaveOccurred())
 				Expect(foundUsers).To(BeNil())
 			})

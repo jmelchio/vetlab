@@ -37,7 +37,7 @@ func (sqlUserRepo SQLUserRepo) Update(user *model.User) error {
 					FirstName: user.FirstName,
 					LastName:  user.LastName,
 					Email:     user.Email,
-					OrgID:     user.OrgID,
+					VetOrgID:  user.VetOrgID,
 					AdminUser: user.AdminUser,
 				}).Error; err != nil {
 				return err
@@ -70,11 +70,11 @@ func (sqlUserRepo SQLUserRepo) GetByID(userID uint) (*model.User, error) {
 	return &user, nil
 }
 
-// GetByOrgID fetches all users for a vet org from the sql datastore
-func (sqlUserRepo SQLUserRepo) GetByOrgID(orgID uint) ([]model.User, error) {
+// GetByVetOrgID fetches all users for a vet org from the sql datastore
+func (sqlUserRepo SQLUserRepo) GetByVetOrgID(vetOrgID uint) ([]model.User, error) {
 	var users []model.User
 
-	if err := sqlUserRepo.Database.Where("org_id = ?", orgID).Find(&users).Error; err != nil {
+	if err := sqlUserRepo.Database.Where("vet_org_id = ?", vetOrgID).Find(&users).Error; err != nil {
 		return nil, err
 	}
 	if len(users) > 0 {
