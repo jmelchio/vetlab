@@ -27,6 +27,11 @@ var _ = Describe("UserHandler", func() {
 		err              error
 		userService      *apifakes.FakeUserService
 		requestGenerator *rata.RequestGenerator
+		userName         string
+		firstName        string
+		lastName         string
+		email            string
+		passwordHash     string
 	)
 
 	BeforeEach(func() {
@@ -34,6 +39,12 @@ var _ = Describe("UserHandler", func() {
 		handler, err = NewUserHandler(userService)
 		requestGenerator = rata.NewRequestGenerator("", UserRoutes)
 		Expect(err).NotTo(HaveOccurred())
+
+		userName = "user_name"
+		firstName = "first_name"
+		lastName = "last_name"
+		email = "some_email"
+		passwordHash = "some_hash"
 	})
 
 	Describe("Create a user", func() {
@@ -43,11 +54,6 @@ var _ = Describe("UserHandler", func() {
 		)
 
 		BeforeEach(func() {
-			userName := "user_name"
-			firstName := "first_name"
-			lastName := "lastName"
-			email := "some_email"
-			passwordHash := "some_hash"
 			createUser = model.User{
 				UserName:     &userName,
 				FirstName:    &firstName,
@@ -150,11 +156,6 @@ var _ = Describe("UserHandler", func() {
 		)
 
 		BeforeEach(func() {
-			userName := "user_name"
-			firstName := "first_name"
-			lastName := "last_name"
-			email := "some_email"
-			passwordHash := "some_hash"
 			updateUser = model.User{
 				ID:           uint(12345),
 				UserName:     &userName,
@@ -257,11 +258,6 @@ var _ = Describe("UserHandler", func() {
 		)
 
 		BeforeEach(func() {
-			userName := "user_name"
-			firstName := "first_name"
-			lastName := "last_name"
-			email := "some_email"
-			passwordHash := "some_hash"
 			deleteUser = model.User{
 				ID:           uint(12345),
 				UserName:     &userName,
@@ -361,12 +357,6 @@ var _ = Describe("UserHandler", func() {
 				Password: "some_password",
 			}
 
-			userName := "user_name"
-			firstName := "first_name"
-			lastName := "last_name"
-			email := "some_email"
-			passwordHash := "some_hash"
-
 			loginUser = model.User{
 				ID:           uint(12345),
 				UserName:     &userName,
@@ -465,22 +455,15 @@ var _ = Describe("UserHandler", func() {
 	Describe("Find a user", func() {
 
 		var (
-			userName   string
 			userID     uint
 			vetOrgID   uint
 			sampleUser model.User
 		)
 
 		BeforeEach(func() {
-			suserName := "user_name"
-			firstName := "first_name"
-			lastName := "last_name"
-			email := "some_email"
-			passwordHash := "some_hash"
-
 			sampleUser = model.User{
 				ID:           uint(12345),
-				UserName:     &suserName,
+				UserName:     &userName,
 				FirstName:    &firstName,
 				LastName:     &lastName,
 				Email:        &email,
@@ -496,10 +479,8 @@ var _ = Describe("UserHandler", func() {
 
 				BeforeEach(func() {
 					userService.FindUserByUserNameReturns(&sampleUser, nil)
-					userName = "user_name"
 					recorder = httptest.NewRecorder()
 					request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
-					// request, _ := http.NewRequest("GET", "/user/find", nil)
 					q := url.Values{}
 					q.Add("user_name", userName)
 					request.URL.RawQuery = q.Encode()
@@ -525,7 +506,6 @@ var _ = Describe("UserHandler", func() {
 
 				BeforeEach(func() {
 					userService.FindUserByUserNameReturns(nil, errors.New("Whoot?"))
-					userName = "user_name"
 					recorder = httptest.NewRecorder()
 					request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
 					q := url.Values{}
@@ -612,7 +592,6 @@ var _ = Describe("UserHandler", func() {
 
 			BeforeEach(func() {
 				userService.FindUserByUserNameReturns(nil, errors.New("Whoot?"))
-				userName = "user_name"
 				recorder = httptest.NewRecorder()
 				request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
 				q := url.Values{}
