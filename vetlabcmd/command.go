@@ -23,6 +23,9 @@ func Run() {
 		log.Fatalf("Unable to connect to database: %s", err.Error())
 	}
 
+	database.AutoMigrate(&model.VetOrg{})
+	database.AutoMigrate(&model.DiagnosticReport{})
+	database.AutoMigrate(&model.DiagnosticRequest{})
 	database.AutoMigrate(&model.User{})
 
 	userRepo := repository.SQLUserRepo{Database: database}
