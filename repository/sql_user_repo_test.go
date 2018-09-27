@@ -11,14 +11,14 @@ import (
 var _ = Describe("SqlUserRepo", func() {
 
 	var (
-		userRepo     *SQLUserRepo
-		userOne      model.User
-		userTwo      model.User
-		userName     string
-		firstName    string
-		lastName     string
-		email        string
-		passwordHash string
+		userRepo  *SQLUserRepo
+		userOne   model.User
+		userTwo   model.User
+		userName  string
+		firstName string
+		lastName  string
+		email     string
+		password  string
 	)
 
 	BeforeEach(func() {
@@ -29,7 +29,7 @@ var _ = Describe("SqlUserRepo", func() {
 		firstName = "first_name"
 		lastName = "last_name"
 		email = "first.last@gmail.com"
-		passwordHash = "want_some_hash?"
+		password = "want_some_hash?"
 	})
 
 	AfterEach(func() {
@@ -53,12 +53,12 @@ var _ = Describe("SqlUserRepo", func() {
 		Context("When a username is not taken yet", func() {
 			BeforeEach(func() {
 				userOne = model.User{
-					UserName:     &userName,
-					FirstName:    &firstName,
-					LastName:     &lastName,
-					Email:        &email,
-					PasswordHash: &passwordHash,
-					AdminUser:    false,
+					UserName:  &userName,
+					FirstName: &firstName,
+					LastName:  &lastName,
+					Email:     &email,
+					Password:  &password,
+					AdminUser: false,
 				}
 				Expect(userOne.ID).To(Equal(uint(0)))
 			})
@@ -74,12 +74,12 @@ var _ = Describe("SqlUserRepo", func() {
 
 			BeforeEach(func() {
 				userOne = model.User{
-					UserName:     &userName,
-					FirstName:    &firstName,
-					LastName:     &lastName,
-					Email:        &email,
-					PasswordHash: &passwordHash,
-					AdminUser:    false,
+					UserName:  &userName,
+					FirstName: &firstName,
+					LastName:  &lastName,
+					Email:     &email,
+					Password:  &password,
+					AdminUser: false,
 				}
 				userTwo = userOne
 			})
@@ -99,12 +99,12 @@ var _ = Describe("SqlUserRepo", func() {
 
 			BeforeEach(func() {
 				userOne = model.User{
-					UserName:     &userName,
-					FirstName:    &firstName,
-					LastName:     &lastName,
-					Email:        &email,
-					PasswordHash: &passwordHash,
-					AdminUser:    false,
+					UserName:  &userName,
+					FirstName: &firstName,
+					LastName:  &lastName,
+					Email:     &email,
+					Password:  &password,
+					AdminUser: false,
 				}
 				err = userRepo.Create(&userOne)
 				Expect(err).NotTo(HaveOccurred())
@@ -115,12 +115,12 @@ var _ = Describe("SqlUserRepo", func() {
 
 				It("It updates the user record and returns updated user with unchanged password", func() {
 					*userOne.UserName = "new_user_name"
-					*userOne.PasswordHash = "short_password"
+					*userOne.Password = "short_password"
 					err = userRepo.Update(&userOne)
 					Expect(err).NotTo(HaveOccurred())
 					userFound, ferr := userRepo.GetByID(userOne.ID)
 					Expect(ferr).NotTo(HaveOccurred())
-					Expect(*userFound.PasswordHash).To(Equal("want_some_hash?"))
+					Expect(*userFound.Password).To(Equal("want_some_hash?"))
 					Expect(userFound.UserName).To(Equal(userOne.UserName))
 				})
 			})
@@ -129,12 +129,12 @@ var _ = Describe("SqlUserRepo", func() {
 
 				It("It updates the user record and returns updated user with unchanged password", func() {
 					*userOne.UserName = "new_user_name"
-					*userOne.PasswordHash = "long_password_of_more_than_fifty_characters_so_that_its"
+					*userOne.Password = "long_password_of_more_than_fifty_characters_so_that_its"
 					err = userRepo.Update(&userOne)
 					Expect(err).NotTo(HaveOccurred())
 					userFound, ferr := userRepo.GetByID(userOne.ID)
 					Expect(ferr).NotTo(HaveOccurred())
-					Expect(userFound.PasswordHash).To(Equal(userOne.PasswordHash))
+					Expect(userFound.Password).To(Equal(userOne.Password))
 					Expect(userFound.UserName).To(Equal(userOne.UserName))
 				})
 			})
@@ -144,12 +144,12 @@ var _ = Describe("SqlUserRepo", func() {
 
 			BeforeEach(func() {
 				userOne = model.User{
-					UserName:     &userName,
-					FirstName:    &firstName,
-					LastName:     &lastName,
-					Email:        &email,
-					PasswordHash: &passwordHash,
-					AdminUser:    false,
+					UserName:  &userName,
+					FirstName: &firstName,
+					LastName:  &lastName,
+					Email:     &email,
+					Password:  &password,
+					AdminUser: false,
 				}
 			})
 
@@ -166,12 +166,12 @@ var _ = Describe("SqlUserRepo", func() {
 
 			BeforeEach(func() {
 				userOne = model.User{
-					UserName:     &userName,
-					FirstName:    &firstName,
-					LastName:     &lastName,
-					Email:        &email,
-					PasswordHash: &passwordHash,
-					AdminUser:    false,
+					UserName:  &userName,
+					FirstName: &firstName,
+					LastName:  &lastName,
+					Email:     &email,
+					Password:  &password,
+					AdminUser: false,
 				}
 				err = userRepo.Create(&userOne)
 				Expect(err).NotTo(HaveOccurred())
@@ -197,12 +197,12 @@ var _ = Describe("SqlUserRepo", func() {
 
 			BeforeEach(func() {
 				userOne = model.User{
-					UserName:     &userName,
-					FirstName:    &firstName,
-					LastName:     &lastName,
-					Email:        &email,
-					PasswordHash: &passwordHash,
-					AdminUser:    false,
+					UserName:  &userName,
+					FirstName: &firstName,
+					LastName:  &lastName,
+					Email:     &email,
+					Password:  &password,
+					AdminUser: false,
 				}
 				err = userRepo.Create(&userOne)
 				Expect(err).NotTo(HaveOccurred())
@@ -237,12 +237,12 @@ var _ = Describe("SqlUserRepo", func() {
 
 			BeforeEach(func() {
 				userOne = model.User{
-					UserName:     &userName,
-					FirstName:    &firstName,
-					LastName:     &lastName,
-					Email:        &email,
-					PasswordHash: &passwordHash,
-					AdminUser:    false,
+					UserName:  &userName,
+					FirstName: &firstName,
+					LastName:  &lastName,
+					Email:     &email,
+					Password:  &password,
+					AdminUser: false,
 				}
 				err = userRepo.Create(&userOne)
 				Expect(err).NotTo(HaveOccurred())

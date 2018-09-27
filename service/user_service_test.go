@@ -17,14 +17,14 @@ import (
 var _ = Describe("UserService", func() {
 
 	var (
-		userService  User
-		userRepo     *servicefakes.FakeUserRepo
-		user         model.User
-		userName     string
-		firstName    string
-		lastName     string
-		email        string
-		passwordHash string
+		userService User
+		userRepo    *servicefakes.FakeUserRepo
+		user        model.User
+		userName    string
+		firstName   string
+		lastName    string
+		email       string
+		password    string
 	)
 
 	BeforeEach(func() {
@@ -35,15 +35,15 @@ var _ = Describe("UserService", func() {
 		firstName = "first-name"
 		lastName = "last-name"
 		email = "email@domain.com"
-		passwordHash = "password-hash"
+		password = "password-hash"
 
 		user = model.User{
-			UserName:     &userName,
-			FirstName:    &firstName,
-			LastName:     &lastName,
-			Email:        &email,
-			PasswordHash: &passwordHash,
-			AdminUser:    false,
+			UserName:  &userName,
+			FirstName: &firstName,
+			LastName:  &lastName,
+			Email:     &email,
+			Password:  &password,
+			AdminUser: false,
 		}
 	})
 
@@ -66,7 +66,7 @@ var _ = Describe("UserService", func() {
 		Context("User password is too short but we have a valid context", func() {
 
 			BeforeEach(func() {
-				*user.PasswordHash = "uhSeven"
+				*user.Password = "uhSeven"
 			})
 
 			It("Returns an error and does not call UserRepo.Create", func() {
@@ -205,7 +205,7 @@ var _ = Describe("UserService", func() {
 				updatedUser, err := userService.UpdatePassword(context.TODO(), user, newPwd)
 				Expect(err).ToNot(HaveOccurred())
 				Expect(userRepo.UpdateCallCount()).To(Equal(1))
-				err = bcrypt.CompareHashAndPassword([]byte(*updatedUser.PasswordHash), []byte(newPwd))
+				err = bcrypt.CompareHashAndPassword([]byte(*updatedUser.Password), []byte(newPwd))
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
@@ -269,12 +269,12 @@ var _ = Describe("UserService", func() {
 		Context("Username, password and context are all correct", func() {
 
 			BeforeEach(func() {
-				passwordHash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-				stringPasswordHash := string(passwordHash)
+				password, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+				stringPassword := string(password)
 				sampleUser = model.User{
-					ID:           uint(12345),
-					UserName:     &luserName,
-					PasswordHash: &stringPasswordHash,
+					ID:       uint(12345),
+					UserName: &luserName,
+					Password: &stringPassword,
 				}
 				userRepo.GetByUserNameReturns(&sampleUser, nil)
 			})
@@ -313,12 +313,12 @@ var _ = Describe("UserService", func() {
 		Context("Wrong password is provided", func() {
 
 			BeforeEach(func() {
-				passwordHash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-				stringPasswordHash := string(passwordHash)
+				password, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+				stringPassword := string(password)
 				sampleUser = model.User{
-					ID:           uint(12345),
-					UserName:     &luserName,
-					PasswordHash: &stringPasswordHash,
+					ID:       uint(12345),
+					UserName: &luserName,
+					Password: &stringPassword,
 				}
 				userRepo.GetByUserNameReturns(&sampleUser, nil)
 			})
