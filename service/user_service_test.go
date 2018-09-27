@@ -43,7 +43,6 @@ var _ = Describe("UserService", func() {
 			LastName:     &lastName,
 			Email:        &email,
 			PasswordHash: &passwordHash,
-			VetOrgID:     uint(12345),
 			AdminUser:    false,
 		}
 	})
@@ -349,83 +348,6 @@ var _ = Describe("UserService", func() {
 		})
 	})
 
-	Describe("Find a user by veterinary practice", func() {
-
-		var (
-			vetOrg     model.VetOrg
-			user       model.User
-			fUserName  string
-			fFirstName string
-			fLastName  string
-		)
-
-		BeforeEach(func() {
-			vetOrg = model.VetOrg{
-				ID: uint(12345),
-			}
-
-			fUserName = "some-user-name"
-			fFirstName = "john"
-			fLastName = "doe"
-
-			user = model.User{
-				ID:        uint(12345),
-				UserName:  &fUserName,
-				FirstName: &fFirstName,
-				LastName:  &fLastName,
-				VetOrgID:  uint(12345),
-			}
-
-			userRepo.GetByVetOrgIDReturns([]model.User{user}, nil)
-		})
-
-		Context("Context and VetOrg are correct", func() {
-
-			It("Returns a list of users that are part of the given VetOrg", func() {
-				users, err := userService.FindUsersByVetOrgID(context.TODO(), vetOrg.ID)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(users).NotTo(BeNil())
-				Expect(users).To(HaveLen(1))
-				Expect(userRepo.GetByVetOrgIDCallCount()).To(Equal(1))
-				Expect(users[0].VetOrgID).To(Equal(vetOrg.ID))
-			})
-		})
-
-		Context("VetOrg provided but Context missing", func() {
-
-			It("Returns and error", func() {
-				users, err := userService.FindUsersByVetOrgID(nil, vetOrg.ID)
-				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal(MissingContext))
-				Expect(users).To(BeNil())
-			})
-		})
-
-		Context("Context provided but VetOrg lacks ID", func() {
-
-			It("Returns an error", func() {
-				users, err := userService.FindUsersByVetOrgID(context.TODO(), uint(0))
-				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal(VetOrgRequired))
-				Expect(users).To(BeNil())
-			})
-		})
-
-		Context("Context and Vetorg are correct but Repo returns error", func() {
-
-			BeforeEach(func() {
-				userRepo.GetByVetOrgIDReturns(nil, errors.New("BAM!"))
-			})
-
-			It("Returns an error", func() {
-				users, err := userService.FindUsersByVetOrgID(context.TODO(), vetOrg.ID)
-				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal("BAM!"))
-				Expect(users).To(BeNil())
-			})
-		})
-	})
-
 	Describe("Find a user by username", func() {
 
 		var (
@@ -445,7 +367,6 @@ var _ = Describe("UserService", func() {
 				UserName:  &fUserName,
 				FirstName: &fFirstName,
 				LastName:  &fLastName,
-				VetOrgID:  uint(12345),
 			}
 
 			userName = "some-user-name"
@@ -522,7 +443,6 @@ var _ = Describe("UserService", func() {
 				UserName:  &fUserName,
 				FirstName: &fFirstName,
 				LastName:  &fLastName,
-				VetOrgID:  uint(12345),
 			}
 
 			userID = 12345

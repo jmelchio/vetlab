@@ -60,7 +60,6 @@ var _ = Describe("UserHandler", func() {
 				LastName:     &lastName,
 				Email:        &email,
 				PasswordHash: &passwordHash,
-				VetOrgID:     uint(12345),
 				AdminUser:    false,
 			}
 		})
@@ -163,7 +162,6 @@ var _ = Describe("UserHandler", func() {
 				LastName:     &lastName,
 				Email:        &email,
 				PasswordHash: &passwordHash,
-				VetOrgID:     uint(12345),
 				AdminUser:    false,
 			}
 		})
@@ -265,7 +263,6 @@ var _ = Describe("UserHandler", func() {
 				LastName:     &lastName,
 				Email:        &email,
 				PasswordHash: &passwordHash,
-				VetOrgID:     uint(12345),
 				AdminUser:    false,
 			}
 		})
@@ -364,7 +361,6 @@ var _ = Describe("UserHandler", func() {
 				LastName:     &lastName,
 				Email:        &email,
 				PasswordHash: &passwordHash,
-				VetOrgID:     uint(12345),
 				AdminUser:    false,
 			}
 		})
@@ -456,7 +452,6 @@ var _ = Describe("UserHandler", func() {
 
 		var (
 			userID     uint
-			vetOrgID   uint
 			sampleUser model.User
 		)
 
@@ -468,7 +463,6 @@ var _ = Describe("UserHandler", func() {
 				LastName:     &lastName,
 				Email:        &email,
 				PasswordHash: &passwordHash,
-				VetOrgID:     uint(12345),
 				AdminUser:    false,
 			}
 		})
@@ -556,38 +550,6 @@ var _ = Describe("UserHandler", func() {
 			})
 		})
 
-		Context("Valid vetOrgID is passed", func() {
-
-			Context("User with vetOrgID exists", func() {
-
-				BeforeEach(func() {
-					userSlice := []model.User{sampleUser}
-					userService.FindUsersByVetOrgIDReturns(userSlice, nil)
-					vetOrgID = uint(12345)
-					recorder = httptest.NewRecorder()
-					request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
-					q := url.Values{}
-					q.Add("vet_org_id", fmt.Sprint(vetOrgID))
-					request.URL.RawQuery = q.Encode()
-					handler.ServeHTTP(recorder, request)
-				})
-
-				It("Finds and returns a slice of user and returns 200 status code", func() {
-					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
-					Expect(err).NotTo(HaveOccurred())
-
-					var foundUsers []model.User
-					err = json.Unmarshal(respBody, &foundUsers)
-					Expect(err).NotTo(HaveOccurred())
-					Expect(foundUsers).NotTo(BeNil())
-					Expect(foundUsers[0].FirstName).To(Equal(sampleUser.FirstName))
-					Expect(foundUsers[0].LastName).To(Equal(sampleUser.LastName))
-					Expect(userService.FindUsersByVetOrgIDCallCount()).To(Equal(1))
-				})
-			})
-		})
-
 		Context("Valid search parameter information is passed but downstream call fails", func() {
 
 			BeforeEach(func() {
@@ -624,7 +586,6 @@ var _ = Describe("UserHandler", func() {
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(NoParamsFound))
 				Expect(userService.FindUserByUserNameCallCount()).To(Equal(0))
 				Expect(userService.FindUserByIDCallCount()).To(Equal(0))
-				Expect(userService.FindUsersByVetOrgIDCallCount()).To(Equal(0))
 			})
 		})
 
@@ -646,7 +607,6 @@ var _ = Describe("UserHandler", func() {
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(NoParamsFound))
 				Expect(userService.FindUserByUserNameCallCount()).To(Equal(0))
 				Expect(userService.FindUserByIDCallCount()).To(Equal(0))
-				Expect(userService.FindUsersByVetOrgIDCallCount()).To(Equal(0))
 			})
 		})
 	})

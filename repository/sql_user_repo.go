@@ -37,7 +37,6 @@ func (sqlUserRepo SQLUserRepo) Update(user *model.User) error {
 					FirstName: user.FirstName,
 					LastName:  user.LastName,
 					Email:     user.Email,
-					VetOrgID:  user.VetOrgID,
 					AdminUser: user.AdminUser,
 				}).Error; err != nil {
 				return err
@@ -68,19 +67,6 @@ func (sqlUserRepo SQLUserRepo) GetByID(userID uint) (*model.User, error) {
 		return nil, err
 	}
 	return &user, nil
-}
-
-// GetByVetOrgID fetches all users for a vet org from the sql datastore
-func (sqlUserRepo SQLUserRepo) GetByVetOrgID(vetOrgID uint) ([]model.User, error) {
-	var users []model.User
-
-	if err := sqlUserRepo.Database.Where("vet_org_id = ?", vetOrgID).Find(&users).Error; err != nil {
-		return nil, err
-	}
-	if len(users) > 0 {
-		return users, nil
-	}
-	return nil, errors.New("Zero records found that match given org_id")
 }
 
 // GetByUserName fetches all users by UserName from the sql datastore
