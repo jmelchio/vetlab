@@ -55,19 +55,6 @@ type FakeUserRepo struct {
 		result1 *model.User
 		result2 error
 	}
-	GetByVetOrgIDStub        func(uint) ([]model.User, error)
-	getByVetOrgIDMutex       sync.RWMutex
-	getByVetOrgIDArgsForCall []struct {
-		arg1 uint
-	}
-	getByVetOrgIDReturns struct {
-		result1 []model.User
-		result2 error
-	}
-	getByVetOrgIDReturnsOnCall map[int]struct {
-		result1 []model.User
-		result2 error
-	}
 	GetByUserNameStub        func(string) (*model.User, error)
 	getByUserNameMutex       sync.RWMutex
 	getByUserNameArgsForCall []struct {
@@ -280,57 +267,6 @@ func (fake *FakeUserRepo) GetByIDReturnsOnCall(i int, result1 *model.User, resul
 	}{result1, result2}
 }
 
-func (fake *FakeUserRepo) GetByVetOrgID(arg1 uint) ([]model.User, error) {
-	fake.getByVetOrgIDMutex.Lock()
-	ret, specificReturn := fake.getByVetOrgIDReturnsOnCall[len(fake.getByVetOrgIDArgsForCall)]
-	fake.getByVetOrgIDArgsForCall = append(fake.getByVetOrgIDArgsForCall, struct {
-		arg1 uint
-	}{arg1})
-	fake.recordInvocation("GetByVetOrgID", []interface{}{arg1})
-	fake.getByVetOrgIDMutex.Unlock()
-	if fake.GetByVetOrgIDStub != nil {
-		return fake.GetByVetOrgIDStub(arg1)
-	}
-	if specificReturn {
-		return ret.result1, ret.result2
-	}
-	return fake.getByVetOrgIDReturns.result1, fake.getByVetOrgIDReturns.result2
-}
-
-func (fake *FakeUserRepo) GetByVetOrgIDCallCount() int {
-	fake.getByVetOrgIDMutex.RLock()
-	defer fake.getByVetOrgIDMutex.RUnlock()
-	return len(fake.getByVetOrgIDArgsForCall)
-}
-
-func (fake *FakeUserRepo) GetByVetOrgIDArgsForCall(i int) uint {
-	fake.getByVetOrgIDMutex.RLock()
-	defer fake.getByVetOrgIDMutex.RUnlock()
-	return fake.getByVetOrgIDArgsForCall[i].arg1
-}
-
-func (fake *FakeUserRepo) GetByVetOrgIDReturns(result1 []model.User, result2 error) {
-	fake.GetByVetOrgIDStub = nil
-	fake.getByVetOrgIDReturns = struct {
-		result1 []model.User
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeUserRepo) GetByVetOrgIDReturnsOnCall(i int, result1 []model.User, result2 error) {
-	fake.GetByVetOrgIDStub = nil
-	if fake.getByVetOrgIDReturnsOnCall == nil {
-		fake.getByVetOrgIDReturnsOnCall = make(map[int]struct {
-			result1 []model.User
-			result2 error
-		})
-	}
-	fake.getByVetOrgIDReturnsOnCall[i] = struct {
-		result1 []model.User
-		result2 error
-	}{result1, result2}
-}
-
 func (fake *FakeUserRepo) GetByUserName(arg1 string) (*model.User, error) {
 	fake.getByUserNameMutex.Lock()
 	ret, specificReturn := fake.getByUserNameReturnsOnCall[len(fake.getByUserNameArgsForCall)]
@@ -393,8 +329,6 @@ func (fake *FakeUserRepo) Invocations() map[string][][]interface{} {
 	defer fake.deleteMutex.RUnlock()
 	fake.getByIDMutex.RLock()
 	defer fake.getByIDMutex.RUnlock()
-	fake.getByVetOrgIDMutex.RLock()
-	defer fake.getByVetOrgIDMutex.RUnlock()
 	fake.getByUserNameMutex.RLock()
 	defer fake.getByUserNameMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}

@@ -18,7 +18,6 @@ type UserService interface {
 
 	Login(ctx context.Context, userName string, password string) (*model.User, error)
 
-	FindUsersByVetOrgID(ctx context.Context, vetOrgID uint) ([]model.User, error)
 	FindUserByUserName(ctx context.Context, userName string) (*model.User, error)
 	FindUserByID(ctx context.Context, userID uint) (*model.User, error)
 }

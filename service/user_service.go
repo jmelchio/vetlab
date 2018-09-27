@@ -109,17 +109,6 @@ func (userService User) Login(ctx context.Context, userName string, password str
 	return user, nil
 }
 
-// FindUsersByVetOrgID attempts to find users by the veterinary organization
-func (userService User) FindUsersByVetOrgID(ctx context.Context, vetOrgID uint) ([]model.User, error) {
-	if ctx == nil {
-		return nil, errors.New(MissingContext)
-	}
-	if vetOrgID == 0 {
-		return nil, errors.New(VetOrgRequired)
-	}
-	return userService.UserRepo.GetByVetOrgID(vetOrgID)
-}
-
 // FindUserByUserName attempts to find users by their userName
 func (userService User) FindUserByUserName(ctx context.Context, userName string) (*model.User, error) {
 	if ctx == nil {

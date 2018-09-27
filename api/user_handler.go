@@ -191,7 +191,7 @@ func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http
 		return
 	}
 
-	possibleParams := []string{"user_name", "user_id", "vet_org_id"}
+	possibleParams := []string{"user_name", "user_id"}
 	for _, param := range possibleParams {
 		valueFound := request.Form.Get(param)
 		if len(valueFound) > 0 {
@@ -218,22 +218,6 @@ func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http
 					writer.Header().Set("Content-Type", "application/json")
 					writer.WriteHeader(http.StatusOK)
 					if err := json.NewEncoder(writer).Encode(foundUser); err != nil {
-						log.Printf("Problem encoding found user: %s", err.Error())
-					}
-					return
-				}
-				http.Error(writer, NoParamsFound, http.StatusBadRequest)
-				return
-			case "vet_org_id":
-				if uintValue, err := strconv.ParseUint(valueFound, 10, 32); err == nil {
-					foundUsers, err := userServer.UserService.FindUsersByVetOrgID(context.TODO(), uint(uintValue))
-					if err != nil {
-						http.Error(writer, UnableToFindUser, http.StatusNotFound)
-						return
-					}
-					writer.Header().Set("Content-Type", "application/json")
-					writer.WriteHeader(http.StatusOK)
-					if err := json.NewEncoder(writer).Encode(foundUsers); err != nil {
 						log.Printf("Problem encoding found user: %s", err.Error())
 					}
 					return

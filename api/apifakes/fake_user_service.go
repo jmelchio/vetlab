@@ -80,20 +80,6 @@ type FakeUserService struct {
 		result1 *model.User
 		result2 error
 	}
-	FindUsersByVetOrgIDStub        func(ctx context.Context, vetOrgID uint) ([]model.User, error)
-	findUsersByVetOrgIDMutex       sync.RWMutex
-	findUsersByVetOrgIDArgsForCall []struct {
-		ctx      context.Context
-		vetOrgID uint
-	}
-	findUsersByVetOrgIDReturns struct {
-		result1 []model.User
-		result2 error
-	}
-	findUsersByVetOrgIDReturnsOnCall map[int]struct {
-		result1 []model.User
-		result2 error
-	}
 	FindUserByUserNameStub        func(ctx context.Context, userName string) (*model.User, error)
 	findUserByUserNameMutex       sync.RWMutex
 	findUserByUserNameArgsForCall []struct {
@@ -385,58 +371,6 @@ func (fake *FakeUserService) LoginReturnsOnCall(i int, result1 *model.User, resu
 	}{result1, result2}
 }
 
-func (fake *FakeUserService) FindUsersByVetOrgID(ctx context.Context, vetOrgID uint) ([]model.User, error) {
-	fake.findUsersByVetOrgIDMutex.Lock()
-	ret, specificReturn := fake.findUsersByVetOrgIDReturnsOnCall[len(fake.findUsersByVetOrgIDArgsForCall)]
-	fake.findUsersByVetOrgIDArgsForCall = append(fake.findUsersByVetOrgIDArgsForCall, struct {
-		ctx      context.Context
-		vetOrgID uint
-	}{ctx, vetOrgID})
-	fake.recordInvocation("FindUsersByVetOrgID", []interface{}{ctx, vetOrgID})
-	fake.findUsersByVetOrgIDMutex.Unlock()
-	if fake.FindUsersByVetOrgIDStub != nil {
-		return fake.FindUsersByVetOrgIDStub(ctx, vetOrgID)
-	}
-	if specificReturn {
-		return ret.result1, ret.result2
-	}
-	return fake.findUsersByVetOrgIDReturns.result1, fake.findUsersByVetOrgIDReturns.result2
-}
-
-func (fake *FakeUserService) FindUsersByVetOrgIDCallCount() int {
-	fake.findUsersByVetOrgIDMutex.RLock()
-	defer fake.findUsersByVetOrgIDMutex.RUnlock()
-	return len(fake.findUsersByVetOrgIDArgsForCall)
-}
-
-func (fake *FakeUserService) FindUsersByVetOrgIDArgsForCall(i int) (context.Context, uint) {
-	fake.findUsersByVetOrgIDMutex.RLock()
-	defer fake.findUsersByVetOrgIDMutex.RUnlock()
-	return fake.findUsersByVetOrgIDArgsForCall[i].ctx, fake.findUsersByVetOrgIDArgsForCall[i].vetOrgID
-}
-
-func (fake *FakeUserService) FindUsersByVetOrgIDReturns(result1 []model.User, result2 error) {
-	fake.FindUsersByVetOrgIDStub = nil
-	fake.findUsersByVetOrgIDReturns = struct {
-		result1 []model.User
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeUserService) FindUsersByVetOrgIDReturnsOnCall(i int, result1 []model.User, result2 error) {
-	fake.FindUsersByVetOrgIDStub = nil
-	if fake.findUsersByVetOrgIDReturnsOnCall == nil {
-		fake.findUsersByVetOrgIDReturnsOnCall = make(map[int]struct {
-			result1 []model.User
-			result2 error
-		})
-	}
-	fake.findUsersByVetOrgIDReturnsOnCall[i] = struct {
-		result1 []model.User
-		result2 error
-	}{result1, result2}
-}
-
 func (fake *FakeUserService) FindUserByUserName(ctx context.Context, userName string) (*model.User, error) {
 	fake.findUserByUserNameMutex.Lock()
 	ret, specificReturn := fake.findUserByUserNameReturnsOnCall[len(fake.findUserByUserNameArgsForCall)]
@@ -554,8 +488,6 @@ func (fake *FakeUserService) Invocations() map[string][][]interface{} {
 	defer fake.updatePasswordMutex.RUnlock()
 	fake.loginMutex.RLock()
 	defer fake.loginMutex.RUnlock()
-	fake.findUsersByVetOrgIDMutex.RLock()
-	defer fake.findUsersByVetOrgIDMutex.RUnlock()
 	fake.findUserByUserNameMutex.RLock()
 	defer fake.findUserByUserNameMutex.RUnlock()
 	fake.findUserByIDMutex.RLock()

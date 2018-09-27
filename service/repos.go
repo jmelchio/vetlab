@@ -10,7 +10,6 @@ type UserRepo interface {
 	Update(*model.User) error
 	Delete(*model.User) error
 	GetByID(uint) (*model.User, error)
-	GetByVetOrgID(uint) ([]model.User, error)
 	GetByUserName(string) (*model.User, error)
 }
 
