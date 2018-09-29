@@ -13,6 +13,18 @@ type UserRepo interface {
 	GetByUserName(string) (*model.User, error)
 }
 
+//go:generate counterfeiter . CustomerRepo
+
+// CustomerRepo declares the persistence interface for the Customer struct
+type CustomerRepo interface {
+	Create(*model.Customer) error
+	Update(*model.Customer) error
+	Delete(*model.Customer) error
+	GetByID(uint) (*model.Customer, error)
+	GetByVetOrgID(uint) ([]model.Customer, error)
+	GetByUserName(string) (*model.Customer, error)
+}
+
 //go:generate counterfeiter . DiagnosticReportRepo
 
 // DiagnosticReportRepo describes the persistence interface for a veterinary lab report
@@ -23,6 +35,7 @@ type DiagnosticReportRepo interface {
 	GetByID(uint) (*model.DiagnosticReport, error)
 	GetByVetOrgID(uint) ([]model.DiagnosticReport, error)
 	GetByUserID(uint) ([]model.DiagnosticRequest, error)
+	GetByCustomerID(uint) ([]model.DiagnosticRequest, error)
 }
 
 //go:generate counterfeiter . DiagnosticRequestRepo
@@ -35,6 +48,7 @@ type DiagnosticRequestRepo interface {
 	GetByID(uint) (*model.DiagnosticRequest, error)
 	GetByVetOrgID(uint) ([]model.DiagnosticRequest, error)
 	GetByUserID(uint) ([]model.DiagnosticRequest, error)
+	GetByCustomerID(uint) ([]model.DiagnosticRequest, error)
 }
 
 //go:generate counterfeiter . VetOrgRepo

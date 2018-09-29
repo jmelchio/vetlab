@@ -48,11 +48,13 @@ type ReportService interface {
 	FindReportByID(ctx context.Context, reportID uint) (model.DiagnosticReport, error)
 	FindReportByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.DiagnosticReport, error)
 	FindReportByUser(ctx context.Context, user model.User) ([]model.DiagnosticReport, error)
+	FindReportByCustomer(ctx context.Context, customer model.Customer) ([]model.DiagnosticReport, error)
 
 	FindRequestByDateRange(ctx context.Context, start time.Time, end time.Time, vetOrg model.VetOrg) ([]model.DiagnosticRequest, error)
 	FindRequestByID(ctx context.Context, requestID uint) (*model.DiagnosticRequest, error)
 	FindRequestByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.DiagnosticRequest, error)
 	FindRequestByUser(ctx context.Context, user model.User) ([]model.DiagnosticRequest, error)
+	FindRequestByCustomer(ctx context.Context, customer model.Customer) ([]model.DiagnosticRequest, error)
 }
 
 //go:generate counterfeiter . VetOrgService

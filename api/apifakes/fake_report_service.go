@@ -83,6 +83,20 @@ type FakeReportService struct {
 		result1 []model.DiagnosticReport
 		result2 error
 	}
+	FindReportByCustomerStub        func(ctx context.Context, customer model.Customer) ([]model.DiagnosticReport, error)
+	findReportByCustomerMutex       sync.RWMutex
+	findReportByCustomerArgsForCall []struct {
+		ctx      context.Context
+		customer model.Customer
+	}
+	findReportByCustomerReturns struct {
+		result1 []model.DiagnosticReport
+		result2 error
+	}
+	findReportByCustomerReturnsOnCall map[int]struct {
+		result1 []model.DiagnosticReport
+		result2 error
+	}
 	FindRequestByDateRangeStub        func(ctx context.Context, start time.Time, end time.Time, vetOrg model.VetOrg) ([]model.DiagnosticRequest, error)
 	findRequestByDateRangeMutex       sync.RWMutex
 	findRequestByDateRangeArgsForCall []struct {
@@ -138,6 +152,20 @@ type FakeReportService struct {
 		result2 error
 	}
 	findRequestByUserReturnsOnCall map[int]struct {
+		result1 []model.DiagnosticRequest
+		result2 error
+	}
+	FindRequestByCustomerStub        func(ctx context.Context, customer model.Customer) ([]model.DiagnosticRequest, error)
+	findRequestByCustomerMutex       sync.RWMutex
+	findRequestByCustomerArgsForCall []struct {
+		ctx      context.Context
+		customer model.Customer
+	}
+	findRequestByCustomerReturns struct {
+		result1 []model.DiagnosticRequest
+		result2 error
+	}
+	findRequestByCustomerReturnsOnCall map[int]struct {
 		result1 []model.DiagnosticRequest
 		result2 error
 	}
@@ -407,6 +435,58 @@ func (fake *FakeReportService) FindReportByUserReturnsOnCall(i int, result1 []mo
 	}{result1, result2}
 }
 
+func (fake *FakeReportService) FindReportByCustomer(ctx context.Context, customer model.Customer) ([]model.DiagnosticReport, error) {
+	fake.findReportByCustomerMutex.Lock()
+	ret, specificReturn := fake.findReportByCustomerReturnsOnCall[len(fake.findReportByCustomerArgsForCall)]
+	fake.findReportByCustomerArgsForCall = append(fake.findReportByCustomerArgsForCall, struct {
+		ctx      context.Context
+		customer model.Customer
+	}{ctx, customer})
+	fake.recordInvocation("FindReportByCustomer", []interface{}{ctx, customer})
+	fake.findReportByCustomerMutex.Unlock()
+	if fake.FindReportByCustomerStub != nil {
+		return fake.FindReportByCustomerStub(ctx, customer)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.findReportByCustomerReturns.result1, fake.findReportByCustomerReturns.result2
+}
+
+func (fake *FakeReportService) FindReportByCustomerCallCount() int {
+	fake.findReportByCustomerMutex.RLock()
+	defer fake.findReportByCustomerMutex.RUnlock()
+	return len(fake.findReportByCustomerArgsForCall)
+}
+
+func (fake *FakeReportService) FindReportByCustomerArgsForCall(i int) (context.Context, model.Customer) {
+	fake.findReportByCustomerMutex.RLock()
+	defer fake.findReportByCustomerMutex.RUnlock()
+	return fake.findReportByCustomerArgsForCall[i].ctx, fake.findReportByCustomerArgsForCall[i].customer
+}
+
+func (fake *FakeReportService) FindReportByCustomerReturns(result1 []model.DiagnosticReport, result2 error) {
+	fake.FindReportByCustomerStub = nil
+	fake.findReportByCustomerReturns = struct {
+		result1 []model.DiagnosticReport
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeReportService) FindReportByCustomerReturnsOnCall(i int, result1 []model.DiagnosticReport, result2 error) {
+	fake.FindReportByCustomerStub = nil
+	if fake.findReportByCustomerReturnsOnCall == nil {
+		fake.findReportByCustomerReturnsOnCall = make(map[int]struct {
+			result1 []model.DiagnosticReport
+			result2 error
+		})
+	}
+	fake.findReportByCustomerReturnsOnCall[i] = struct {
+		result1 []model.DiagnosticReport
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeReportService) FindRequestByDateRange(ctx context.Context, start time.Time, end time.Time, vetOrg model.VetOrg) ([]model.DiagnosticRequest, error) {
 	fake.findRequestByDateRangeMutex.Lock()
 	ret, specificReturn := fake.findRequestByDateRangeReturnsOnCall[len(fake.findRequestByDateRangeArgsForCall)]
@@ -617,6 +697,58 @@ func (fake *FakeReportService) FindRequestByUserReturnsOnCall(i int, result1 []m
 	}{result1, result2}
 }
 
+func (fake *FakeReportService) FindRequestByCustomer(ctx context.Context, customer model.Customer) ([]model.DiagnosticRequest, error) {
+	fake.findRequestByCustomerMutex.Lock()
+	ret, specificReturn := fake.findRequestByCustomerReturnsOnCall[len(fake.findRequestByCustomerArgsForCall)]
+	fake.findRequestByCustomerArgsForCall = append(fake.findRequestByCustomerArgsForCall, struct {
+		ctx      context.Context
+		customer model.Customer
+	}{ctx, customer})
+	fake.recordInvocation("FindRequestByCustomer", []interface{}{ctx, customer})
+	fake.findRequestByCustomerMutex.Unlock()
+	if fake.FindRequestByCustomerStub != nil {
+		return fake.FindRequestByCustomerStub(ctx, customer)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fake.findRequestByCustomerReturns.result1, fake.findRequestByCustomerReturns.result2
+}
+
+func (fake *FakeReportService) FindRequestByCustomerCallCount() int {
+	fake.findRequestByCustomerMutex.RLock()
+	defer fake.findRequestByCustomerMutex.RUnlock()
+	return len(fake.findRequestByCustomerArgsForCall)
+}
+
+func (fake *FakeReportService) FindRequestByCustomerArgsForCall(i int) (context.Context, model.Customer) {
+	fake.findRequestByCustomerMutex.RLock()
+	defer fake.findRequestByCustomerMutex.RUnlock()
+	return fake.findRequestByCustomerArgsForCall[i].ctx, fake.findRequestByCustomerArgsForCall[i].customer
+}
+
+func (fake *FakeReportService) FindRequestByCustomerReturns(result1 []model.DiagnosticRequest, result2 error) {
+	fake.FindRequestByCustomerStub = nil
+	fake.findRequestByCustomerReturns = struct {
+		result1 []model.DiagnosticRequest
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeReportService) FindRequestByCustomerReturnsOnCall(i int, result1 []model.DiagnosticRequest, result2 error) {
+	fake.FindRequestByCustomerStub = nil
+	if fake.findRequestByCustomerReturnsOnCall == nil {
+		fake.findRequestByCustomerReturnsOnCall = make(map[int]struct {
+			result1 []model.DiagnosticRequest
+			result2 error
+		})
+	}
+	fake.findRequestByCustomerReturnsOnCall[i] = struct {
+		result1 []model.DiagnosticRequest
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeReportService) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -630,6 +762,8 @@ func (fake *FakeReportService) Invocations() map[string][][]interface{} {
 	defer fake.findReportByVetOrgMutex.RUnlock()
 	fake.findReportByUserMutex.RLock()
 	defer fake.findReportByUserMutex.RUnlock()
+	fake.findReportByCustomerMutex.RLock()
+	defer fake.findReportByCustomerMutex.RUnlock()
 	fake.findRequestByDateRangeMutex.RLock()
 	defer fake.findRequestByDateRangeMutex.RUnlock()
 	fake.findRequestByIDMutex.RLock()
@@ -638,6 +772,8 @@ func (fake *FakeReportService) Invocations() map[string][][]interface{} {
 	defer fake.findRequestByVetOrgMutex.RUnlock()
 	fake.findRequestByUserMutex.RLock()
 	defer fake.findRequestByUserMutex.RUnlock()
+	fake.findRequestByCustomerMutex.RLock()
+	defer fake.findRequestByCustomerMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value
