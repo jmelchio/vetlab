@@ -22,6 +22,22 @@ type UserService interface {
 	FindUserByID(ctx context.Context, userID uint) (*model.User, error)
 }
 
+//go:generate counterfeiter . CustomerService
+
+// CustomerService provides the business operations for maintaining users within the application
+type CustomerService interface {
+	CreateCustomer(ctx context.Context, user model.Customer) (*model.Customer, error)
+	UpdateCustomer(ctx context.Context, user model.Customer) (*model.Customer, error)
+	DeleteCustomer(ctx context.Context, user model.Customer) error
+	UpdatePassword(ctx context.Context, user model.Customer, password string) (*model.Customer, error)
+
+	Login(ctx context.Context, userName string, password string) (*model.Customer, error)
+
+	FindCustomerByUserName(ctx context.Context, userName string) (*model.Customer, error)
+	FindCustomerByID(ctx context.Context, userID uint) (*model.Customer, error)
+	FindCustomerByVetOrgID(ctx context.Context, vetOrgID uint) (*model.Customer, error)
+}
+
 //go:generate counterfeiter . ReportService
 
 // ReportService provides the business operations for requesting,finding and retrieving

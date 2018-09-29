@@ -27,6 +27,7 @@ func Run() {
 	database.AutoMigrate(&model.DiagnosticReport{})
 	database.AutoMigrate(&model.DiagnosticRequest{})
 	database.AutoMigrate(&model.User{})
+	database.AutoMigrate(&model.Customer{})
 
 	userRepo := repository.SQLUserRepo{Database: database}
 	userService := service.User{UserRepo: userRepo}
