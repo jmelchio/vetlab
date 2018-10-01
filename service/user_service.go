@@ -30,12 +30,12 @@ func (userService User) CreateUser(ctx context.Context, user model.User) (*model
 		return nil, errors.New(MissingContext)
 	}
 
-	pwdHash, err := hashAndSalt(*user.Password)
+	pwdHash, err := hashAndSalt(user.Password)
 	if err != nil {
 		return nil, err
 	}
 
-	user.Password = pwdHash
+	user.Password = *pwdHash
 	err = userService.UserRepo.Create(&user)
 	if err != nil {
 		return nil, err
@@ -78,7 +78,7 @@ func (userService User) UpdatePassword(ctx context.Context, user model.User, pas
 		return nil, fmt.Errorf(HashingFailed, err.Error())
 	}
 
-	user.Password = pwdHash
+	user.Password = *pwdHash
 	err = userService.UserRepo.Update(&user)
 	if err != nil {
 		return nil, err
@@ -102,7 +102,7 @@ func (userService User) Login(ctx context.Context, userName string, password str
 		return nil, errors.New(UserOrPasswordFail)
 	}
 
-	if !equalPasswords(*user.Password, password) {
+	if !equalPasswords(user.Password, password) {
 		return nil, errors.New(UserOrPasswordFail)
 	}
 

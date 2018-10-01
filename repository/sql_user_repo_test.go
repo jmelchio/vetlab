@@ -54,10 +54,10 @@ var _ = Describe("SqlUserRepo", func() {
 			BeforeEach(func() {
 				userOne = model.User{
 					UserName:  &userName,
-					FirstName: &firstName,
-					LastName:  &lastName,
-					Email:     &email,
-					Password:  &password,
+					FirstName: firstName,
+					LastName:  lastName,
+					Email:     email,
+					Password:  password,
 					AdminUser: false,
 				}
 				Expect(userOne.ID).To(Equal(uint(0)))
@@ -75,10 +75,10 @@ var _ = Describe("SqlUserRepo", func() {
 			BeforeEach(func() {
 				userOne = model.User{
 					UserName:  &userName,
-					FirstName: &firstName,
-					LastName:  &lastName,
-					Email:     &email,
-					Password:  &password,
+					FirstName: firstName,
+					LastName:  lastName,
+					Email:     email,
+					Password:  password,
 					AdminUser: false,
 				}
 				userTwo = userOne
@@ -100,10 +100,10 @@ var _ = Describe("SqlUserRepo", func() {
 			BeforeEach(func() {
 				userOne = model.User{
 					UserName:  &userName,
-					FirstName: &firstName,
-					LastName:  &lastName,
-					Email:     &email,
-					Password:  &password,
+					FirstName: firstName,
+					LastName:  lastName,
+					Email:     email,
+					Password:  password,
 					AdminUser: false,
 				}
 				err = userRepo.Create(&userOne)
@@ -115,12 +115,12 @@ var _ = Describe("SqlUserRepo", func() {
 
 				It("It updates the user record and returns updated user with unchanged password", func() {
 					*userOne.UserName = "new_user_name"
-					*userOne.Password = "short_password"
+					userOne.Password = "short_password"
 					err = userRepo.Update(&userOne)
 					Expect(err).NotTo(HaveOccurred())
 					userFound, ferr := userRepo.GetByID(userOne.ID)
 					Expect(ferr).NotTo(HaveOccurred())
-					Expect(*userFound.Password).To(Equal("want_some_hash?"))
+					Expect(userFound.Password).To(Equal("want_some_hash?"))
 					Expect(userFound.UserName).To(Equal(userOne.UserName))
 				})
 			})
@@ -129,7 +129,7 @@ var _ = Describe("SqlUserRepo", func() {
 
 				It("It updates the user record and returns updated user with unchanged password", func() {
 					*userOne.UserName = "new_user_name"
-					*userOne.Password = "long_password_of_more_than_fifty_characters_so_that_its"
+					userOne.Password = "long_password_of_more_than_fifty_characters_so_that_its"
 					err = userRepo.Update(&userOne)
 					Expect(err).NotTo(HaveOccurred())
 					userFound, ferr := userRepo.GetByID(userOne.ID)
@@ -145,10 +145,10 @@ var _ = Describe("SqlUserRepo", func() {
 			BeforeEach(func() {
 				userOne = model.User{
 					UserName:  &userName,
-					FirstName: &firstName,
-					LastName:  &lastName,
-					Email:     &email,
-					Password:  &password,
+					FirstName: firstName,
+					LastName:  lastName,
+					Email:     email,
+					Password:  password,
 					AdminUser: false,
 				}
 			})
@@ -167,10 +167,10 @@ var _ = Describe("SqlUserRepo", func() {
 			BeforeEach(func() {
 				userOne = model.User{
 					UserName:  &userName,
-					FirstName: &firstName,
-					LastName:  &lastName,
-					Email:     &email,
-					Password:  &password,
+					FirstName: firstName,
+					LastName:  lastName,
+					Email:     email,
+					Password:  password,
 					AdminUser: false,
 				}
 				err = userRepo.Create(&userOne)
@@ -198,10 +198,10 @@ var _ = Describe("SqlUserRepo", func() {
 			BeforeEach(func() {
 				userOne = model.User{
 					UserName:  &userName,
-					FirstName: &firstName,
-					LastName:  &lastName,
-					Email:     &email,
-					Password:  &password,
+					FirstName: firstName,
+					LastName:  lastName,
+					Email:     email,
+					Password:  password,
 					AdminUser: false,
 				}
 				err = userRepo.Create(&userOne)
@@ -238,10 +238,10 @@ var _ = Describe("SqlUserRepo", func() {
 			BeforeEach(func() {
 				userOne = model.User{
 					UserName:  &userName,
-					FirstName: &firstName,
-					LastName:  &lastName,
-					Email:     &email,
-					Password:  &password,
+					FirstName: firstName,
+					LastName:  lastName,
+					Email:     email,
+					Password:  password,
 					AdminUser: false,
 				}
 				err = userRepo.Create(&userOne)

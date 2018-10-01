@@ -27,10 +27,10 @@ var _ = Describe("User", func() {
 			goUser = User{
 				ID:        uint(12345),
 				UserName:  &userName,
-				FirstName: &firstName,
-				LastName:  &lastName,
-				Email:     &email,
-				Password:  &password,
+				FirstName: firstName,
+				LastName:  lastName,
+				Email:     email,
+				Password:  password,
 				AdminUser: false,
 			}
 			jsonUser = `{"id":12345,"user_name":"some-user-name","first_name":"some-first-name","last_name":"some-last-name","email":"user@server.com","password":"some-password","admin_user":false}`

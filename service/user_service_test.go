@@ -39,10 +39,10 @@ var _ = Describe("UserService", func() {
 
 		user = model.User{
 			UserName:  &userName,
-			FirstName: &firstName,
-			LastName:  &lastName,
-			Email:     &email,
-			Password:  &password,
+			FirstName: firstName,
+			LastName:  lastName,
+			Email:     email,
+			Password:  password,
 			AdminUser: false,
 		}
 	})
@@ -66,7 +66,7 @@ var _ = Describe("UserService", func() {
 		Context("User password is too short but we have a valid context", func() {
 
 			BeforeEach(func() {
-				*user.Password = "uhSeven"
+				user.Password = "uhSeven"
 			})
 
 			It("Returns an error and does not call UserRepo.Create", func() {
@@ -205,7 +205,7 @@ var _ = Describe("UserService", func() {
 				updatedUser, err := userService.UpdatePassword(context.TODO(), user, newPwd)
 				Expect(err).ToNot(HaveOccurred())
 				Expect(userRepo.UpdateCallCount()).To(Equal(1))
-				err = bcrypt.CompareHashAndPassword([]byte(*updatedUser.Password), []byte(newPwd))
+				err = bcrypt.CompareHashAndPassword([]byte(updatedUser.Password), []byte(newPwd))
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
@@ -274,7 +274,7 @@ var _ = Describe("UserService", func() {
 				sampleUser = model.User{
 					ID:       uint(12345),
 					UserName: &luserName,
-					Password: &stringPassword,
+					Password: stringPassword,
 				}
 				userRepo.GetByUserNameReturns(&sampleUser, nil)
 			})
@@ -318,7 +318,7 @@ var _ = Describe("UserService", func() {
 				sampleUser = model.User{
 					ID:       uint(12345),
 					UserName: &luserName,
-					Password: &stringPassword,
+					Password: stringPassword,
 				}
 				userRepo.GetByUserNameReturns(&sampleUser, nil)
 			})
@@ -365,8 +365,8 @@ var _ = Describe("UserService", func() {
 
 			user = model.User{
 				UserName:  &fUserName,
-				FirstName: &fFirstName,
-				LastName:  &fLastName,
+				FirstName: fFirstName,
+				LastName:  fLastName,
 			}
 
 			userName = "some-user-name"
@@ -441,8 +441,8 @@ var _ = Describe("UserService", func() {
 			user = model.User{
 				ID:        uint(12345),
 				UserName:  &fUserName,
-				FirstName: &fFirstName,
-				LastName:  &fLastName,
+				FirstName: fFirstName,
+				LastName:  fLastName,
 			}
 
 			userID = 12345
