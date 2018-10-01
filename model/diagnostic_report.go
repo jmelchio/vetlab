@@ -9,7 +9,7 @@ type DiagnosticReport struct {
 	VetOrgID   uint       `json:"vet_org_id"`
 	CustomerID uint       `json:"customer_id"`
 	UserID     uint       `json:"user_id"`
-	Date       *time.Time `json:"date"`
-	ReportBody *string    `json:"report_body"`
-	ReportFile *string    `json:"report_file"`
+	Date       *time.Time `json:"date,omitempty"`
+	ReportBody string     `json:"report_body,omitempty"`
+	ReportFile string     `json:"report_file,omitempty"`
 }

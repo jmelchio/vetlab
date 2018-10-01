@@ -28,8 +28,8 @@ var _ = Describe("DiagnosticReport", func() {
 				CustomerID: uint(12345),
 				UserID:     uint(12345),
 				Date:       &time.Time{},
-				ReportBody: &reportBody,
-				ReportFile: &reportFile,
+				ReportBody: reportBody,
+				ReportFile: reportFile,
 			}
 			jsonDiagnosticReport = `{"id":12345,"request_id":12345,"vet_org_id":12345,"customer_id":12345,"user_id":12345,"date":"0001-01-01T00:00:00Z","report_body":"some-report-body","report_file":"some-report-file"}`
 		})
