@@ -26,7 +26,7 @@ var _ = Describe("DiagnosticRequest", func() {
 				CustomerID:  12345,
 				UserID:      12345,
 				Date:        &time.Time{},
-				Description: &description,
+				Description: description,
 			}
 			jsonDiagnosticRequest = `{"id":12345,"org_id":12345,"customer_id":12345,"user_id":12345,"date":"0001-01-01T00:00:00Z","description":"some-description"}`
 		})
