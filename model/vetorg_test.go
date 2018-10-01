@@ -31,15 +31,15 @@ var _ = Describe("Vetorg", func() {
 			goVetorg = VetOrg{
 				ID:          12345,
 				OrgName:     &orgName,
-				Street:      &street,
-				HouseNumber: &houseNumber,
-				City:        &city,
-				Province:    &province,
-				Country:     &country,
-				PostalCode:  &postalCode,
-				Email:       &email,
-				Phone:       &phone,
-				Fax:         &fax,
+				Street:      street,
+				HouseNumber: houseNumber,
+				City:        city,
+				Province:    province,
+				Country:     country,
+				PostalCode:  postalCode,
+				Email:       email,
+				Phone:       phone,
+				Fax:         fax,
 			}
 			jsonVetorg = `{"id":12345,"org_name":"some-org-name","street":"some-street","house_number":"some-house-number","city":"some-city","province":"some-province","country":"some-country","postal_code":"some-postal-code","email":"person@domain.com","phone":"some-phone","fax":"shadow-fax"}`
 		})
