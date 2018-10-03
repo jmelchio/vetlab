@@ -44,7 +44,7 @@ var _ = Describe("UserHandler", func() {
 		firstName = "first_name"
 		lastName = "last_name"
 		email = "some_email"
-		password = "some_hash"
+		password = "some_password"
 	})
 
 	Describe("Create a user", func() {
