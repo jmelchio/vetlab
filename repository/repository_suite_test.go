@@ -36,7 +36,11 @@ var _ = BeforeSuite(func() {
 })
 
 var _ = AfterSuite(func() {
-	// database.DropTable(&model.User{})
+	database.DropTable(&model.DiagnosticReport{})
+	database.DropTable(&model.DiagnosticRequest{})
+	database.DropTable(&model.Customer{})
+	database.DropTable(&model.VetOrg{})
+	database.DropTable(&model.User{})
 
 	err = database.Close()
 	Expect(err).NotTo(HaveOccurred())
