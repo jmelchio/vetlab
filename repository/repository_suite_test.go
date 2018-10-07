@@ -23,11 +23,20 @@ var _ = BeforeSuite(func() {
 	database, err = gorm.Open("postgres", "host=localhost user=postgres dbname=vetlab sslmode=disable")
 	Expect(err).NotTo(HaveOccurred())
 
-	database.AutoMigrate(&model.User{})
+	err = database.AutoMigrate(&model.DiagnosticReport{}).Error
+	Expect(err).NotTo(HaveOccurred())
+	err = database.AutoMigrate(&model.DiagnosticRequest{}).Error
+	Expect(err).NotTo(HaveOccurred())
+	err = database.AutoMigrate(&model.Customer{}).Error
+	Expect(err).NotTo(HaveOccurred())
+	err = database.AutoMigrate(&model.VetOrg{}).Error
+	Expect(err).NotTo(HaveOccurred())
+	err = database.AutoMigrate(&model.User{}).Error
+	Expect(err).NotTo(HaveOccurred())
 })
 
 var _ = AfterSuite(func() {
-	database.DropTable(&model.User{})
+	// database.DropTable(&model.User{})
 
 	err = database.Close()
 	Expect(err).NotTo(HaveOccurred())
