@@ -118,5 +118,8 @@ func (customerService Customer) FindCustomerByID(ctx context.Context, customerID
 
 // FindCustomerByVetOrgID attempts to find customers by the VetOrg they belong to
 func (customerService Customer) FindCustomerByVetOrgID(ctx context.Context, vetOrgID uint) ([]model.Customer, error) {
-	return nil, nil
+	if ctx == nil {
+		return nil, errors.New(MissingContext)
+	}
+	return customerService.CustomerRepo.GetByVetOrgID(vetOrgID)
 }

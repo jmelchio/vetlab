@@ -487,7 +487,7 @@ var _ = Describe("CustomerService", func() {
 		Context("Context and customerID are correct but Repo returns error", func() {
 
 			BeforeEach(func() {
-				customerRepo.GetByIDReturns(nil, errors.New("BAM!"))
+				customerRepo.GetByVetOrgIDReturns(nil, errors.New("BAM!"))
 			})
 
 			It("Returns an error", func() {
@@ -528,7 +528,7 @@ var _ = Describe("CustomerService", func() {
 
 		Context("Context is correct and vetOrgID exists", func() {
 
-			It("Returns a customers with the given vetOrgID", func() {
+			It("Returns customers with the given vetOrgID", func() {
 				foundCustomer, err := customerService.FindCustomerByVetOrgID(context.TODO(), customerID)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(customer).NotTo(BeNil())
