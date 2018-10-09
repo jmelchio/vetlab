@@ -460,10 +460,10 @@ var _ = Describe("CustomerService", func() {
 			})
 		})
 
-		Context("customerName provided but Context missing", func() {
+		Context("customerID provided but Context missing", func() {
 
 			It("Returns and error", func() {
-				foundCustomer, err := customerService.FindCustomerByID(nil, customerID)
+				foundCustomer, err := customerService.FindCustomerByVetOrgID(nil, customerID)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(Equal(MissingContext))
 				Expect(foundCustomer).To(BeNil())
@@ -478,7 +478,7 @@ var _ = Describe("CustomerService", func() {
 			})
 
 			It("Returns no error and no customer", func() {
-				foundCustomer, err := customerService.FindCustomerByID(context.TODO(), 12345)
+				foundCustomer, err := customerService.FindCustomerByVetOrgID(context.TODO(), 12345)
 				Expect(err).ToNot(HaveOccurred())
 				Expect(foundCustomer).To(BeNil())
 			})
@@ -491,7 +491,84 @@ var _ = Describe("CustomerService", func() {
 			})
 
 			It("Returns an error", func() {
-				foundCustomer, err := customerService.FindCustomerByID(context.TODO(), customerID)
+				foundCustomer, err := customerService.FindCustomerByVetOrgID(context.TODO(), customerID)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal("BAM!"))
+				Expect(foundCustomer).To(BeNil())
+			})
+		})
+	})
+
+	Describe("Find customers by VetOrgID", func() {
+
+		var (
+			customer   model.Customer
+			customerID uint
+			fUserName  string
+			fFirstName string
+			fLastName  string
+		)
+
+		BeforeEach(func() {
+			fUserName = "some-user-name"
+			fFirstName = "john"
+			fLastName = "doe"
+
+			customer = model.Customer{
+				ID:        uint(12345),
+				UserName:  &fUserName,
+				FirstName: fFirstName,
+				LastName:  fLastName,
+			}
+
+			customerID = 12345
+
+			customerRepo.GetByVetOrgIDReturns([]model.Customer{customer}, nil)
+		})
+
+		Context("Context is correct and vetOrgID exists", func() {
+
+			It("Returns a customers with the given vetOrgID", func() {
+				foundCustomer, err := customerService.FindCustomerByVetOrgID(context.TODO(), customerID)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(customer).NotTo(BeNil())
+				Expect(customerRepo.GetByVetOrgIDCallCount()).To(Equal(1))
+				Expect(foundCustomer[0].ID).To(Equal(customerID))
+			})
+		})
+
+		Context("vetOrgID provided but Context missing", func() {
+
+			It("Returns an error", func() {
+				foundCustomer, err := customerService.FindCustomerByVetOrgID(nil, customerID)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal(MissingContext))
+				Expect(foundCustomer).To(BeNil())
+			})
+
+		})
+
+		Context("Context and vetOrgID provided but no customers found", func() {
+
+			BeforeEach(func() {
+				customerRepo.GetByVetOrgIDReturns(nil, nil)
+			})
+
+			It("Returns no error and no customer", func() {
+				foundCustomer, err := customerService.FindCustomerByVetOrgID(context.TODO(), 12345)
+				Expect(err).ToNot(HaveOccurred())
+				Expect(foundCustomer).To(BeNil())
+			})
+		})
+
+		Context("Context and vetOrgID are correct but Repo returns error", func() {
+
+			BeforeEach(func() {
+				customerRepo.GetByVetOrgIDReturns(nil, errors.New("BAM!"))
+			})
+
+			It("Returns an error", func() {
+				foundCustomer, err := customerService.FindCustomerByVetOrgID(context.TODO(), customerID)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(Equal("BAM!"))
 				Expect(foundCustomer).To(BeNil())

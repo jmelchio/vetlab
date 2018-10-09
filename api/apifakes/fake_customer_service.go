@@ -108,18 +108,18 @@ type FakeCustomerService struct {
 		result1 *model.Customer
 		result2 error
 	}
-	FindCustomerByVetOrgIDStub        func(ctx context.Context, vetOrgID uint) (*model.Customer, error)
+	FindCustomerByVetOrgIDStub        func(ctx context.Context, vetOrgID uint) ([]model.Customer, error)
 	findCustomerByVetOrgIDMutex       sync.RWMutex
 	findCustomerByVetOrgIDArgsForCall []struct {
 		ctx      context.Context
 		vetOrgID uint
 	}
 	findCustomerByVetOrgIDReturns struct {
-		result1 *model.Customer
+		result1 []model.Customer
 		result2 error
 	}
 	findCustomerByVetOrgIDReturnsOnCall map[int]struct {
-		result1 *model.Customer
+		result1 []model.Customer
 		result2 error
 	}
 	invocations      map[string][][]interface{}
@@ -489,7 +489,7 @@ func (fake *FakeCustomerService) FindCustomerByIDReturnsOnCall(i int, result1 *m
 	}{result1, result2}
 }
 
-func (fake *FakeCustomerService) FindCustomerByVetOrgID(ctx context.Context, vetOrgID uint) (*model.Customer, error) {
+func (fake *FakeCustomerService) FindCustomerByVetOrgID(ctx context.Context, vetOrgID uint) ([]model.Customer, error) {
 	fake.findCustomerByVetOrgIDMutex.Lock()
 	ret, specificReturn := fake.findCustomerByVetOrgIDReturnsOnCall[len(fake.findCustomerByVetOrgIDArgsForCall)]
 	fake.findCustomerByVetOrgIDArgsForCall = append(fake.findCustomerByVetOrgIDArgsForCall, struct {
@@ -519,24 +519,24 @@ func (fake *FakeCustomerService) FindCustomerByVetOrgIDArgsForCall(i int) (conte
 	return fake.findCustomerByVetOrgIDArgsForCall[i].ctx, fake.findCustomerByVetOrgIDArgsForCall[i].vetOrgID
 }
 
-func (fake *FakeCustomerService) FindCustomerByVetOrgIDReturns(result1 *model.Customer, result2 error) {
+func (fake *FakeCustomerService) FindCustomerByVetOrgIDReturns(result1 []model.Customer, result2 error) {
 	fake.FindCustomerByVetOrgIDStub = nil
 	fake.findCustomerByVetOrgIDReturns = struct {
-		result1 *model.Customer
+		result1 []model.Customer
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeCustomerService) FindCustomerByVetOrgIDReturnsOnCall(i int, result1 *model.Customer, result2 error) {
+func (fake *FakeCustomerService) FindCustomerByVetOrgIDReturnsOnCall(i int, result1 []model.Customer, result2 error) {
 	fake.FindCustomerByVetOrgIDStub = nil
 	if fake.findCustomerByVetOrgIDReturnsOnCall == nil {
 		fake.findCustomerByVetOrgIDReturnsOnCall = make(map[int]struct {
-			result1 *model.Customer
+			result1 []model.Customer
 			result2 error
 		})
 	}
 	fake.findCustomerByVetOrgIDReturnsOnCall[i] = struct {
-		result1 *model.Customer
+		result1 []model.Customer
 		result2 error
 	}{result1, result2}
 }

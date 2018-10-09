@@ -35,7 +35,7 @@ type CustomerService interface {
 
 	FindCustomerByUserName(ctx context.Context, userName string) (*model.Customer, error)
 	FindCustomerByID(ctx context.Context, userID uint) (*model.Customer, error)
-	FindCustomerByVetOrgID(ctx context.Context, vetOrgID uint) (*model.Customer, error)
+	FindCustomerByVetOrgID(ctx context.Context, vetOrgID uint) ([]model.Customer, error)
 }
 
 //go:generate counterfeiter . ReportService
