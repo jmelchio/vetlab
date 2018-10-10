@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/jmelchio/vetlab/api"
 	"github.com/jmelchio/vetlab/model"
 	. "github.com/jmelchio/vetlab/service"
 	"github.com/jmelchio/vetlab/service/servicefakes"
@@ -17,7 +18,7 @@ import (
 var _ = Describe("CustomerService", func() {
 
 	var (
-		customerService Customer
+		customerService api.CustomerService
 		customerRepo    *servicefakes.FakeCustomerRepo
 		customer        model.Customer
 		userName        string
@@ -29,7 +30,8 @@ var _ = Describe("CustomerService", func() {
 
 	BeforeEach(func() {
 		customerRepo = new(servicefakes.FakeCustomerRepo)
-		customerService = Customer{CustomerRepo: customerRepo}
+		customerServiceImpl := Customer{CustomerRepo: customerRepo}
+		customerService = customerServiceImpl
 
 		userName = "some-name"
 		firstName = "first-name"

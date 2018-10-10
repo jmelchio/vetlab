@@ -108,17 +108,17 @@ type FakeCustomerService struct {
 		result1 *model.Customer
 		result2 error
 	}
-	FindCustomerByVetOrgIDStub        func(ctx context.Context, vetOrg model.VetOrg) ([]model.Customer, error)
-	findCustomerByVetOrgIDMutex       sync.RWMutex
-	findCustomerByVetOrgIDArgsForCall []struct {
+	FindCustomerByVetOrgStub        func(ctx context.Context, vetOrg model.VetOrg) ([]model.Customer, error)
+	findCustomerByVetOrgMutex       sync.RWMutex
+	findCustomerByVetOrgArgsForCall []struct {
 		ctx    context.Context
 		vetOrg model.VetOrg
 	}
-	findCustomerByVetOrgIDReturns struct {
+	findCustomerByVetOrgReturns struct {
 		result1 []model.Customer
 		result2 error
 	}
-	findCustomerByVetOrgIDReturnsOnCall map[int]struct {
+	findCustomerByVetOrgReturnsOnCall map[int]struct {
 		result1 []model.Customer
 		result2 error
 	}
@@ -489,53 +489,53 @@ func (fake *FakeCustomerService) FindCustomerByIDReturnsOnCall(i int, result1 *m
 	}{result1, result2}
 }
 
-func (fake *FakeCustomerService) FindCustomerByVetOrgID(ctx context.Context, vetOrg model.VetOrg) ([]model.Customer, error) {
-	fake.findCustomerByVetOrgIDMutex.Lock()
-	ret, specificReturn := fake.findCustomerByVetOrgIDReturnsOnCall[len(fake.findCustomerByVetOrgIDArgsForCall)]
-	fake.findCustomerByVetOrgIDArgsForCall = append(fake.findCustomerByVetOrgIDArgsForCall, struct {
+func (fake *FakeCustomerService) FindCustomerByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.Customer, error) {
+	fake.findCustomerByVetOrgMutex.Lock()
+	ret, specificReturn := fake.findCustomerByVetOrgReturnsOnCall[len(fake.findCustomerByVetOrgArgsForCall)]
+	fake.findCustomerByVetOrgArgsForCall = append(fake.findCustomerByVetOrgArgsForCall, struct {
 		ctx    context.Context
 		vetOrg model.VetOrg
 	}{ctx, vetOrg})
-	fake.recordInvocation("FindCustomerByVetOrgID", []interface{}{ctx, vetOrg})
-	fake.findCustomerByVetOrgIDMutex.Unlock()
-	if fake.FindCustomerByVetOrgIDStub != nil {
-		return fake.FindCustomerByVetOrgIDStub(ctx, vetOrg)
+	fake.recordInvocation("FindCustomerByVetOrg", []interface{}{ctx, vetOrg})
+	fake.findCustomerByVetOrgMutex.Unlock()
+	if fake.FindCustomerByVetOrgStub != nil {
+		return fake.FindCustomerByVetOrgStub(ctx, vetOrg)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.findCustomerByVetOrgIDReturns.result1, fake.findCustomerByVetOrgIDReturns.result2
+	return fake.findCustomerByVetOrgReturns.result1, fake.findCustomerByVetOrgReturns.result2
 }
 
-func (fake *FakeCustomerService) FindCustomerByVetOrgIDCallCount() int {
-	fake.findCustomerByVetOrgIDMutex.RLock()
-	defer fake.findCustomerByVetOrgIDMutex.RUnlock()
-	return len(fake.findCustomerByVetOrgIDArgsForCall)
+func (fake *FakeCustomerService) FindCustomerByVetOrgCallCount() int {
+	fake.findCustomerByVetOrgMutex.RLock()
+	defer fake.findCustomerByVetOrgMutex.RUnlock()
+	return len(fake.findCustomerByVetOrgArgsForCall)
 }
 
-func (fake *FakeCustomerService) FindCustomerByVetOrgIDArgsForCall(i int) (context.Context, model.VetOrg) {
-	fake.findCustomerByVetOrgIDMutex.RLock()
-	defer fake.findCustomerByVetOrgIDMutex.RUnlock()
-	return fake.findCustomerByVetOrgIDArgsForCall[i].ctx, fake.findCustomerByVetOrgIDArgsForCall[i].vetOrg
+func (fake *FakeCustomerService) FindCustomerByVetOrgArgsForCall(i int) (context.Context, model.VetOrg) {
+	fake.findCustomerByVetOrgMutex.RLock()
+	defer fake.findCustomerByVetOrgMutex.RUnlock()
+	return fake.findCustomerByVetOrgArgsForCall[i].ctx, fake.findCustomerByVetOrgArgsForCall[i].vetOrg
 }
 
-func (fake *FakeCustomerService) FindCustomerByVetOrgIDReturns(result1 []model.Customer, result2 error) {
-	fake.FindCustomerByVetOrgIDStub = nil
-	fake.findCustomerByVetOrgIDReturns = struct {
+func (fake *FakeCustomerService) FindCustomerByVetOrgReturns(result1 []model.Customer, result2 error) {
+	fake.FindCustomerByVetOrgStub = nil
+	fake.findCustomerByVetOrgReturns = struct {
 		result1 []model.Customer
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeCustomerService) FindCustomerByVetOrgIDReturnsOnCall(i int, result1 []model.Customer, result2 error) {
-	fake.FindCustomerByVetOrgIDStub = nil
-	if fake.findCustomerByVetOrgIDReturnsOnCall == nil {
-		fake.findCustomerByVetOrgIDReturnsOnCall = make(map[int]struct {
+func (fake *FakeCustomerService) FindCustomerByVetOrgReturnsOnCall(i int, result1 []model.Customer, result2 error) {
+	fake.FindCustomerByVetOrgStub = nil
+	if fake.findCustomerByVetOrgReturnsOnCall == nil {
+		fake.findCustomerByVetOrgReturnsOnCall = make(map[int]struct {
 			result1 []model.Customer
 			result2 error
 		})
 	}
-	fake.findCustomerByVetOrgIDReturnsOnCall[i] = struct {
+	fake.findCustomerByVetOrgReturnsOnCall[i] = struct {
 		result1 []model.Customer
 		result2 error
 	}{result1, result2}
@@ -558,8 +558,8 @@ func (fake *FakeCustomerService) Invocations() map[string][][]interface{} {
 	defer fake.findCustomerByUserNameMutex.RUnlock()
 	fake.findCustomerByIDMutex.RLock()
 	defer fake.findCustomerByIDMutex.RUnlock()
-	fake.findCustomerByVetOrgIDMutex.RLock()
-	defer fake.findCustomerByVetOrgIDMutex.RUnlock()
+	fake.findCustomerByVetOrgMutex.RLock()
+	defer fake.findCustomerByVetOrgMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value
