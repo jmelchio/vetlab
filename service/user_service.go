@@ -6,21 +6,12 @@ import (
 	"fmt"
 
 	"github.com/jmelchio/vetlab/model"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // User implements the api.UserService interface
 type User struct {
 	UserRepo UserRepo
 }
-
-const (
-	MissingContext     = "Context is required"
-	PasswordTooShort   = "Password should be at least 8 characters"
-	HashingFailed      = "Failed to salt and hash password: %s"
-	UserOrPasswordFail = "User or Password mismatch"
-	VetOrgRequired     = "VetOrg ID is required"
-)
 
 // CreateUser creates a new model.User in the vetlab system
 // The assumption is that for a new user, the password has not been encrypted
@@ -123,24 +114,4 @@ func (userService User) FindUserByID(ctx context.Context, userID uint) (*model.U
 		return nil, errors.New(MissingContext)
 	}
 	return userService.UserRepo.GetByID(userID)
-}
-
-func hashAndSalt(pwd string) (*string, error) {
-	if len(pwd) < 8 {
-		return nil, errors.New(PasswordTooShort)
-	}
-	hash, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
-	if err != nil {
-		return nil, err
-	}
-	pwdHash := string(hash)
-	return &pwdHash, nil
-}
-
-func equalPasswords(pwdHash string, pwdPlain string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(pwdHash), []byte(pwdPlain))
-	if err != nil {
-		return false
-	}
-	return true
 }

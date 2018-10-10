@@ -24,15 +24,11 @@ const (
 	Login      = "login"
 	FindUser   = "find_user"
 
-	EmptyBody          = "Body of the request is empty"
-	InvalidBody        = "Body of the request is invalid"
 	UnableToCreateUser = "Unable to create a user"
 	UnableToUpdateUser = "Unable to update a user"
 	UnableToDeleteUser = "Unable to delete a user"
-	UnableToParseBody  = "Unable to parse request body"
 	UnableToLoginUser  = "Unable to login the user"
 	UnableToFindUser   = "Unable to find the user(s)"
-	NoParamsFound      = "No parameters found on request"
 )
 
 // UserRoutes are the REST endpoint routes for the user REST interface
