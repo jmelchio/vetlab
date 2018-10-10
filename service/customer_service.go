@@ -116,10 +116,13 @@ func (customerService Customer) FindCustomerByID(ctx context.Context, customerID
 	return customerService.CustomerRepo.GetByID(customerID)
 }
 
-// FindCustomerByVetOrgID attempts to find customers by the VetOrg they belong to
-func (customerService Customer) FindCustomerByVetOrgID(ctx context.Context, vetOrgID uint) ([]model.Customer, error) {
+// FindCustomerByVetOrg attempts to find customers by the VetOrg they belong to
+func (customerService Customer) FindCustomerByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.Customer, error) {
 	if ctx == nil {
 		return nil, errors.New(MissingContext)
 	}
-	return customerService.CustomerRepo.GetByVetOrgID(vetOrgID)
+	if vetOrg.ID == uint(0) {
+		return nil, errors.New(VetOrgRequired)
+	}
+	return customerService.CustomerRepo.GetByVetOrgID(vetOrg.ID)
 }
