@@ -3,6 +3,7 @@ package repository_test
 import (
 	"github.com/jmelchio/vetlab/model"
 	. "github.com/jmelchio/vetlab/repository"
+	"github.com/jmelchio/vetlab/service"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -11,7 +12,7 @@ import (
 var _ = Describe("SqlUserRepo", func() {
 
 	var (
-		userRepo  *SQLUserRepo
+		userRepo  service.UserRepo
 		userOne   model.User
 		userTwo   model.User
 		userName  string
@@ -22,8 +23,8 @@ var _ = Describe("SqlUserRepo", func() {
 	)
 
 	BeforeEach(func() {
-		userRepo = new(SQLUserRepo)
-		userRepo.Database = database
+		userRepoImpl := SQLUserRepo{Database: database}
+		userRepo = userRepoImpl
 
 		userName = "user_name"
 		firstName = "first_name"
@@ -33,7 +34,7 @@ var _ = Describe("SqlUserRepo", func() {
 	})
 
 	AfterEach(func() {
-		err = userRepo.Database.Where("1 = 1").Delete(&model.User{}).Error
+		err = database.Where("1 = 1").Delete(&model.User{}).Error
 		Expect(err).NotTo(HaveOccurred())
 	})
 
@@ -42,7 +43,7 @@ var _ = Describe("SqlUserRepo", func() {
 		Context("User table has been created during in BeforeSuite", func() {
 
 			It("Has a user table", func() {
-				hasUserTable := userRepo.Database.HasTable(&model.User{})
+				hasUserTable := database.HasTable(&model.User{})
 				Expect(hasUserTable).To(BeTrue())
 			})
 		})
