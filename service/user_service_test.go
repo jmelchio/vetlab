@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/jmelchio/vetlab/api"
 	"github.com/jmelchio/vetlab/model"
 	. "github.com/jmelchio/vetlab/service"
 	"github.com/jmelchio/vetlab/service/servicefakes"
@@ -17,7 +18,7 @@ import (
 var _ = Describe("UserService", func() {
 
 	var (
-		userService User
+		userService api.UserService
 		userRepo    *servicefakes.FakeUserRepo
 		user        model.User
 		userName    string
