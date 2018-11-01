@@ -1,4 +1,4 @@
-package repository_test
+package sql_test
 
 import (
 	"github.com/jinzhu/gorm"

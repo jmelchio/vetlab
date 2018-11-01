@@ -1,4 +1,4 @@
-package repository
+package sql
 
 import (
 	"errors"
@@ -9,15 +9,15 @@ import (
 	"github.com/jmelchio/vetlab/model"
 )
 
-// SQLUserRepo describes the sql database that persists the User
-type SQLUserRepo struct {
+// UserRepo describes the sql database that persists the User
+type UserRepo struct {
 	Database *gorm.DB
 }
 
 // Create creates a persistent User row in the sql datastore
-func (sqlUserRepo SQLUserRepo) Create(user *model.User) error {
-	if sqlUserRepo.Database.NewRecord(user) {
-		if err := sqlUserRepo.Database.Create(user).Error; err != nil {
+func (userRepo UserRepo) Create(user *model.User) error {
+	if userRepo.Database.NewRecord(user) {
+		if err := userRepo.Database.Create(user).Error; err != nil {
 			return err
 		}
 		return nil
@@ -28,10 +28,10 @@ func (sqlUserRepo SQLUserRepo) Create(user *model.User) error {
 // Update modifies a User row in the sql datastore
 // If the password is less than 50 characters long it's probably not hashed and
 // should therefore not be saved to the database
-func (sqlUserRepo SQLUserRepo) Update(user *model.User) error {
-	if !sqlUserRepo.Database.NewRecord(user) {
+func (userRepo UserRepo) Update(user *model.User) error {
+	if !userRepo.Database.NewRecord(user) {
 		if len(user.Password) < 50 {
-			if err := sqlUserRepo.Database.Model(user).Updates(
+			if err := userRepo.Database.Model(user).Updates(
 				model.User{
 					UserName:  user.UserName,
 					FirstName: user.FirstName,
@@ -42,7 +42,7 @@ func (sqlUserRepo SQLUserRepo) Update(user *model.User) error {
 				return err
 			}
 		} else {
-			if err := sqlUserRepo.Database.Save(user).Error; err != nil {
+			if err := userRepo.Database.Save(user).Error; err != nil {
 				return err
 			}
 		}
@@ -52,28 +52,28 @@ func (sqlUserRepo SQLUserRepo) Update(user *model.User) error {
 }
 
 // Delete removes a User row in the sql datastore
-func (sqlUserRepo SQLUserRepo) Delete(user *model.User) error {
-	if err := sqlUserRepo.Database.Delete(user).Error; err != nil {
+func (userRepo UserRepo) Delete(user *model.User) error {
+	if err := userRepo.Database.Delete(user).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 // GetByID fetches a User from the sql datastore
-func (sqlUserRepo SQLUserRepo) GetByID(userID uint) (*model.User, error) {
+func (userRepo UserRepo) GetByID(userID uint) (*model.User, error) {
 	var user model.User
 
-	if err := sqlUserRepo.Database.First(&user, userID).Error; err != nil {
+	if err := userRepo.Database.First(&user, userID).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
 }
 
 // GetByUserName fetches all users by UserName from the sql datastore
-func (sqlUserRepo SQLUserRepo) GetByUserName(userName string) (*model.User, error) {
+func (userRepo UserRepo) GetByUserName(userName string) (*model.User, error) {
 	var user model.User
 
-	if err := sqlUserRepo.Database.Where("user_name = ?", userName).Find(&user).Error; err != nil {
+	if err := userRepo.Database.Where("user_name = ?", userName).Find(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
