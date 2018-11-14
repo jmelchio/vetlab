@@ -38,23 +38,30 @@ type CustomerService interface {
 	FindCustomerByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.Customer, error)
 }
 
-//go:generate counterfeiter . ReportService
+//go:generate counterfeiter . DiagnosticRequestService
 
-// ReportService provides the business operations for requesting,finding and retrieving
-// diagnostic reports
-type ReportService interface {
+// DiagnosticRequestService provides the business operations for requesting diagnostic reports
+type DiagnosticRequestService interface {
 	SubmitDiagnosticRequest(ctx context.Context, diagReq model.DiagnosticRequest) (*model.DiagnosticRequest, error)
-	FindReportByDateRange(ctx context.Context, start time.Time, end time.Time, vetOrg model.VetOrg) ([]model.DiagnosticReport, error)
-	FindReportByID(ctx context.Context, reportID uint) (model.DiagnosticReport, error)
-	FindReportByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.DiagnosticReport, error)
-	FindReportByUser(ctx context.Context, user model.User) ([]model.DiagnosticReport, error)
-	FindReportByCustomer(ctx context.Context, customer model.Customer) ([]model.DiagnosticReport, error)
 
 	FindRequestByDateRange(ctx context.Context, start time.Time, end time.Time, vetOrg model.VetOrg) ([]model.DiagnosticRequest, error)
 	FindRequestByID(ctx context.Context, requestID uint) (*model.DiagnosticRequest, error)
 	FindRequestByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.DiagnosticRequest, error)
 	FindRequestByUser(ctx context.Context, user model.User) ([]model.DiagnosticRequest, error)
 	FindRequestByCustomer(ctx context.Context, customer model.Customer) ([]model.DiagnosticRequest, error)
+}
+
+//go:generate counterfeiter . DiagnosticReportService
+
+// DiagnosticReportService provides the business operations for providing diagnostic reports
+type DiagnosticReportService interface {
+	SumbmitDiagnosticReport(ctx context.Context, diagReport model.DiagnosticReport) (*model.DiagnosticReport, error)
+
+	FindReportByDateRange(ctx context.Context, start time.Time, end time.Time, vetOrg model.VetOrg) ([]model.DiagnosticReport, error)
+	FindReportByID(ctx context.Context, reportID uint) (*model.DiagnosticReport, error)
+	FindReportByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.DiagnosticReport, error)
+	FindReportByUser(ctx context.Context, user model.User) ([]model.DiagnosticReport, error)
+	FindReportByCustomer(ctx context.Context, customer model.Customer) ([]model.DiagnosticReport, error)
 }
 
 //go:generate counterfeiter . VetOrgService
