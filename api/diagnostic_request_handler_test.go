@@ -3,6 +3,7 @@ package api_test
 import (
 	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 
@@ -49,6 +50,22 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				recorder = httptest.NewRecorder()
 				request, _ := requestGenerator.CreateRequest(SubmitDiagnosticRequest, nil, bytes.NewReader(requestBytes))
 				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Creates a diagnosticRequest and returns 201 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusCreated))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+
+				var newDiagnosticRequest model.DiagnosticRequest
+				err = json.Unmarshal(respBody, &newDiagnosticRequest)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(newDiagnosticRequest).NotTo(BeNil())
+				Expect(newDiagnosticRequest.VetOrgID).To(Equal(diagnosticRequest.VetOrgID))
+				Expect(newDiagnosticRequest.CustomerID).To(Equal(diagnosticRequest.CustomerID))
+				Expect(newDiagnosticRequest.UserID).To(Equal(diagnosticRequest.UserID))
+				Expect(newDiagnosticRequest.Description).To(Equal(diagnosticRequest.Description))
+				Expect(diagnosticRequestService.SubmitDiagnosticRequestCallCount()).To(Equal(1))
 			})
 		})
 	})
