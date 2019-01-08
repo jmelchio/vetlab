@@ -38,7 +38,12 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 		)
 
 		BeforeEach(func() {
-			diagnosticRequest = model.DiagnosticRequest{}
+			diagnosticRequest = model.DiagnosticRequest{
+				VetOrgID:    uint(12345),
+				CustomerID:  uint(54321),
+				UserID:      uint(23451),
+				Description: "this is a good request",
+			}
 		})
 
 		Context("Valid request information is passed", func() {
@@ -61,6 +66,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				err = json.Unmarshal(respBody, &newDiagnosticRequest)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(newDiagnosticRequest).NotTo(BeNil())
+				Expect(newDiagnosticRequest.ID).NotTo(BeNil())
 				Expect(newDiagnosticRequest.VetOrgID).To(Equal(diagnosticRequest.VetOrgID))
 				Expect(newDiagnosticRequest.CustomerID).To(Equal(diagnosticRequest.CustomerID))
 				Expect(newDiagnosticRequest.UserID).To(Equal(diagnosticRequest.UserID))
