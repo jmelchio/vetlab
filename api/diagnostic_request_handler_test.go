@@ -3,6 +3,7 @@ package api_test
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -72,6 +73,63 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				Expect(newDiagnosticRequest.UserID).To(Equal(diagnosticRequest.UserID))
 				Expect(newDiagnosticRequest.Description).To(Equal(diagnosticRequest.Description))
 				Expect(diagnosticRequestService.SubmitDiagnosticRequestCallCount()).To(Equal(1))
+			})
+		})
+
+		Context("Valid diagnostic request is passed but downstream call fails", func() {
+
+			BeforeEach(func() {
+				diagnosticRequestService.SubmitDiagnosticRequestReturns(nil, errors.New("Whoot?"))
+				userBytes, err := json.Marshal(diagnosticRequest)
+				Expect(err).NotTo(HaveOccurred())
+				recorder = httptest.NewRecorder()
+				request, _ := requestGenerator.CreateRequest(SubmitDiagnosticRequest, nil, bytes.NewReader(userBytes))
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Fails to return a users and returns 500 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(err).NotTo(HaveOccurred())
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToSubmitDiagnosticRequest))
+				Expect(diagnosticRequestService.SubmitDiagnosticRequestCallCount()).To(Equal(1))
+			})
+		})
+
+		Context("Body of the request is empty", func() {
+
+			BeforeEach(func() {
+				recorder = httptest.NewRecorder()
+				request, _ := requestGenerator.CreateRequest(SubmitDiagnosticRequest, nil, nil)
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Fails to create a user and returns a 400 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(EmptyBody))
+				Expect(diagnosticRequestService.SubmitDiagnosticRequestCallCount()).To(Equal(0))
+			})
+		})
+
+		Context("Body of the request contains invalid data", func() {
+
+			BeforeEach(func() {
+				userBytes, err := json.Marshal("diagnosticRequest")
+				Expect(err).NotTo(HaveOccurred())
+				recorder = httptest.NewRecorder()
+				request, _ := requestGenerator.CreateRequest(SubmitDiagnosticRequest, nil, bytes.NewReader(userBytes))
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Fails to create a user and returns a 400 status code", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(InvalidBody))
+				Expect(diagnosticRequestService.SubmitDiagnosticRequestCallCount()).To(Equal(0))
 			})
 		})
 	})
