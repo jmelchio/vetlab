@@ -133,4 +133,47 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			})
 		})
 	})
+
+	Describe("Find a diagnostic request by ID", func() {
+
+		var (
+			diagnosticRequest model.DiagnosticRequest
+		)
+
+		BeforeEach(func() {
+			diagnosticRequest = model.DiagnosticRequest{
+				ID:          uint(98765),
+				VetOrgID:    uint(12345),
+				CustomerID:  uint(54321),
+				UserID:      uint(23451),
+				Description: "this is a good request",
+			}
+		})
+
+		Context("Valid request information is provided", func() {
+
+			BeforeEach(func() {
+				diagnosticRequestService.FindRequestByIDReturns(&diagnosticRequest, nil)
+				recorder = httptest.NewRecorder()
+				params := rata.Params{
+					"request_id": "98765",
+				}
+				request, _ := requestGenerator.CreateRequest(DiagnosticRequestByID, params, nil)
+				handler.ServeHTTP(recorder, request)
+			})
+
+			It("Returns the requested diagnostic request information", func() {
+				Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
+				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				Expect(err).NotTo(HaveOccurred())
+
+				var findDiagnosticRequest model.DiagnosticRequest
+				err = json.Unmarshal(respBody, &findDiagnosticRequest)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(findDiagnosticRequest).NotTo(BeNil())
+				Expect(findDiagnosticRequest.ID).To(Equal(diagnosticRequest.ID))
+				Expect(findDiagnosticRequest.Description).To(Equal(diagnosticRequest.Description))
+			})
+		})
+	})
 })
