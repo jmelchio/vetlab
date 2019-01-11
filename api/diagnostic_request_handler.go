@@ -25,7 +25,7 @@ const (
 	DiagnosticRequestsByUserID               = "diagnotistic_requests_by_user_id"
 	DiagnosticRequestsByCustomerID           = "diagnotistic_requests_by_customer_id"
 	DiagnosticRequestsByVetOrgIDAndDateRange = "diagnostic_requests_by_vetorg_id_and_date_range"
-	UnableToParseVars                        = "Unable to parse request variable(s)"
+	UnableToParseParams                      = "Unable to parse request parameters(s)"
 	ErrorFetchingDiagnosticRequests          = "Error occurred attempting to retrieve diagnostic request(s)"
 )
 
@@ -92,13 +92,13 @@ func (diagnosticRequestServer *DiagnosticRequestServer) SubmitDiagnosticRequest(
 func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequest(writer http.ResponseWriter, request *http.Request) {
 	requestID, err := strconv.ParseUint(rata.Param(request, "request_id"), 10, 32)
 	if err != nil {
-		http.Error(writer, UnableToParseVars, http.StatusBadRequest)
+		http.Error(writer, UnableToParseParams, http.StatusBadRequest)
 		return
 	}
 
 	diagnosticRequest, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByID(context.TODO(), uint(requestID))
 	if err != nil {
-		http.Error(writer, ErrorFetchingDiagnosticRequests, http.StatusInternalServerError)
+		http.Error(writer, ErrorFetchingDiagnosticRequests, http.StatusNotFound)
 		return
 	}
 
