@@ -101,6 +101,6 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestB
 func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestByCustomer(writer http.ResponseWriter, request *http.Request) {
 }
 
-// FindDiagnotisticRequestByDateRange is a handler that handles searches for diagnostic requests by Customer
+// FindDiagnotisticRequestByDateRange is a handler that handles searches for diagnostic requests by VetOrg and date range
 func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestByDateRange(writer http.ResponseWriter, request *http.Request) {
 }
