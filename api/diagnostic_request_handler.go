@@ -42,11 +42,11 @@ func NewDiagnosticRequestHandler(diagnosticRequestService DiagnosticRequestServi
 
 	handlers := rata.Handlers{
 		SubmitDiagnosticRequest:                  http.HandlerFunc(diagnosticRequestServer.SubmitDiagnosticRequest),
-		DiagnosticRequestByID:                    http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequests),
-		DiagnosticRequestsByVetOrgID:             http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequests),
-		DiagnosticRequestsByUserID:               http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequests),
-		DiagnosticRequestsByCustomerID:           http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequests),
-		DiagnosticRequestsByVetOrgIDAndDateRange: http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequests),
+		DiagnosticRequestByID:                    http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequest),
+		DiagnosticRequestsByVetOrgID:             http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequestByVetOrg),
+		DiagnosticRequestsByUserID:               http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequestByUser),
+		DiagnosticRequestsByCustomerID:           http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequestByCustomer),
+		DiagnosticRequestsByVetOrgIDAndDateRange: http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequestByDateRange),
 	}
 
 	return rata.NewRouter(DiagnosticRequestRoutes, handlers)
@@ -85,6 +85,22 @@ func (diagnosticRequestServer *DiagnosticRequestServer) SubmitDiagnosticRequest(
 	}
 }
 
-// FindDiagnotisticRequests is a handler that handles all types of find requests for diagnostic requests
-func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequests(writer http.ResponseWriter, request *http.Request) {
+// FindDiagnotisticRequest is a handler that handles searches for diagstic requests by ID
+func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequest(writer http.ResponseWriter, request *http.Request) {
+}
+
+// FindDiagnotisticRequestByVetOrg is a handler that handles searches for diagnostic requests by VetOrg
+func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestByVetOrg(writer http.ResponseWriter, request *http.Request) {
+}
+
+// FindDiagnotisticRequestByUser is a handler that handles searches for diagnostic requests by User
+func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestByUser(writer http.ResponseWriter, request *http.Request) {
+}
+
+// FindDiagnotisticRequestByCustomer is a handler that handles searches for diagnostic requests by Customer
+func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestByCustomer(writer http.ResponseWriter, request *http.Request) {
+}
+
+// FindDiagnotisticRequestByDateRange is a handler that handles searches for diagnostic requests by Customer
+func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestByDateRange(writer http.ResponseWriter, request *http.Request) {
 }
