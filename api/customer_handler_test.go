@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 
 	"github.com/jmelchio/vetlab/api/apifakes"
 	"github.com/jmelchio/vetlab/model"
@@ -476,10 +475,10 @@ var _ = Describe("CustomerHandler", func() {
 				BeforeEach(func() {
 					customerService.FindCustomerByUserNameReturns(&sampleCustomer, nil)
 					recorder = httptest.NewRecorder()
-					request, _ := requestGenerator.CreateRequest(FindCustomer, nil, nil)
-					q := url.Values{}
-					q.Add("user_name", userName)
-					request.URL.RawQuery = q.Encode()
+					request, _ := requestGenerator.CreateRequest(
+						FindCustomerByUserName,
+						rata.Params{"user_name": userName},
+						nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -503,10 +502,10 @@ var _ = Describe("CustomerHandler", func() {
 				BeforeEach(func() {
 					customerService.FindCustomerByUserNameReturns(nil, errors.New("Whoot?"))
 					recorder = httptest.NewRecorder()
-					request, _ := requestGenerator.CreateRequest(FindCustomer, nil, nil)
-					q := url.Values{}
-					q.Add("user_name", userName)
-					request.URL.RawQuery = q.Encode()
+					request, _ := requestGenerator.CreateRequest(
+						FindCustomerByUserName,
+						rata.Params{"user_name": "bad_name"},
+						nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -529,10 +528,10 @@ var _ = Describe("CustomerHandler", func() {
 					customerService.FindCustomerByIDReturns(&sampleCustomer, nil)
 					customerID = uint(12345)
 					recorder = httptest.NewRecorder()
-					request, _ := requestGenerator.CreateRequest(FindCustomer, nil, nil)
-					q := url.Values{}
-					q.Add("customer_id", fmt.Sprint(customerID))
-					request.URL.RawQuery = q.Encode()
+					request, _ := requestGenerator.CreateRequest(
+						FindCustomer,
+						rata.Params{"customer_id": fmt.Sprint(customerID)},
+						nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -557,10 +556,10 @@ var _ = Describe("CustomerHandler", func() {
 			BeforeEach(func() {
 				customerService.FindCustomerByUserNameReturns(nil, errors.New("Whoot?"))
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(FindCustomer, nil, nil)
-				q := url.Values{}
-				q.Add("user_name", userName)
-				request.URL.RawQuery = q.Encode()
+				request, _ := requestGenerator.CreateRequest(
+					FindCustomerByUserName,
+					rata.Params{"user_name": userName},
+					nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -570,45 +569,6 @@ var _ = Describe("CustomerHandler", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToFindCustomer))
 				Expect(customerService.FindCustomerByUserNameCallCount()).To(Equal(1))
-			})
-		})
-
-		Context("No request parameters are passed", func() {
-
-			BeforeEach(func() {
-				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(FindCustomer, nil, nil)
-				handler.ServeHTTP(recorder, request)
-			})
-
-			It("Fails to find a customer and returns a 400 status code", func() {
-				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(NoParamsFound))
-				Expect(customerService.FindCustomerByUserNameCallCount()).To(Equal(0))
-				Expect(customerService.FindCustomerByIDCallCount()).To(Equal(0))
-			})
-		})
-
-		Context("Bad request parameters are passed", func() {
-
-			BeforeEach(func() {
-				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(FindCustomer, nil, nil)
-				q := url.Values{}
-				q.Add("first_name", "nobody")
-				request.URL.RawQuery = q.Encode()
-				handler.ServeHTTP(recorder, request)
-			})
-
-			It("Fails to find a customer and returns a 400 status code", func() {
-				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(NoParamsFound))
-				Expect(customerService.FindCustomerByUserNameCallCount()).To(Equal(0))
-				Expect(customerService.FindCustomerByIDCallCount()).To(Equal(0))
 			})
 		})
 	})

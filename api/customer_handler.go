@@ -18,11 +18,12 @@ type CustomerServer struct {
 }
 
 const (
-	CreateCustomer = "create_customer"
-	UpdateCustomer = "update_customer"
-	DeleteCustomer = "delete_customer"
-	CustomerLogin  = "customer_login"
-	FindCustomer   = "find_customer"
+	CreateCustomer         = "create_customer"
+	UpdateCustomer         = "update_customer"
+	DeleteCustomer         = "delete_customer"
+	CustomerLogin          = "customer_login"
+	FindCustomer           = "find_customer"
+	FindCustomerByUserName = "find_customer_by_user_name"
 
 	UnableToCreateCustomer = "Unable to create a customer"
 	UnableToUpdateCustomer = "Unable to update a customer"
@@ -37,7 +38,8 @@ var CustomerRoutes = rata.Routes{
 	{Path: "/customer", Method: rata.PUT, Name: UpdateCustomer},
 	{Path: "/customer", Method: rata.DELETE, Name: DeleteCustomer},
 	{Path: "/customer/login", Method: rata.POST, Name: CustomerLogin},
-	{Path: "/customer", Method: rata.GET, Name: FindCustomer},
+	{Path: "/customer/:customer_id", Method: rata.GET, Name: FindCustomer},
+	{Path: "/customer/user_name/:user_name", Method: rata.GET, Name: FindCustomerByUserName},
 }
 
 // NewCustomerHandler provides the factory function to create the REST interface for customer actions
@@ -45,11 +47,12 @@ func NewCustomerHandler(customerService CustomerService) (http.Handler, error) {
 	customerServer := &CustomerServer{CustomerService: customerService}
 
 	handlers := rata.Handlers{
-		CreateCustomer: http.HandlerFunc(customerServer.CreateCustomer),
-		UpdateCustomer: http.HandlerFunc(customerServer.UpdateCustomer),
-		DeleteCustomer: http.HandlerFunc(customerServer.DeleteCustomer),
-		CustomerLogin:  http.HandlerFunc(customerServer.CustomerLogin),
-		FindCustomer:   http.HandlerFunc(customerServer.FindCustomer),
+		CreateCustomer:         http.HandlerFunc(customerServer.CreateCustomer),
+		UpdateCustomer:         http.HandlerFunc(customerServer.UpdateCustomer),
+		DeleteCustomer:         http.HandlerFunc(customerServer.DeleteCustomer),
+		CustomerLogin:          http.HandlerFunc(customerServer.CustomerLogin),
+		FindCustomer:           http.HandlerFunc(customerServer.FindCustomer),
+		FindCustomerByUserName: http.HandlerFunc(customerServer.FindCustomerByUserName),
 	}
 
 	return rata.NewRouter(CustomerRoutes, handlers)
@@ -177,52 +180,37 @@ func (customerServer *CustomerServer) CustomerLogin(writer http.ResponseWriter, 
 }
 
 func (customerServer *CustomerServer) FindCustomer(writer http.ResponseWriter, request *http.Request) {
-	if err := request.ParseForm(); err != nil {
-		http.Error(writer, NoParamsFound, http.StatusBadRequest)
-		return
-	}
+	customerID := rata.Param(request, "customer_id")
 
-	if len(request.Form) != 1 {
-		http.Error(writer, NoParamsFound, http.StatusBadRequest)
-		return
-	}
-
-	possibleParams := []string{"user_name", "customer_id"}
-	for _, param := range possibleParams {
-		valueFound := request.Form.Get(param)
-		if len(valueFound) > 0 {
-			switch param {
-			case "user_name":
-				foundCustomer, err := customerServer.CustomerService.FindCustomerByUserName(context.TODO(), valueFound)
-				if err != nil {
-					http.Error(writer, UnableToFindCustomer, http.StatusNotFound)
-					return
-				}
-				writer.Header().Set("Content-Type", "application/json")
-				writer.WriteHeader(http.StatusOK)
-				if err := json.NewEncoder(writer).Encode(foundCustomer); err != nil {
-					log.Printf("Problem encoding found customer: %s", err.Error())
-				}
-				return
-			case "customer_id":
-				if uintValue, err := strconv.ParseUint(valueFound, 10, 32); err == nil {
-					foundCustomer, err := customerServer.CustomerService.FindCustomerByID(context.TODO(), uint(uintValue))
-					if err != nil {
-						http.Error(writer, UnableToFindCustomer, http.StatusNotFound)
-						return
-					}
-					writer.Header().Set("Content-Type", "application/json")
-					writer.WriteHeader(http.StatusOK)
-					if err := json.NewEncoder(writer).Encode(foundCustomer); err != nil {
-						log.Printf("Problem encoding found customer: %s", err.Error())
-					}
-					return
-				}
-				http.Error(writer, NoParamsFound, http.StatusBadRequest)
-				return
-			}
+	if uintValue, err := strconv.ParseUint(customerID, 10, 32); err == nil {
+		foundcustomer, err := customerServer.CustomerService.FindCustomerByID(context.TODO(), uint(uintValue))
+		if err != nil {
+			http.Error(writer, UnableToFindCustomer, http.StatusNotFound)
+			return
 		}
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(writer).Encode(foundcustomer); err != nil {
+			log.Printf("Problem encoding found customer: %s", err.Error())
+		}
+		return
 	}
 	http.Error(writer, NoParamsFound, http.StatusBadRequest)
+	return
+}
+
+func (customerServer *CustomerServer) FindCustomerByUserName(writer http.ResponseWriter, request *http.Request) {
+	userName := rata.Param(request, "user_name")
+
+	foundCustomer, err := customerServer.CustomerService.FindCustomerByUserName(context.TODO(), userName)
+	if err != nil {
+		http.Error(writer, UnableToFindCustomer, http.StatusNotFound)
+		return
+	}
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(writer).Encode(foundCustomer); err != nil {
+		log.Printf("Problem encoding found customer: %s", err.Error())
+	}
 	return
 }
