@@ -4,11 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
+	"strconv"
 
 	"github.com/jmelchio/vetlab/api/apifakes"
 	"github.com/jmelchio/vetlab/model"
@@ -474,10 +473,10 @@ var _ = Describe("UserHandler", func() {
 				BeforeEach(func() {
 					userService.FindUserByUserNameReturns(&sampleUser, nil)
 					recorder = httptest.NewRecorder()
-					request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
-					q := url.Values{}
-					q.Add("user_name", userName)
-					request.URL.RawQuery = q.Encode()
+					request, _ := requestGenerator.CreateRequest(
+						FindUserByUserName,
+						rata.Params{"user_name": userName},
+						nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -501,10 +500,10 @@ var _ = Describe("UserHandler", func() {
 				BeforeEach(func() {
 					userService.FindUserByUserNameReturns(nil, errors.New("Whoot?"))
 					recorder = httptest.NewRecorder()
-					request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
-					q := url.Values{}
-					q.Add("user_name", userName)
-					request.URL.RawQuery = q.Encode()
+					request, _ := requestGenerator.CreateRequest(
+						FindUserByUserName,
+						rata.Params{"user_name": userName},
+						nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -527,10 +526,10 @@ var _ = Describe("UserHandler", func() {
 					userService.FindUserByIDReturns(&sampleUser, nil)
 					userID = uint(12345)
 					recorder = httptest.NewRecorder()
-					request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
-					q := url.Values{}
-					q.Add("user_id", fmt.Sprint(userID))
-					request.URL.RawQuery = q.Encode()
+					request, _ := requestGenerator.CreateRequest(
+						FindUser,
+						rata.Params{"user_id": strconv.FormatUint(uint64(userID), 10)},
+						nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -555,10 +554,10 @@ var _ = Describe("UserHandler", func() {
 			BeforeEach(func() {
 				userService.FindUserByUserNameReturns(nil, errors.New("Whoot?"))
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
-				q := url.Values{}
-				q.Add("user_name", userName)
-				request.URL.RawQuery = q.Encode()
+				request, _ := requestGenerator.CreateRequest(
+					FindUserByUserName,
+					rata.Params{"user_name": userName},
+					nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -568,45 +567,6 @@ var _ = Describe("UserHandler", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToFindUser))
 				Expect(userService.FindUserByUserNameCallCount()).To(Equal(1))
-			})
-		})
-
-		Context("No request parameters are passed", func() {
-
-			BeforeEach(func() {
-				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
-				handler.ServeHTTP(recorder, request)
-			})
-
-			It("Fails to find a user and returns a 400 status code", func() {
-				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(NoParamsFound))
-				Expect(userService.FindUserByUserNameCallCount()).To(Equal(0))
-				Expect(userService.FindUserByIDCallCount()).To(Equal(0))
-			})
-		})
-
-		Context("Bad request parameters are passed", func() {
-
-			BeforeEach(func() {
-				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(FindUser, nil, nil)
-				q := url.Values{}
-				q.Add("first_name", "nobody")
-				request.URL.RawQuery = q.Encode()
-				handler.ServeHTTP(recorder, request)
-			})
-
-			It("Fails to find a user and returns a 400 status code", func() {
-				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(NoParamsFound))
-				Expect(userService.FindUserByUserNameCallCount()).To(Equal(0))
-				Expect(userService.FindUserByIDCallCount()).To(Equal(0))
 			})
 		})
 	})

@@ -18,11 +18,12 @@ type UserServer struct {
 }
 
 const (
-	CreateUser = "create_user"
-	UpdateUser = "update_user"
-	DeleteUser = "delete_user"
-	Login      = "login"
-	FindUser   = "find_user"
+	CreateUser         = "create_user"
+	UpdateUser         = "update_user"
+	DeleteUser         = "delete_user"
+	Login              = "login"
+	FindUser           = "find_user"
+	FindUserByUserName = "find_user_by_user_name"
 
 	UnableToCreateUser = "Unable to create a user"
 	UnableToUpdateUser = "Unable to update a user"
@@ -37,7 +38,8 @@ var UserRoutes = rata.Routes{
 	{Path: "/user", Method: rata.PUT, Name: UpdateUser},
 	{Path: "/user", Method: rata.DELETE, Name: DeleteUser},
 	{Path: "/user/login", Method: rata.POST, Name: Login},
-	{Path: "/user", Method: rata.GET, Name: FindUser},
+	{Path: "/user/:user_id", Method: rata.GET, Name: FindUser},
+	{Path: "/user/username/:user_name", Method: rata.GET, Name: FindUserByUserName},
 }
 
 // NewUserHandler provides the factory function to create the REST interface for user actions
@@ -45,11 +47,12 @@ func NewUserHandler(userService UserService) (http.Handler, error) {
 	userServer := &UserServer{UserService: userService}
 
 	handlers := rata.Handlers{
-		CreateUser: http.HandlerFunc(userServer.CreateUser),
-		UpdateUser: http.HandlerFunc(userServer.UpdateUser),
-		DeleteUser: http.HandlerFunc(userServer.DeleteUser),
-		Login:      http.HandlerFunc(userServer.Login),
-		FindUser:   http.HandlerFunc(userServer.FindUser),
+		CreateUser:         http.HandlerFunc(userServer.CreateUser),
+		UpdateUser:         http.HandlerFunc(userServer.UpdateUser),
+		DeleteUser:         http.HandlerFunc(userServer.DeleteUser),
+		Login:              http.HandlerFunc(userServer.Login),
+		FindUser:           http.HandlerFunc(userServer.FindUser),
+		FindUserByUserName: http.HandlerFunc(userServer.FindUserByUserName),
 	}
 
 	return rata.NewRouter(UserRoutes, handlers)
@@ -177,52 +180,37 @@ func (userServer *UserServer) Login(writer http.ResponseWriter, request *http.Re
 }
 
 func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http.Request) {
-	if err := request.ParseForm(); err != nil {
-		http.Error(writer, NoParamsFound, http.StatusBadRequest)
-		return
-	}
+	userID := rata.Param(request, "user_id")
 
-	if len(request.Form) != 1 {
-		http.Error(writer, NoParamsFound, http.StatusBadRequest)
-		return
-	}
-
-	possibleParams := []string{"user_name", "user_id"}
-	for _, param := range possibleParams {
-		valueFound := request.Form.Get(param)
-		if len(valueFound) > 0 {
-			switch param {
-			case "user_name":
-				foundUser, err := userServer.UserService.FindUserByUserName(context.TODO(), valueFound)
-				if err != nil {
-					http.Error(writer, UnableToFindUser, http.StatusNotFound)
-					return
-				}
-				writer.Header().Set("Content-Type", "application/json")
-				writer.WriteHeader(http.StatusOK)
-				if err := json.NewEncoder(writer).Encode(foundUser); err != nil {
-					log.Printf("Problem encoding found user: %s", err.Error())
-				}
-				return
-			case "user_id":
-				if uintValue, err := strconv.ParseUint(valueFound, 10, 32); err == nil {
-					foundUser, err := userServer.UserService.FindUserByID(context.TODO(), uint(uintValue))
-					if err != nil {
-						http.Error(writer, UnableToFindUser, http.StatusNotFound)
-						return
-					}
-					writer.Header().Set("Content-Type", "application/json")
-					writer.WriteHeader(http.StatusOK)
-					if err := json.NewEncoder(writer).Encode(foundUser); err != nil {
-						log.Printf("Problem encoding found user: %s", err.Error())
-					}
-					return
-				}
-				http.Error(writer, NoParamsFound, http.StatusBadRequest)
-				return
-			}
+	if uintValue, err := strconv.ParseUint(userID, 10, 32); err == nil {
+		foundUser, err := userServer.UserService.FindUserByID(context.TODO(), uint(uintValue))
+		if err != nil {
+			http.Error(writer, UnableToFindUser, http.StatusNotFound)
+			return
 		}
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(writer).Encode(foundUser); err != nil {
+			log.Printf("Problem encoding found user: %s", err.Error())
+		}
+		return
 	}
 	http.Error(writer, NoParamsFound, http.StatusBadRequest)
+	return
+}
+
+func (userServer *UserServer) FindUserByUserName(writer http.ResponseWriter, request *http.Request) {
+	userName := rata.Param(request, "user_name")
+
+	foundUser, err := userServer.UserService.FindUserByUserName(context.TODO(), userName)
+	if err != nil {
+		http.Error(writer, UnableToFindUser, http.StatusNotFound)
+		return
+	}
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(writer).Encode(foundUser); err != nil {
+		log.Printf("Problem encoding found user: %s", err.Error())
+	}
 	return
 }
