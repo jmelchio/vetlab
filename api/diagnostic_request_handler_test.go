@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -152,27 +153,51 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 		Context("Valid request information is provided", func() {
 
-			BeforeEach(func() {
-				diagnosticRequestService.FindRequestByIDReturns(&diagnosticRequest, nil)
-				recorder = httptest.NewRecorder()
-				params := rata.Params{
-					"request_id": "98765",
-				}
-				request, _ := requestGenerator.CreateRequest(DiagnosticRequestByID, params, nil)
-				handler.ServeHTTP(recorder, request)
+			Context("Id is present in backing storage", func() {
+
+				BeforeEach(func() {
+					diagnosticRequestService.FindRequestByIDReturns(&diagnosticRequest, nil)
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"request_id": "98765",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestByID, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns the requested diagnostic request information", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+
+					var findDiagnosticRequest model.DiagnosticRequest
+					err = json.Unmarshal(respBody, &findDiagnosticRequest)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(findDiagnosticRequest).NotTo(BeNil())
+					Expect(findDiagnosticRequest.ID).To(Equal(diagnosticRequest.ID))
+					Expect(findDiagnosticRequest.Description).To(Equal(diagnosticRequest.Description))
+				})
 			})
 
-			It("Returns the requested diagnostic request information", func() {
-				Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
-				Expect(err).NotTo(HaveOccurred())
+			Context("Id is not found in backing storage", func() {
 
-				var findDiagnosticRequest model.DiagnosticRequest
-				err = json.Unmarshal(respBody, &findDiagnosticRequest)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(findDiagnosticRequest).NotTo(BeNil())
-				Expect(findDiagnosticRequest.ID).To(Equal(diagnosticRequest.ID))
-				Expect(findDiagnosticRequest.Description).To(Equal(diagnosticRequest.Description))
+				BeforeEach(func() {
+					notFoundError := errors.New("Not found")
+					diagnosticRequestService.FindRequestByIDReturns(nil, notFoundError)
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"request_id": "12345",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestByID, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it is unable to find diagnostic request", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingDiagnosticRequests))
+				})
 			})
 		})
 	})
