@@ -176,6 +176,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(findDiagnosticRequest).NotTo(BeNil())
 					Expect(findDiagnosticRequest.ID).To(Equal(diagnosticRequest.ID))
 					Expect(findDiagnosticRequest.Description).To(Equal(diagnosticRequest.Description))
+					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(1))
 				})
 			})
 
@@ -197,6 +198,21 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingDiagnosticRequests))
+					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(1))
+				})
+			})
+
+			Context("No request id provided in the reqest", func() {
+
+				BeforeEach(func() {
+					recorder = httptest.NewRecorder()
+					request, _ := http.NewRequest("GET", "/diagnosticrequest/", nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it cannot find the page", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(0))
 				})
 			})
 		})
