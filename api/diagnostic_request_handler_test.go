@@ -215,6 +215,23 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(0))
 				})
 			})
+
+			Context("Invalid request id provided in the reqest", func() {
+
+				BeforeEach(func() {
+					recorder = httptest.NewRecorder()
+					request, _ := http.NewRequest("GET", "/diagnosticrequest/one", nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it cannot parse the request", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(0))
+				})
+			})
 		})
 	})
 })
