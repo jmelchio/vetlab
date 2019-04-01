@@ -24,12 +24,14 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 		recorder                 *httptest.ResponseRecorder
 		err                      error
 		diagnosticRequestService *apifakes.FakeDiagnosticRequestService
+		vetOrgService            *apifakes.FakeVetOrgService
 		requestGenerator         *rata.RequestGenerator
 	)
 
 	BeforeEach(func() {
 		diagnosticRequestService = new(apifakes.FakeDiagnosticRequestService)
-		handler, err = NewDiagnosticRequestHandler(diagnosticRequestService)
+		vetOrgService = new(apifakes.FakeVetOrgService)
+		handler, err = NewDiagnosticRequestHandler(diagnosticRequestService, vetOrgService)
 		requestGenerator = rata.NewRequestGenerator("", DiagnosticRequestRoutes)
 		Expect(err).NotTo(HaveOccurred())
 	})
@@ -243,6 +245,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 		var (
 			diagnosticRequest     model.DiagnosticRequest
 			diagnosticRequestList []model.DiagnosticRequest
+			vetOrg                model.VetOrg
 		)
 
 		BeforeEach(func() {
@@ -254,13 +257,19 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				Description: "this is a good request",
 			}
 			diagnosticRequestList = []model.DiagnosticRequest{diagnosticRequest}
+			vetOrgName := "Veterinary Clinic One"
+			vetOrg = model.VetOrg{
+				ID:      uint(12345),
+				OrgName: &vetOrgName,
+			}
 		})
 
 		Context("Valid request information is provided", func() {
 
-			Context("Id is present in backing storage", func() {
+			Context("VetOrg and Requests are present in backing storage", func() {
 
 				BeforeEach(func() {
+					vetOrgService.FindVetOrgByIDReturns(&vetOrg, nil)
 					diagnosticRequestService.FindRequestByVetOrgReturns(diagnosticRequestList, nil)
 					recorder = httptest.NewRecorder()
 					params := rata.Params{
@@ -285,10 +294,11 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				})
 			})
 
-			Context("Id is not found in backing storage", func() {
+			Context("Request(s) not found in backing storage", func() {
 
 				BeforeEach(func() {
 					notFoundError := errors.New("Not found")
+					vetOrgService.FindVetOrgByIDReturns(&vetOrg, nil)
 					diagnosticRequestService.FindRequestByVetOrgReturns(nil, notFoundError)
 					recorder = httptest.NewRecorder()
 					params := rata.Params{
@@ -303,7 +313,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingDiagnosticRequests))
-					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(1))
+					Expect(diagnosticRequestService.FindRequestByVetOrgCallCount()).To(Equal(1))
 				})
 			})
 

@@ -15,6 +15,7 @@ import (
 // DiagnosticRequestServer struct allows the DiagnosticReportService injection into the REST handler
 type DiagnosticRequestServer struct {
 	DiagnosticRequestService DiagnosticRequestService
+	VetOrgService            VetOrgService
 }
 
 const (
@@ -27,6 +28,7 @@ const (
 	DiagnosticRequestsByVetOrgIDAndDateRange = "diagnostic_requests_by_vetorg_id_and_date_range"
 	UnableToParseParams                      = "Unable to parse request parameters(s)"
 	ErrorFetchingDiagnosticRequests          = "Error occurred attempting to retrieve diagnostic request(s)"
+	ErrorFetchingVetOrg                      = "Error occurred attempting to retrieve vetOrg"
 )
 
 // DiagnosticRequestRoutes are the REST endpoint routes for the diagnostic requests REST interface
@@ -40,8 +42,11 @@ var DiagnosticRequestRoutes = rata.Routes{
 }
 
 // NewDiagnosticRequestHandler provides the factory function to create the REST interface for report requests
-func NewDiagnosticRequestHandler(diagnosticRequestService DiagnosticRequestService) (http.Handler, error) {
-	diagnosticRequestServer := &DiagnosticRequestServer{DiagnosticRequestService: diagnosticRequestService}
+func NewDiagnosticRequestHandler(diagnosticRequestService DiagnosticRequestService, vetOrgService VetOrgService) (http.Handler, error) {
+	diagnosticRequestServer := &DiagnosticRequestServer{
+		DiagnosticRequestService: diagnosticRequestService,
+		VetOrgService:            vetOrgService,
+	}
 
 	handlers := rata.Handlers{
 		SubmitDiagnosticRequest:                  http.HandlerFunc(diagnosticRequestServer.SubmitDiagnosticRequest),
@@ -112,6 +117,30 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequest(
 
 // FindDiagnotisticRequestByVetOrg is a handler that handles searches for diagnostic requests by VetOrg
 func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestByVetOrg(writer http.ResponseWriter, request *http.Request) {
+	vetOrgID, err := strconv.ParseUint(rata.Param(request, "vetorg_id"), 10, 32)
+	if err != nil {
+		http.Error(writer, UnableToParseParams, http.StatusBadRequest)
+		return
+	}
+
+	vetOrg, err := diagnosticRequestServer.VetOrgService.FindVetOrgByID(context.TODO(), uint(vetOrgID))
+	if err != nil {
+		http.Error(writer, ErrorFetchingVetOrg, http.StatusNotFound)
+		return
+	}
+
+	diagnosticRequestList, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByVetOrg(context.TODO(), *vetOrg)
+	if err != nil {
+		http.Error(writer, ErrorFetchingDiagnosticRequests, http.StatusNotFound)
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(writer).Encode(diagnosticRequestList); err != nil {
+		log.Printf("Problem encoding returned diagnostic request(s): %s", err.Error())
+		return
+	}
 }
 
 // FindDiagnotisticRequestByUser is a handler that handles searches for diagnostic requests by User
