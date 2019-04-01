@@ -220,7 +220,10 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				BeforeEach(func() {
 					recorder = httptest.NewRecorder()
-					request, _ := http.NewRequest("GET", "/diagnosticrequest/one", nil)
+					params := rata.Params{
+						"request_id": "one",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestByID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -230,6 +233,111 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
 					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(0))
+				})
+			})
+		})
+	})
+
+	Describe("Fetch diagnostic requests by VetOrg", func() {
+
+		var (
+			diagnosticRequest     model.DiagnosticRequest
+			diagnosticRequestList []model.DiagnosticRequest
+		)
+
+		BeforeEach(func() {
+			diagnosticRequest = model.DiagnosticRequest{
+				ID:          uint(98765),
+				VetOrgID:    uint(12345),
+				CustomerID:  uint(54321),
+				UserID:      uint(23451),
+				Description: "this is a good request",
+			}
+			diagnosticRequestList = []model.DiagnosticRequest{diagnosticRequest}
+		})
+
+		Context("Valid request information is provided", func() {
+
+			Context("Id is present in backing storage", func() {
+
+				BeforeEach(func() {
+					diagnosticRequestService.FindRequestByVetOrgReturns(diagnosticRequestList, nil)
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"vetorg_id": "12345",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgID, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns the requested diagnostic request information", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+
+					var findDiagnosticRequest []model.DiagnosticRequest
+					err = json.Unmarshal(respBody, &findDiagnosticRequest)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(findDiagnosticRequest).NotTo(BeNil())
+					Expect(findDiagnosticRequest[0].ID).To(Equal(diagnosticRequest.ID))
+					Expect(findDiagnosticRequest[0].Description).To(Equal(diagnosticRequest.Description))
+					Expect(diagnosticRequestService.FindRequestByVetOrgCallCount()).To(Equal(1))
+				})
+			})
+
+			Context("Id is not found in backing storage", func() {
+
+				BeforeEach(func() {
+					notFoundError := errors.New("Not found")
+					diagnosticRequestService.FindRequestByVetOrgReturns(nil, notFoundError)
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"vetorg_id": "12345",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgID, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it is unable to find diagnostic request", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingDiagnosticRequests))
+					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(1))
+				})
+			})
+
+			Context("No vetorg id provided in the reqest", func() {
+
+				BeforeEach(func() {
+					recorder = httptest.NewRecorder()
+					request, _ := http.NewRequest("GET", "/diagnosticrequest/vetorg/", nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it cannot find the page", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(0))
+				})
+			})
+
+			Context("Invalid vetorg id provided in the request", func() {
+
+				BeforeEach(func() {
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"vetorg_id": "one",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgID, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it cannot parse the request", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(diagnosticRequestService.FindRequestByVetOrgCallCount()).To(Equal(0))
 				})
 			})
 		})
