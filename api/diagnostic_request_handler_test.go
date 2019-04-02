@@ -290,7 +290,32 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(findDiagnosticRequest).NotTo(BeNil())
 					Expect(findDiagnosticRequest[0].ID).To(Equal(diagnosticRequest.ID))
 					Expect(findDiagnosticRequest[0].Description).To(Equal(diagnosticRequest.Description))
+					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
 					Expect(diagnosticRequestService.FindRequestByVetOrgCallCount()).To(Equal(1))
+				})
+			})
+
+			Context("VetOrg not found in backing storage", func() {
+
+				BeforeEach(func() {
+					notFoundError := errors.New("Not found")
+					vetOrgService.FindVetOrgByIDReturns(nil, notFoundError)
+					diagnosticRequestService.FindRequestByVetOrgReturns(nil, notFoundError)
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"vetorg_id": "12345",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgID, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it is unable to find VetOrg", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingVetOrg))
+					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
+					Expect(diagnosticRequestService.FindRequestByVetOrgCallCount()).To(Equal(0))
 				})
 			})
 
@@ -313,6 +338,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingDiagnosticRequests))
+					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
 					Expect(diagnosticRequestService.FindRequestByVetOrgCallCount()).To(Equal(1))
 				})
 			})
@@ -327,6 +353,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it cannot find the page", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(0))
 					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(0))
 				})
 			})
@@ -347,6 +374,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(0))
 					Expect(diagnosticRequestService.FindRequestByVetOrgCallCount()).To(Equal(0))
 				})
 			})
