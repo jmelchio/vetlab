@@ -8,14 +8,15 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/jmelchio/vetlab/api"
 	"github.com/jmelchio/vetlab/model"
-	"github.com/jmelchio/vetlab/repository"
+	"github.com/jmelchio/vetlab/repository/sql"
 	"github.com/jmelchio/vetlab/service"
 )
 
 var (
-	err         error
-	database    *gorm.DB
-	userHandler http.Handler
+	err             error
+	database        *gorm.DB
+	userHandler     http.Handler
+	customerHandler http.Handler
 )
 
 func Run() {
@@ -30,13 +31,21 @@ func Run() {
 	autoMigrateDB(&model.VetOrg{})
 	autoMigrateDB(&model.User{})
 
-	userRepo := repository.SQLUserRepo{Database: database}
+	userRepo := sql.UserRepo{Database: database}
 	userService := service.User{UserRepo: userRepo}
 	userHandler, err = api.NewUserHandler(userService)
 	if err != nil {
 		log.Fatalf("Unable to create the user handler: %s", err.Error())
 	}
-	http.Handle("/", userHandler)
+	http.Handle("/user", userHandler)
+
+	customerRepo := sql.CustomerRepo{Database: database}
+	customerService := service.Customer{CustomerRepo: customerRepo}
+	customerHandler, err = api.NewCustomerHandler(customerService)
+	if err != nil {
+		log.Fatalf("Unable to create the customer handler: %s", err.Error())
+	}
+	http.Handle("/customer", customerHandler)
 
 	log.Println("Starting listner on port: 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

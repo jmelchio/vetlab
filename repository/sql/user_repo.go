@@ -27,7 +27,7 @@ func (userRepo UserRepo) Create(user *model.User) error {
 
 // Update modifies a User row in the sql datastore
 // If the password is less than 50 characters long it's probably not hashed and
-// should therefore not be saved to the database
+// should therefore not be saved to the database (yes, it's janky)
 func (userRepo UserRepo) Update(user *model.User) error {
 	if !userRepo.Database.NewRecord(user) {
 		if len(user.Password) < 50 {
