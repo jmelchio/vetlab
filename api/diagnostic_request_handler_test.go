@@ -204,7 +204,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				})
 			})
 
-			Context("No request id provided in the reqest", func() {
+			Context("No request id provided in the request", func() {
 
 				BeforeEach(func() {
 					recorder = httptest.NewRecorder()
@@ -218,7 +218,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				})
 			})
 
-			Context("Invalid request id provided in the reqest", func() {
+			Context("Invalid request id provided in the request", func() {
 
 				BeforeEach(func() {
 					recorder = httptest.NewRecorder()
@@ -343,7 +343,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				})
 			})
 
-			Context("No vetorg id provided in the reqest", func() {
+			Context("No vetorg id provided in the request", func() {
 
 				BeforeEach(func() {
 					recorder = httptest.NewRecorder()
