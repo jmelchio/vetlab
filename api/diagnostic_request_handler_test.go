@@ -389,4 +389,145 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			})
 		})
 	})
+
+	Describe("Fetch diagnostic requests by user", func() {
+
+		var (
+			diagnosticRequest     model.DiagnosticRequest
+			diagnosticRequestList []model.DiagnosticRequest
+			user                  model.User
+		)
+
+		BeforeEach(func() {
+			diagnosticRequest = model.DiagnosticRequest{
+				ID:          uint(98765),
+				VetOrgID:    uint(12345),
+				CustomerID:  uint(54321),
+				UserID:      uint(23451),
+				Description: "this is a good request",
+			}
+			diagnosticRequestList = []model.DiagnosticRequest{diagnosticRequest}
+			userName := "Some User Name"
+			user = model.User{
+				ID:       uint(23451),
+				UserName: &userName,
+			}
+		})
+
+		Context("Valid request information is provided", func() {
+
+			Context("User and Requests are present in backing storage", func() {
+
+				BeforeEach(func() {
+					userService.FindUserByIDReturns(&user, nil)
+					diagnosticRequestService.FindRequestByUserReturns(diagnosticRequestList, nil)
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"user_id": "12345",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByUserID, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns the requested diagnostic request information", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+
+					var findDiagnosticRequest []model.DiagnosticRequest
+					err = json.Unmarshal(respBody, &findDiagnosticRequest)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(findDiagnosticRequest).NotTo(BeNil())
+					Expect(findDiagnosticRequest[0].ID).To(Equal(diagnosticRequest.ID))
+					Expect(findDiagnosticRequest[0].Description).To(Equal(diagnosticRequest.Description))
+					Expect(userService.FindUserByIDCallCount()).To(Equal(1))
+					Expect(diagnosticRequestService.FindRequestByUserCallCount()).To(Equal(1))
+				})
+			})
+
+			Context("User not found in backing storage", func() {
+
+				BeforeEach(func() {
+					notFoundError := errors.New("Not found")
+					userService.FindUserByIDReturns(nil, notFoundError)
+					diagnosticRequestService.FindRequestByUserReturns(nil, notFoundError)
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"user_id": "12345",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByUserID, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it is unable to find User", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingUser))
+					Expect(userService.FindUserByIDCallCount()).To(Equal(1))
+					Expect(diagnosticRequestService.FindRequestByUserCallCount()).To(Equal(0))
+				})
+			})
+
+			Context("Request(s) not found in backing storage", func() {
+
+				BeforeEach(func() {
+					notFoundError := errors.New("Not found")
+					userService.FindUserByIDReturns(&user, nil)
+					diagnosticRequestService.FindRequestByUserReturns(nil, notFoundError)
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"user_id": "12345",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByUserID, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it is unable to find diagnostic request", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingDiagnosticRequests))
+					Expect(userService.FindUserByIDCallCount()).To(Equal(1))
+					Expect(diagnosticRequestService.FindRequestByUserCallCount()).To(Equal(1))
+				})
+			})
+
+			Context("No user id provided in the request", func() {
+
+				BeforeEach(func() {
+					recorder = httptest.NewRecorder()
+					request, _ := http.NewRequest("GET", "/diagnosticrequest/user/", nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it cannot find the page", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					Expect(userService.FindUserByIDCallCount()).To(Equal(0))
+					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(0))
+				})
+			})
+
+			Context("Invalid user id provided in the request", func() {
+
+				BeforeEach(func() {
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"user_id": "one",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByUserID, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it cannot parse the request", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(userService.FindUserByIDCallCount()).To(Equal(0))
+					Expect(diagnosticRequestService.FindRequestByUserCallCount()).To(Equal(0))
+				})
+			})
+		})
+	})
 })

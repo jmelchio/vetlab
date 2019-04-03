@@ -31,6 +31,7 @@ const (
 	UnableToParseParams                      = "Unable to parse request parameters(s)"
 	ErrorFetchingDiagnosticRequests          = "Error occurred attempting to retrieve diagnostic request(s)"
 	ErrorFetchingVetOrg                      = "Error occurred attempting to retrieve vetOrg"
+	ErrorFetchingUser                        = "Error occurred attempting to retrieve user"
 )
 
 // DiagnosticRequestRoutes are the REST endpoint routes for the diagnostic requests REST interface
