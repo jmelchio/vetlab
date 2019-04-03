@@ -155,6 +155,30 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestB
 
 // FindDiagnotisticRequestByUser is a handler that handles searches for diagnostic requests by User
 func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestByUser(writer http.ResponseWriter, request *http.Request) {
+	userID, err := strconv.ParseUint(rata.Param(request, "user_id"), 10, 32)
+	if err != nil {
+		http.Error(writer, UnableToParseParams, http.StatusBadRequest)
+		return
+	}
+
+	user, err := diagnosticRequestServer.UserService.FindUserByID(context.TODO(), uint(userID))
+	if err != nil {
+		http.Error(writer, ErrorFetchingUser, http.StatusNotFound)
+		return
+	}
+
+	diagnosticRequestList, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByUser(context.TODO(), *user)
+	if err != nil {
+		http.Error(writer, ErrorFetchingDiagnosticRequests, http.StatusNotFound)
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(writer).Encode(diagnosticRequestList); err != nil {
+		log.Printf("Problem encoding returned diagnostic request(s): %s", err.Error())
+		return
+	}
 }
 
 // FindDiagnotisticRequestByCustomer is a handler that handles searches for diagnostic requests by Customer
