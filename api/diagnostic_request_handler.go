@@ -32,6 +32,7 @@ const (
 	ErrorFetchingDiagnosticRequests          = "Error occurred attempting to retrieve diagnostic request(s)"
 	ErrorFetchingVetOrg                      = "Error occurred attempting to retrieve vetOrg"
 	ErrorFetchingUser                        = "Error occurred attempting to retrieve user"
+	ErrorFetchingCustomer                    = "Error occurred attempting to retrieve customer"
 )
 
 // DiagnosticRequestRoutes are the REST endpoint routes for the diagnostic requests REST interface
@@ -183,6 +184,30 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestB
 
 // FindDiagnotisticRequestByCustomer is a handler that handles searches for diagnostic requests by Customer
 func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestByCustomer(writer http.ResponseWriter, request *http.Request) {
+	customerID, err := strconv.ParseUint(rata.Param(request, "customer_id"), 10, 32)
+	if err != nil {
+		http.Error(writer, UnableToParseParams, http.StatusBadRequest)
+		return
+	}
+
+	customer, err := diagnosticRequestServer.CustomerService.FindCustomerByID(context.TODO(), uint(customerID))
+	if err != nil {
+		http.Error(writer, ErrorFetchingCustomer, http.StatusNotFound)
+		return
+	}
+
+	diagnosticRequestList, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByCustomer(context.TODO(), *customer)
+	if err != nil {
+		http.Error(writer, ErrorFetchingDiagnosticRequests, http.StatusNotFound)
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(writer).Encode(diagnosticRequestList); err != nil {
+		log.Printf("Problem encoding returned diagnostic request(s): %s", err.Error())
+		return
+	}
 }
 
 // FindDiagnotisticRequestByDateRange is a handler that handles searches for diagnostic requests by VetOrg and date range

@@ -530,4 +530,145 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			})
 		})
 	})
+
+	Describe("Find diagnostic requests by customer", func() {
+
+		var (
+			diagnosticRequest     model.DiagnosticRequest
+			diagnosticRequestList []model.DiagnosticRequest
+			customer              model.Customer
+		)
+
+		BeforeEach(func() {
+			diagnosticRequest = model.DiagnosticRequest{
+				ID:          uint(98765),
+				VetOrgID:    uint(12345),
+				CustomerID:  uint(54321),
+				UserID:      uint(23451),
+				Description: "this is a good request",
+			}
+			diagnosticRequestList = []model.DiagnosticRequest{diagnosticRequest}
+			customerName := "Some Customer Name"
+			customer = model.Customer{
+				ID:       uint(23451),
+				UserName: &customerName,
+			}
+		})
+
+		Context("Valid request information is provided", func() {
+
+			Context("Customer and Requests are present in backing storage", func() {
+
+				BeforeEach(func() {
+					customerService.FindCustomerByIDReturns(&customer, nil)
+					diagnosticRequestService.FindRequestByCustomerReturns(diagnosticRequestList, nil)
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"customer_id": "12345",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByCustomerID, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns the requested diagnostic request information", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+
+					var findDiagnosticRequest []model.DiagnosticRequest
+					err = json.Unmarshal(respBody, &findDiagnosticRequest)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(findDiagnosticRequest).NotTo(BeNil())
+					Expect(findDiagnosticRequest[0].ID).To(Equal(diagnosticRequest.ID))
+					Expect(findDiagnosticRequest[0].Description).To(Equal(diagnosticRequest.Description))
+					Expect(customerService.FindCustomerByIDCallCount()).To(Equal(1))
+					Expect(diagnosticRequestService.FindRequestByCustomerCallCount()).To(Equal(1))
+				})
+			})
+
+			Context("Customer not found in backing storage", func() {
+
+				BeforeEach(func() {
+					notFoundError := errors.New("Not found")
+					customerService.FindCustomerByIDReturns(nil, notFoundError)
+					diagnosticRequestService.FindRequestByCustomerReturns(nil, notFoundError)
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"customer_id": "12345",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByCustomerID, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it is unable to find Customer", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingCustomer))
+					Expect(customerService.FindCustomerByIDCallCount()).To(Equal(1))
+					Expect(diagnosticRequestService.FindRequestByCustomerCallCount()).To(Equal(0))
+				})
+			})
+
+			Context("Request(s) not found in backing storage", func() {
+
+				BeforeEach(func() {
+					notFoundError := errors.New("Not found")
+					customerService.FindCustomerByIDReturns(&customer, nil)
+					diagnosticRequestService.FindRequestByCustomerReturns(nil, notFoundError)
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"customer_id": "12345",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByCustomerID, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it is unable to find diagnostic request", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingDiagnosticRequests))
+					Expect(customerService.FindCustomerByIDCallCount()).To(Equal(1))
+					Expect(diagnosticRequestService.FindRequestByCustomerCallCount()).To(Equal(1))
+				})
+			})
+
+			Context("No customer id provided in the request", func() {
+
+				BeforeEach(func() {
+					recorder = httptest.NewRecorder()
+					request, _ := http.NewRequest("GET", "/diagnosticrequest/customer/", nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it cannot find the page", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					Expect(customerService.FindCustomerByIDCallCount()).To(Equal(0))
+					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(0))
+				})
+			})
+
+			Context("Invalid customer id provided in the request", func() {
+
+				BeforeEach(func() {
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"customer_id": "one",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByCustomerID, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it cannot parse the request", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(customerService.FindCustomerByIDCallCount()).To(Equal(0))
+					Expect(diagnosticRequestService.FindRequestByCustomerCallCount()).To(Equal(0))
+				})
+			})
+		})
+	})
 })
