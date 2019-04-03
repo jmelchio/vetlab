@@ -25,13 +25,22 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 		err                      error
 		diagnosticRequestService *apifakes.FakeDiagnosticRequestService
 		vetOrgService            *apifakes.FakeVetOrgService
+		userService              *apifakes.FakeUserService
+		customerService          *apifakes.FakeCustomerService
 		requestGenerator         *rata.RequestGenerator
 	)
 
 	BeforeEach(func() {
 		diagnosticRequestService = new(apifakes.FakeDiagnosticRequestService)
 		vetOrgService = new(apifakes.FakeVetOrgService)
-		handler, err = NewDiagnosticRequestHandler(diagnosticRequestService, vetOrgService)
+		userService = new(apifakes.FakeUserService)
+		customerService = new(apifakes.FakeCustomerService)
+		handler, err = NewDiagnosticRequestHandler(
+			diagnosticRequestService,
+			vetOrgService,
+			userService,
+			customerService,
+		)
 		requestGenerator = rata.NewRequestGenerator("", DiagnosticRequestRoutes)
 		Expect(err).NotTo(HaveOccurred())
 	})

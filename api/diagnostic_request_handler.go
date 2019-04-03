@@ -16,6 +16,8 @@ import (
 type DiagnosticRequestServer struct {
 	DiagnosticRequestService DiagnosticRequestService
 	VetOrgService            VetOrgService
+	UserService              UserService
+	CustomerService          CustomerService
 }
 
 const (
@@ -42,10 +44,17 @@ var DiagnosticRequestRoutes = rata.Routes{
 }
 
 // NewDiagnosticRequestHandler provides the factory function to create the REST interface for report requests
-func NewDiagnosticRequestHandler(diagnosticRequestService DiagnosticRequestService, vetOrgService VetOrgService) (http.Handler, error) {
+func NewDiagnosticRequestHandler(
+	diagnosticRequestService DiagnosticRequestService,
+	vetOrgService VetOrgService,
+	userService UserService,
+	customerService CustomerService,
+) (http.Handler, error) {
 	diagnosticRequestServer := &DiagnosticRequestServer{
 		DiagnosticRequestService: diagnosticRequestService,
 		VetOrgService:            vetOrgService,
+		UserService:              userService,
+		CustomerService:          customerService,
 	}
 
 	handlers := rata.Handlers{
