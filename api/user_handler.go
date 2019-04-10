@@ -17,6 +17,7 @@ type UserServer struct {
 	UserService UserService
 }
 
+// Constants for error messages and requests
 const (
 	CreateUser         = "create_user"
 	UpdateUser         = "update_user"
@@ -90,6 +91,7 @@ func (userServer *UserServer) CreateUser(writer http.ResponseWriter, request *ht
 	}
 }
 
+// UpdateUser takes care of the api request to update a User in the system
 func (userServer *UserServer) UpdateUser(writer http.ResponseWriter, request *http.Request) {
 	if request.Body == nil {
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
@@ -121,6 +123,7 @@ func (userServer *UserServer) UpdateUser(writer http.ResponseWriter, request *ht
 	}
 }
 
+// DeleteUser takes care of hanlding the api request for deleting a User
 func (userServer *UserServer) DeleteUser(writer http.ResponseWriter, request *http.Request) {
 	if request.Body == nil {
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
@@ -148,6 +151,7 @@ func (userServer *UserServer) DeleteUser(writer http.ResponseWriter, request *ht
 	writer.WriteHeader(http.StatusNoContent)
 }
 
+// Login handles the api request to login to the system
 func (userServer *UserServer) Login(writer http.ResponseWriter, request *http.Request) {
 	if request.Body == nil {
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
@@ -179,6 +183,7 @@ func (userServer *UserServer) Login(writer http.ResponseWriter, request *http.Re
 	}
 }
 
+// FindUser handles the api request to find a user by their user id
 func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http.Request) {
 	userID := rata.Param(request, "user_id")
 
@@ -199,6 +204,7 @@ func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http
 	return
 }
 
+// FindUserByUserName handles the request to find a user by their user name
 func (userServer *UserServer) FindUserByUserName(writer http.ResponseWriter, request *http.Request) {
 	userName := rata.Param(request, "user_name")
 

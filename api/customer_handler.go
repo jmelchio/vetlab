@@ -17,6 +17,7 @@ type CustomerServer struct {
 	CustomerService CustomerService
 }
 
+// Constants for error messages and request names
 const (
 	CreateCustomer         = "create_customer"
 	UpdateCustomer         = "update_customer"
@@ -90,6 +91,7 @@ func (customerServer *CustomerServer) CreateCustomer(writer http.ResponseWriter,
 	}
 }
 
+// UpdateCustomer handles the request for updating a Customer on the system
 func (customerServer *CustomerServer) UpdateCustomer(writer http.ResponseWriter, request *http.Request) {
 	if request.Body == nil {
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
@@ -121,6 +123,7 @@ func (customerServer *CustomerServer) UpdateCustomer(writer http.ResponseWriter,
 	}
 }
 
+// DeleteCustomer handles the request to delete a Customer from the system
 func (customerServer *CustomerServer) DeleteCustomer(writer http.ResponseWriter, request *http.Request) {
 	if request.Body == nil {
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
@@ -148,6 +151,7 @@ func (customerServer *CustomerServer) DeleteCustomer(writer http.ResponseWriter,
 	writer.WriteHeader(http.StatusNoContent)
 }
 
+// CustomerLogin handles the request to log in a Customer to the system
 func (customerServer *CustomerServer) CustomerLogin(writer http.ResponseWriter, request *http.Request) {
 	if request.Body == nil {
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
@@ -179,6 +183,7 @@ func (customerServer *CustomerServer) CustomerLogin(writer http.ResponseWriter, 
 	}
 }
 
+// FindCustomer handles the request to find a Customer by their customer id
 func (customerServer *CustomerServer) FindCustomer(writer http.ResponseWriter, request *http.Request) {
 	customerID := rata.Param(request, "customer_id")
 
@@ -199,6 +204,7 @@ func (customerServer *CustomerServer) FindCustomer(writer http.ResponseWriter, r
 	return
 }
 
+// FindCustomerByUserName handles the request to find a Customer by their customer name
 func (customerServer *CustomerServer) FindCustomerByUserName(writer http.ResponseWriter, request *http.Request) {
 	userName := rata.Param(request, "user_name")
 

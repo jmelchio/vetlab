@@ -20,6 +20,7 @@ type DiagnosticRequestServer struct {
 	CustomerService          CustomerService
 }
 
+// Constants for error messages and request naming
 const (
 	SubmitDiagnosticRequest                  = "submit_diagnostic_request"
 	UnableToSubmitDiagnosticRequest          = "Unable to submit diagnostic request"
