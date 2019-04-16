@@ -48,12 +48,12 @@ func NewUserHandler(userService UserService) (http.Handler, error) {
 	userServer := &UserServer{UserService: userService}
 
 	handlers := rata.Handlers{
-		CreateUser:         http.HandlerFunc(userServer.CreateUser),
-		UpdateUser:         http.HandlerFunc(userServer.UpdateUser),
-		DeleteUser:         http.HandlerFunc(userServer.DeleteUser),
-		Login:              http.HandlerFunc(userServer.Login),
-		FindUser:           http.HandlerFunc(userServer.FindUser),
-		FindUserByUserName: http.HandlerFunc(userServer.FindUserByUserName),
+		CreateUser:         openCors(http.HandlerFunc(userServer.CreateUser), "*"),
+		UpdateUser:         openCors(http.HandlerFunc(userServer.UpdateUser), "*"),
+		DeleteUser:         openCors(http.HandlerFunc(userServer.DeleteUser), "*"),
+		Login:              openCors(http.HandlerFunc(userServer.Login), "*"),
+		FindUser:           openCors(http.HandlerFunc(userServer.FindUser), "*"),
+		FindUserByUserName: openCors(http.HandlerFunc(userServer.FindUserByUserName), "*"),
 	}
 
 	return rata.NewRouter(UserRoutes, handlers)

@@ -61,12 +61,12 @@ func NewDiagnosticRequestHandler(
 	}
 
 	handlers := rata.Handlers{
-		SubmitDiagnosticRequest:                  http.HandlerFunc(diagnosticRequestServer.SubmitDiagnosticRequest),
-		DiagnosticRequestByID:                    http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequest),
-		DiagnosticRequestsByVetOrgID:             http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequestByVetOrg),
-		DiagnosticRequestsByUserID:               http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequestByUser),
-		DiagnosticRequestsByCustomerID:           http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequestByCustomer),
-		DiagnosticRequestsByVetOrgIDAndDateRange: http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequestByDateRange),
+		SubmitDiagnosticRequest:                  openCors(http.HandlerFunc(diagnosticRequestServer.SubmitDiagnosticRequest), "*"),
+		DiagnosticRequestByID:                    openCors(http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequest), "*"),
+		DiagnosticRequestsByVetOrgID:             openCors(http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequestByVetOrg), "*"),
+		DiagnosticRequestsByUserID:               openCors(http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequestByUser), "*"),
+		DiagnosticRequestsByCustomerID:           openCors(http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequestByCustomer), "*"),
+		DiagnosticRequestsByVetOrgIDAndDateRange: openCors(http.HandlerFunc(diagnosticRequestServer.FindDiagnotisticRequestByDateRange), "*"),
 	}
 
 	return rata.NewRouter(DiagnosticRequestRoutes, handlers)

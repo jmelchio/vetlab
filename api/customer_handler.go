@@ -48,12 +48,12 @@ func NewCustomerHandler(customerService CustomerService) (http.Handler, error) {
 	customerServer := &CustomerServer{CustomerService: customerService}
 
 	handlers := rata.Handlers{
-		CreateCustomer:         http.HandlerFunc(customerServer.CreateCustomer),
-		UpdateCustomer:         http.HandlerFunc(customerServer.UpdateCustomer),
-		DeleteCustomer:         http.HandlerFunc(customerServer.DeleteCustomer),
-		CustomerLogin:          http.HandlerFunc(customerServer.CustomerLogin),
-		FindCustomer:           http.HandlerFunc(customerServer.FindCustomer),
-		FindCustomerByUserName: http.HandlerFunc(customerServer.FindCustomerByUserName),
+		CreateCustomer:         openCors(http.HandlerFunc(customerServer.CreateCustomer), "*"),
+		UpdateCustomer:         openCors(http.HandlerFunc(customerServer.UpdateCustomer), "*"),
+		DeleteCustomer:         openCors(http.HandlerFunc(customerServer.DeleteCustomer), "*"),
+		CustomerLogin:          openCors(http.HandlerFunc(customerServer.CustomerLogin), "*"),
+		FindCustomer:           openCors(http.HandlerFunc(customerServer.FindCustomer), "*"),
+		FindCustomerByUserName: openCors(http.HandlerFunc(customerServer.FindCustomerByUserName), "*"),
 	}
 
 	return rata.NewRouter(CustomerRoutes, handlers)
