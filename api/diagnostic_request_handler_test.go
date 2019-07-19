@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"time"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -667,6 +668,194 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
 					Expect(customerService.FindCustomerByIDCallCount()).To(Equal(0))
 					Expect(diagnosticRequestService.FindRequestByCustomerCallCount()).To(Equal(0))
+				})
+			})
+		})
+	})
+
+	Describe("Find diagnostic requests by vetorg and date range", func() {
+
+		var (
+			diagnosticRequest     model.DiagnosticRequest
+			diagnosticRequestList []model.DiagnosticRequest
+			vetOrg                model.VetOrg
+			requestDate           time.Time
+		)
+
+		BeforeEach(func() {
+			requestDate = time.Date(2019, time.April, 10, 23, 0, 0, 0, time.UTC)
+			diagnosticRequest = model.DiagnosticRequest{
+				ID:          uint(98765),
+				VetOrgID:    uint(12345),
+				CustomerID:  uint(54321),
+				UserID:      uint(23451),
+				Date:        &requestDate,
+				Description: "this is a good request",
+			}
+			diagnosticRequestList = []model.DiagnosticRequest{diagnosticRequest}
+			vetOrgName := "Some VetOrg Name"
+			vetOrg = model.VetOrg{
+				ID:      uint(12345),
+				OrgName: &vetOrgName,
+			}
+		})
+
+		Context("Valid request information is provided", func() {
+
+			Context("VetOrg and Requests are present in backing storage", func() {
+
+				BeforeEach(func() {
+					vetOrgService.FindVetOrgByIDReturns(&vetOrg, nil)
+					diagnosticRequestService.FindRequestByDateRangeReturns(diagnosticRequestList, nil)
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"vetorg_id":  "12345",
+						"start_date": "20190101",
+						"end_date":   "20191231",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns the requested diagnostic request information", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+
+					var findDiagnosticRequest []model.DiagnosticRequest
+					err = json.Unmarshal(respBody, &findDiagnosticRequest)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(findDiagnosticRequest).NotTo(BeNil())
+					Expect(findDiagnosticRequest[0].ID).To(Equal(diagnosticRequest.ID))
+					Expect(findDiagnosticRequest[0].Description).To(Equal(diagnosticRequest.Description))
+					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
+					Expect(diagnosticRequestService.FindRequestByDateRangeCallCount()).To(Equal(1))
+				})
+			})
+
+			Context("VetOrg not found in backing storage", func() {
+
+				BeforeEach(func() {
+					notFoundError := errors.New("Not found")
+					vetOrgService.FindVetOrgByIDReturns(nil, notFoundError)
+					diagnosticRequestService.FindRequestByDateRangeReturns(nil, notFoundError)
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"customer_id": "12345",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it is unable to find VetOrg", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingCustomer))
+					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
+					Expect(diagnosticRequestService.FindRequestByDateRangeCallCount()).To(Equal(0))
+				})
+			})
+
+			Context("Request(s) not found in backing storage", func() {
+
+				BeforeEach(func() {
+					notFoundError := errors.New("Not found")
+					vetOrgService.FindVetOrgByIDReturns(&vetOrg, nil)
+					diagnosticRequestService.FindRequestByDateRangeReturns(nil, notFoundError)
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"customer_id": "12345",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it is unable to find diagnostic request", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingDiagnosticRequests))
+					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
+					Expect(diagnosticRequestService.FindRequestByDateRangeCallCount()).To(Equal(1))
+				})
+			})
+
+			Context("No vetorg id provided in the request", func() {
+
+				BeforeEach(func() {
+					recorder = httptest.NewRecorder()
+					request, _ := http.NewRequest("GET", "/diagnosticrequest/customer/", nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it cannot find the page", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
+					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(0))
+					Expect(diagnosticRequestService.FindRequestByDateRangeCallCount()).To(Equal(0))
+				})
+			})
+
+			Context("Invalid vetorg id provided in the request", func() {
+
+				BeforeEach(func() {
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"customer_id": "one",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it cannot parse the request", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(0))
+					Expect(diagnosticRequestService.FindRequestByDateRangeCallCount()).To(Equal(0))
+				})
+			})
+
+			Context("Invalid start date provided in the request", func() {
+
+				BeforeEach(func() {
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"customer_id": "one",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it cannot parse the request", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(0))
+					Expect(diagnosticRequestService.FindRequestByDateRangeCallCount()).To(Equal(0))
+				})
+			})
+
+			Context("Invalid end date provided in the request", func() {
+
+				BeforeEach(func() {
+					recorder = httptest.NewRecorder()
+					params := rata.Params{
+						"customer_id": "one",
+					}
+					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
+					handler.ServeHTTP(recorder, request)
+				})
+
+				It("Returns an error indicating it cannot parse the request", func() {
+					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
+					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(0))
+					Expect(diagnosticRequestService.FindRequestByDateRangeCallCount()).To(Equal(0))
 				})
 			})
 		})
