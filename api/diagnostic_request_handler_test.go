@@ -741,7 +741,9 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					diagnosticRequestService.FindRequestByDateRangeReturns(nil, notFoundError)
 					recorder = httptest.NewRecorder()
 					params := rata.Params{
-						"customer_id": "12345",
+						"vetorg_id":  "12345",
+						"start_date": "20190101",
+						"end_date":   "20191231",
 					}
 					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
 					handler.ServeHTTP(recorder, request)
@@ -765,7 +767,9 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					diagnosticRequestService.FindRequestByDateRangeReturns(nil, notFoundError)
 					recorder = httptest.NewRecorder()
 					params := rata.Params{
-						"customer_id": "12345",
+						"vetorg_id":  "12345",
+						"start_date": "20190101",
+						"end_date":   "20191231",
 					}
 					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
 					handler.ServeHTTP(recorder, request)
@@ -801,7 +805,9 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				BeforeEach(func() {
 					recorder = httptest.NewRecorder()
 					params := rata.Params{
-						"customer_id": "one",
+						"vetorg_id":  "one",
+						"start_date": "20190101",
+						"end_date":   "20191231",
 					}
 					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
 					handler.ServeHTTP(recorder, request)
@@ -822,7 +828,9 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				BeforeEach(func() {
 					recorder = httptest.NewRecorder()
 					params := rata.Params{
-						"customer_id": "one",
+						"vetorg_id":  "one",
+						"start_date": "20190101",
+						"end_date":   "20191231",
 					}
 					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
 					handler.ServeHTTP(recorder, request)
@@ -843,7 +851,9 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				BeforeEach(func() {
 					recorder = httptest.NewRecorder()
 					params := rata.Params{
-						"customer_id": "one",
+						"vetorg_id":  "one",
+						"start_date": "20190101",
+						"end_date":   "20191231",
 					}
 					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
 					handler.ServeHTTP(recorder, request)
