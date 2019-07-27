@@ -753,7 +753,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingCustomer))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingVetOrg))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
 					Expect(diagnosticRequestService.FindRequestByDateRangeCallCount()).To(Equal(0))
 				})

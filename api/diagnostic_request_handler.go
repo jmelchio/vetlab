@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/jmelchio/vetlab/model"
 	"github.com/tedsuo/rata"
@@ -213,4 +214,50 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestB
 
 // FindDiagnotisticRequestByDateRange is a handler that handles searches for diagnostic requests by VetOrg and date range
 func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestByDateRange(writer http.ResponseWriter, request *http.Request) {
+	vetOrgID, err := strconv.ParseUint(rata.Param(request, "vetorg_id"), 10, 32)
+	if err != nil {
+		http.Error(writer, UnableToParseParams, http.StatusBadRequest)
+		return
+	}
+
+	startDateAsString := rata.Param(request, "start_date")
+	endDateAsString := rata.Param(request, "end_date")
+
+	if len(startDateAsString) == 0 || len(endDateAsString) == 0 {
+		http.Error(writer, UnableToParseParams, http.StatusBadRequest)
+		return
+	}
+
+	const shortForm = "20060102"
+
+	startDate, err := time.Parse(shortForm, startDateAsString)
+	if err != nil {
+		http.Error(writer, UnableToParseParams, http.StatusBadRequest)
+		return
+	}
+
+	endDate, err := time.Parse(shortForm, endDateAsString)
+	if err != nil {
+		http.Error(writer, UnableToParseParams, http.StatusBadRequest)
+		return
+	}
+
+	vetOrg, err := diagnosticRequestServer.VetOrgService.FindVetOrgByID(context.TODO(), uint(vetOrgID))
+	if err != nil {
+		http.Error(writer, ErrorFetchingVetOrg, http.StatusNotFound)
+		return
+	}
+
+	diagnosticRequestList, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByDateRange(context.TODO(), startDate, endDate, *vetOrg)
+	if err != nil {
+		http.Error(writer, ErrorFetchingDiagnosticRequests, http.StatusNotFound)
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(writer).Encode(diagnosticRequestList); err != nil {
+		log.Printf("Problem encoding returned diagnostic request(s): %s", err.Error())
+		return
+	}
 }
