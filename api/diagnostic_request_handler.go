@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -99,11 +98,7 @@ func (diagnosticRequestServer *DiagnosticRequestServer) SubmitDiagnosticRequest(
 		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(writer).Encode(newDiagnosticRequest); err != nil {
-		log.Printf("Problem encoding new diagnostic request: %s", err.Error())
-	}
+	writeJSONResponse(writer, http.StatusCreated, newDiagnosticRequest)
 }
 
 // FindDiagnotisticRequest is a handler that handles searches for diagstic requests by ID
@@ -120,12 +115,7 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequest(
 		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(writer).Encode(diagnosticRequest); err != nil {
-		log.Printf("Problem encoding returned diagnostic request(s): %s", err.Error())
-		return
-	}
+	writeJSONResponse(writer, http.StatusOK, diagnosticRequest)
 }
 
 // FindDiagnotisticRequestByVetOrg is a handler that handles searches for diagnostic requests by VetOrg
@@ -148,12 +138,7 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestB
 		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(writer).Encode(diagnosticRequestList); err != nil {
-		log.Printf("Problem encoding returned diagnostic request(s): %s", err.Error())
-		return
-	}
+	writeJSONResponse(writer, http.StatusOK, diagnosticRequestList)
 }
 
 // FindDiagnotisticRequestByUser is a handler that handles searches for diagnostic requests by User
@@ -176,12 +161,7 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestB
 		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(writer).Encode(diagnosticRequestList); err != nil {
-		log.Printf("Problem encoding returned diagnostic request(s): %s", err.Error())
-		return
-	}
+	writeJSONResponse(writer, http.StatusOK, diagnosticRequestList)
 }
 
 // FindDiagnotisticRequestByCustomer is a handler that handles searches for diagnostic requests by Customer
@@ -204,12 +184,7 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestB
 		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(writer).Encode(diagnosticRequestList); err != nil {
-		log.Printf("Problem encoding returned diagnostic request(s): %s", err.Error())
-		return
-	}
+	writeJSONResponse(writer, http.StatusOK, diagnosticRequestList)
 }
 
 // FindDiagnotisticRequestByDateRange is a handler that handles searches for diagnostic requests by VetOrg and date range
@@ -254,10 +229,5 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestB
 		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(writer).Encode(diagnosticRequestList); err != nil {
-		log.Printf("Problem encoding returned diagnostic request(s): %s", err.Error())
-		return
-	}
+	writeJSONResponse(writer, http.StatusOK, diagnosticRequestList)
 }
