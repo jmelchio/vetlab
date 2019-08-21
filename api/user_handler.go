@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -84,11 +83,7 @@ func (userServer *UserServer) CreateUser(writer http.ResponseWriter, request *ht
 		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(writer).Encode(newUser); err != nil {
-		log.Printf("Problem encoding new user: %s", err.Error())
-	}
+	writeJSONResponse(writer, http.StatusCreated, newUser)
 }
 
 // UpdateUser takes care of the api request to update a User in the system
@@ -116,11 +111,7 @@ func (userServer *UserServer) UpdateUser(writer http.ResponseWriter, request *ht
 		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(writer).Encode(newUser); err != nil {
-		log.Printf("Problem encoding new user: %s", err.Error())
-	}
+	writeJSONResponse(writer, http.StatusOK, newUser)
 }
 
 // DeleteUser takes care of hanlding the api request for deleting a User
@@ -176,11 +167,7 @@ func (userServer *UserServer) Login(writer http.ResponseWriter, request *http.Re
 		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(writer).Encode(loginUser); err != nil {
-		log.Printf("Problem encoding login user: %s", err.Error())
-	}
+	writeJSONResponse(writer, http.StatusOK, loginUser)
 }
 
 // FindUser handles the api request to find a user by their user id
@@ -193,15 +180,10 @@ func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http
 			http.Error(writer, UnableToFindUser, http.StatusNotFound)
 			return
 		}
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(http.StatusOK)
-		if err := json.NewEncoder(writer).Encode(foundUser); err != nil {
-			log.Printf("Problem encoding found user: %s", err.Error())
-		}
+		writeJSONResponse(writer, http.StatusOK, foundUser)
 		return
 	}
 	http.Error(writer, NoParamsFound, http.StatusBadRequest)
-	return
 }
 
 // FindUserByUserName handles the request to find a user by their user name
@@ -213,10 +195,5 @@ func (userServer *UserServer) FindUserByUserName(writer http.ResponseWriter, req
 		http.Error(writer, UnableToFindUser, http.StatusNotFound)
 		return
 	}
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(writer).Encode(foundUser); err != nil {
-		log.Printf("Problem encoding found user: %s", err.Error())
-	}
-	return
+	writeJSONResponse(writer, http.StatusOK, foundUser)
 }
