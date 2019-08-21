@@ -1,6 +1,8 @@
 package api
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -17,4 +19,12 @@ func openCors(handler http.Handler, domain string) http.Handler {
 		w.Header().Set("Access-Control-Allow-Origin", domain)
 		handler.ServeHTTP(w, r)
 	})
+}
+
+func writeJSONResponse(writer http.ResponseWriter, returnStatus int, responseBody interface{}) {
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(returnStatus)
+	if err := json.NewEncoder(writer).Encode(responseBody); err != nil {
+		log.Printf("Problem encoding new response body: %s", err.Error())
+	}
 }

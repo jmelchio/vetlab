@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -84,11 +83,7 @@ func (customerServer *CustomerServer) CreateCustomer(writer http.ResponseWriter,
 		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(writer).Encode(newCustomer); err != nil {
-		log.Printf("Problem encoding new customer: %s", err.Error())
-	}
+	writeJSONResponse(writer, http.StatusCreated, newCustomer)
 }
 
 // UpdateCustomer handles the request for updating a Customer on the system
@@ -116,11 +111,7 @@ func (customerServer *CustomerServer) UpdateCustomer(writer http.ResponseWriter,
 		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(writer).Encode(newCustomer); err != nil {
-		log.Printf("Problem encoding new customer: %s", err.Error())
-	}
+	writeJSONResponse(writer, http.StatusOK, newCustomer)
 }
 
 // DeleteCustomer handles the request to delete a Customer from the system
@@ -176,11 +167,7 @@ func (customerServer *CustomerServer) CustomerLogin(writer http.ResponseWriter, 
 		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(writer).Encode(loginCustomer); err != nil {
-		log.Printf("Problem encoding login customer: %s", err.Error())
-	}
+	writeJSONResponse(writer, http.StatusOK, loginCustomer)
 }
 
 // FindCustomer handles the request to find a Customer by their customer id
@@ -188,20 +175,15 @@ func (customerServer *CustomerServer) FindCustomer(writer http.ResponseWriter, r
 	customerID := rata.Param(request, "customer_id")
 
 	if uintValue, err := strconv.ParseUint(customerID, 10, 32); err == nil {
-		foundcustomer, err := customerServer.CustomerService.FindCustomerByID(context.TODO(), uint(uintValue))
+		foundCustomer, err := customerServer.CustomerService.FindCustomerByID(context.TODO(), uint(uintValue))
 		if err != nil {
 			http.Error(writer, UnableToFindCustomer, http.StatusNotFound)
 			return
 		}
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(http.StatusOK)
-		if err := json.NewEncoder(writer).Encode(foundcustomer); err != nil {
-			log.Printf("Problem encoding found customer: %s", err.Error())
-		}
+		writeJSONResponse(writer, http.StatusOK, foundCustomer)
 		return
 	}
 	http.Error(writer, NoParamsFound, http.StatusBadRequest)
-	return
 }
 
 // FindCustomerByUserName handles the request to find a Customer by their customer name
@@ -213,10 +195,5 @@ func (customerServer *CustomerServer) FindCustomerByUserName(writer http.Respons
 		http.Error(writer, UnableToFindCustomer, http.StatusNotFound)
 		return
 	}
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(writer).Encode(foundCustomer); err != nil {
-		log.Printf("Problem encoding found customer: %s", err.Error())
-	}
-	return
+	writeJSONResponse(writer, http.StatusOK, foundCustomer)
 }
