@@ -20,17 +20,6 @@ type FakeCustomerRepo struct {
 	createReturnsOnCall map[int]struct {
 		result1 error
 	}
-	UpdateStub        func(*model.Customer) error
-	updateMutex       sync.RWMutex
-	updateArgsForCall []struct {
-		arg1 *model.Customer
-	}
-	updateReturns struct {
-		result1 error
-	}
-	updateReturnsOnCall map[int]struct {
-		result1 error
-	}
 	DeleteStub        func(*model.Customer) error
 	deleteMutex       sync.RWMutex
 	deleteArgsForCall []struct {
@@ -55,6 +44,19 @@ type FakeCustomerRepo struct {
 		result1 *model.Customer
 		result2 error
 	}
+	GetByUserNameStub        func(string) (*model.Customer, error)
+	getByUserNameMutex       sync.RWMutex
+	getByUserNameArgsForCall []struct {
+		arg1 string
+	}
+	getByUserNameReturns struct {
+		result1 *model.Customer
+		result2 error
+	}
+	getByUserNameReturnsOnCall map[int]struct {
+		result1 *model.Customer
+		result2 error
+	}
 	GetByVetOrgIDStub        func(uint) ([]model.Customer, error)
 	getByVetOrgIDMutex       sync.RWMutex
 	getByVetOrgIDArgsForCall []struct {
@@ -68,18 +70,16 @@ type FakeCustomerRepo struct {
 		result1 []model.Customer
 		result2 error
 	}
-	GetByUserNameStub        func(string) (*model.Customer, error)
-	getByUserNameMutex       sync.RWMutex
-	getByUserNameArgsForCall []struct {
-		arg1 string
+	UpdateStub        func(*model.Customer) error
+	updateMutex       sync.RWMutex
+	updateArgsForCall []struct {
+		arg1 *model.Customer
 	}
-	getByUserNameReturns struct {
-		result1 *model.Customer
-		result2 error
+	updateReturns struct {
+		result1 error
 	}
-	getByUserNameReturnsOnCall map[int]struct {
-		result1 *model.Customer
-		result2 error
+	updateReturnsOnCall map[int]struct {
+		result1 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -99,7 +99,8 @@ func (fake *FakeCustomerRepo) Create(arg1 *model.Customer) error {
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.createReturns.result1
+	fakeReturns := fake.createReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeCustomerRepo) CreateCallCount() int {
@@ -108,13 +109,22 @@ func (fake *FakeCustomerRepo) CreateCallCount() int {
 	return len(fake.createArgsForCall)
 }
 
+func (fake *FakeCustomerRepo) CreateCalls(stub func(*model.Customer) error) {
+	fake.createMutex.Lock()
+	defer fake.createMutex.Unlock()
+	fake.CreateStub = stub
+}
+
 func (fake *FakeCustomerRepo) CreateArgsForCall(i int) *model.Customer {
 	fake.createMutex.RLock()
 	defer fake.createMutex.RUnlock()
-	return fake.createArgsForCall[i].arg1
+	argsForCall := fake.createArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeCustomerRepo) CreateReturns(result1 error) {
+	fake.createMutex.Lock()
+	defer fake.createMutex.Unlock()
 	fake.CreateStub = nil
 	fake.createReturns = struct {
 		result1 error
@@ -122,6 +132,8 @@ func (fake *FakeCustomerRepo) CreateReturns(result1 error) {
 }
 
 func (fake *FakeCustomerRepo) CreateReturnsOnCall(i int, result1 error) {
+	fake.createMutex.Lock()
+	defer fake.createMutex.Unlock()
 	fake.CreateStub = nil
 	if fake.createReturnsOnCall == nil {
 		fake.createReturnsOnCall = make(map[int]struct {
@@ -129,54 +141,6 @@ func (fake *FakeCustomerRepo) CreateReturnsOnCall(i int, result1 error) {
 		})
 	}
 	fake.createReturnsOnCall[i] = struct {
-		result1 error
-	}{result1}
-}
-
-func (fake *FakeCustomerRepo) Update(arg1 *model.Customer) error {
-	fake.updateMutex.Lock()
-	ret, specificReturn := fake.updateReturnsOnCall[len(fake.updateArgsForCall)]
-	fake.updateArgsForCall = append(fake.updateArgsForCall, struct {
-		arg1 *model.Customer
-	}{arg1})
-	fake.recordInvocation("Update", []interface{}{arg1})
-	fake.updateMutex.Unlock()
-	if fake.UpdateStub != nil {
-		return fake.UpdateStub(arg1)
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.updateReturns.result1
-}
-
-func (fake *FakeCustomerRepo) UpdateCallCount() int {
-	fake.updateMutex.RLock()
-	defer fake.updateMutex.RUnlock()
-	return len(fake.updateArgsForCall)
-}
-
-func (fake *FakeCustomerRepo) UpdateArgsForCall(i int) *model.Customer {
-	fake.updateMutex.RLock()
-	defer fake.updateMutex.RUnlock()
-	return fake.updateArgsForCall[i].arg1
-}
-
-func (fake *FakeCustomerRepo) UpdateReturns(result1 error) {
-	fake.UpdateStub = nil
-	fake.updateReturns = struct {
-		result1 error
-	}{result1}
-}
-
-func (fake *FakeCustomerRepo) UpdateReturnsOnCall(i int, result1 error) {
-	fake.UpdateStub = nil
-	if fake.updateReturnsOnCall == nil {
-		fake.updateReturnsOnCall = make(map[int]struct {
-			result1 error
-		})
-	}
-	fake.updateReturnsOnCall[i] = struct {
 		result1 error
 	}{result1}
 }
@@ -195,7 +159,8 @@ func (fake *FakeCustomerRepo) Delete(arg1 *model.Customer) error {
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.deleteReturns.result1
+	fakeReturns := fake.deleteReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeCustomerRepo) DeleteCallCount() int {
@@ -204,13 +169,22 @@ func (fake *FakeCustomerRepo) DeleteCallCount() int {
 	return len(fake.deleteArgsForCall)
 }
 
+func (fake *FakeCustomerRepo) DeleteCalls(stub func(*model.Customer) error) {
+	fake.deleteMutex.Lock()
+	defer fake.deleteMutex.Unlock()
+	fake.DeleteStub = stub
+}
+
 func (fake *FakeCustomerRepo) DeleteArgsForCall(i int) *model.Customer {
 	fake.deleteMutex.RLock()
 	defer fake.deleteMutex.RUnlock()
-	return fake.deleteArgsForCall[i].arg1
+	argsForCall := fake.deleteArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeCustomerRepo) DeleteReturns(result1 error) {
+	fake.deleteMutex.Lock()
+	defer fake.deleteMutex.Unlock()
 	fake.DeleteStub = nil
 	fake.deleteReturns = struct {
 		result1 error
@@ -218,6 +192,8 @@ func (fake *FakeCustomerRepo) DeleteReturns(result1 error) {
 }
 
 func (fake *FakeCustomerRepo) DeleteReturnsOnCall(i int, result1 error) {
+	fake.deleteMutex.Lock()
+	defer fake.deleteMutex.Unlock()
 	fake.DeleteStub = nil
 	if fake.deleteReturnsOnCall == nil {
 		fake.deleteReturnsOnCall = make(map[int]struct {
@@ -243,7 +219,8 @@ func (fake *FakeCustomerRepo) GetByID(arg1 uint) (*model.Customer, error) {
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.getByIDReturns.result1, fake.getByIDReturns.result2
+	fakeReturns := fake.getByIDReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeCustomerRepo) GetByIDCallCount() int {
@@ -252,13 +229,22 @@ func (fake *FakeCustomerRepo) GetByIDCallCount() int {
 	return len(fake.getByIDArgsForCall)
 }
 
+func (fake *FakeCustomerRepo) GetByIDCalls(stub func(uint) (*model.Customer, error)) {
+	fake.getByIDMutex.Lock()
+	defer fake.getByIDMutex.Unlock()
+	fake.GetByIDStub = stub
+}
+
 func (fake *FakeCustomerRepo) GetByIDArgsForCall(i int) uint {
 	fake.getByIDMutex.RLock()
 	defer fake.getByIDMutex.RUnlock()
-	return fake.getByIDArgsForCall[i].arg1
+	argsForCall := fake.getByIDArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeCustomerRepo) GetByIDReturns(result1 *model.Customer, result2 error) {
+	fake.getByIDMutex.Lock()
+	defer fake.getByIDMutex.Unlock()
 	fake.GetByIDStub = nil
 	fake.getByIDReturns = struct {
 		result1 *model.Customer
@@ -267,6 +253,8 @@ func (fake *FakeCustomerRepo) GetByIDReturns(result1 *model.Customer, result2 er
 }
 
 func (fake *FakeCustomerRepo) GetByIDReturnsOnCall(i int, result1 *model.Customer, result2 error) {
+	fake.getByIDMutex.Lock()
+	defer fake.getByIDMutex.Unlock()
 	fake.GetByIDStub = nil
 	if fake.getByIDReturnsOnCall == nil {
 		fake.getByIDReturnsOnCall = make(map[int]struct {
@@ -275,6 +263,69 @@ func (fake *FakeCustomerRepo) GetByIDReturnsOnCall(i int, result1 *model.Custome
 		})
 	}
 	fake.getByIDReturnsOnCall[i] = struct {
+		result1 *model.Customer
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeCustomerRepo) GetByUserName(arg1 string) (*model.Customer, error) {
+	fake.getByUserNameMutex.Lock()
+	ret, specificReturn := fake.getByUserNameReturnsOnCall[len(fake.getByUserNameArgsForCall)]
+	fake.getByUserNameArgsForCall = append(fake.getByUserNameArgsForCall, struct {
+		arg1 string
+	}{arg1})
+	fake.recordInvocation("GetByUserName", []interface{}{arg1})
+	fake.getByUserNameMutex.Unlock()
+	if fake.GetByUserNameStub != nil {
+		return fake.GetByUserNameStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.getByUserNameReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeCustomerRepo) GetByUserNameCallCount() int {
+	fake.getByUserNameMutex.RLock()
+	defer fake.getByUserNameMutex.RUnlock()
+	return len(fake.getByUserNameArgsForCall)
+}
+
+func (fake *FakeCustomerRepo) GetByUserNameCalls(stub func(string) (*model.Customer, error)) {
+	fake.getByUserNameMutex.Lock()
+	defer fake.getByUserNameMutex.Unlock()
+	fake.GetByUserNameStub = stub
+}
+
+func (fake *FakeCustomerRepo) GetByUserNameArgsForCall(i int) string {
+	fake.getByUserNameMutex.RLock()
+	defer fake.getByUserNameMutex.RUnlock()
+	argsForCall := fake.getByUserNameArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeCustomerRepo) GetByUserNameReturns(result1 *model.Customer, result2 error) {
+	fake.getByUserNameMutex.Lock()
+	defer fake.getByUserNameMutex.Unlock()
+	fake.GetByUserNameStub = nil
+	fake.getByUserNameReturns = struct {
+		result1 *model.Customer
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeCustomerRepo) GetByUserNameReturnsOnCall(i int, result1 *model.Customer, result2 error) {
+	fake.getByUserNameMutex.Lock()
+	defer fake.getByUserNameMutex.Unlock()
+	fake.GetByUserNameStub = nil
+	if fake.getByUserNameReturnsOnCall == nil {
+		fake.getByUserNameReturnsOnCall = make(map[int]struct {
+			result1 *model.Customer
+			result2 error
+		})
+	}
+	fake.getByUserNameReturnsOnCall[i] = struct {
 		result1 *model.Customer
 		result2 error
 	}{result1, result2}
@@ -294,7 +345,8 @@ func (fake *FakeCustomerRepo) GetByVetOrgID(arg1 uint) ([]model.Customer, error)
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	return fake.getByVetOrgIDReturns.result1, fake.getByVetOrgIDReturns.result2
+	fakeReturns := fake.getByVetOrgIDReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeCustomerRepo) GetByVetOrgIDCallCount() int {
@@ -303,13 +355,22 @@ func (fake *FakeCustomerRepo) GetByVetOrgIDCallCount() int {
 	return len(fake.getByVetOrgIDArgsForCall)
 }
 
+func (fake *FakeCustomerRepo) GetByVetOrgIDCalls(stub func(uint) ([]model.Customer, error)) {
+	fake.getByVetOrgIDMutex.Lock()
+	defer fake.getByVetOrgIDMutex.Unlock()
+	fake.GetByVetOrgIDStub = stub
+}
+
 func (fake *FakeCustomerRepo) GetByVetOrgIDArgsForCall(i int) uint {
 	fake.getByVetOrgIDMutex.RLock()
 	defer fake.getByVetOrgIDMutex.RUnlock()
-	return fake.getByVetOrgIDArgsForCall[i].arg1
+	argsForCall := fake.getByVetOrgIDArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeCustomerRepo) GetByVetOrgIDReturns(result1 []model.Customer, result2 error) {
+	fake.getByVetOrgIDMutex.Lock()
+	defer fake.getByVetOrgIDMutex.Unlock()
 	fake.GetByVetOrgIDStub = nil
 	fake.getByVetOrgIDReturns = struct {
 		result1 []model.Customer
@@ -318,6 +379,8 @@ func (fake *FakeCustomerRepo) GetByVetOrgIDReturns(result1 []model.Customer, res
 }
 
 func (fake *FakeCustomerRepo) GetByVetOrgIDReturnsOnCall(i int, result1 []model.Customer, result2 error) {
+	fake.getByVetOrgIDMutex.Lock()
+	defer fake.getByVetOrgIDMutex.Unlock()
 	fake.GetByVetOrgIDStub = nil
 	if fake.getByVetOrgIDReturnsOnCall == nil {
 		fake.getByVetOrgIDReturnsOnCall = make(map[int]struct {
@@ -331,55 +394,64 @@ func (fake *FakeCustomerRepo) GetByVetOrgIDReturnsOnCall(i int, result1 []model.
 	}{result1, result2}
 }
 
-func (fake *FakeCustomerRepo) GetByUserName(arg1 string) (*model.Customer, error) {
-	fake.getByUserNameMutex.Lock()
-	ret, specificReturn := fake.getByUserNameReturnsOnCall[len(fake.getByUserNameArgsForCall)]
-	fake.getByUserNameArgsForCall = append(fake.getByUserNameArgsForCall, struct {
-		arg1 string
+func (fake *FakeCustomerRepo) Update(arg1 *model.Customer) error {
+	fake.updateMutex.Lock()
+	ret, specificReturn := fake.updateReturnsOnCall[len(fake.updateArgsForCall)]
+	fake.updateArgsForCall = append(fake.updateArgsForCall, struct {
+		arg1 *model.Customer
 	}{arg1})
-	fake.recordInvocation("GetByUserName", []interface{}{arg1})
-	fake.getByUserNameMutex.Unlock()
-	if fake.GetByUserNameStub != nil {
-		return fake.GetByUserNameStub(arg1)
+	fake.recordInvocation("Update", []interface{}{arg1})
+	fake.updateMutex.Unlock()
+	if fake.UpdateStub != nil {
+		return fake.UpdateStub(arg1)
 	}
 	if specificReturn {
-		return ret.result1, ret.result2
+		return ret.result1
 	}
-	return fake.getByUserNameReturns.result1, fake.getByUserNameReturns.result2
+	fakeReturns := fake.updateReturns
+	return fakeReturns.result1
 }
 
-func (fake *FakeCustomerRepo) GetByUserNameCallCount() int {
-	fake.getByUserNameMutex.RLock()
-	defer fake.getByUserNameMutex.RUnlock()
-	return len(fake.getByUserNameArgsForCall)
+func (fake *FakeCustomerRepo) UpdateCallCount() int {
+	fake.updateMutex.RLock()
+	defer fake.updateMutex.RUnlock()
+	return len(fake.updateArgsForCall)
 }
 
-func (fake *FakeCustomerRepo) GetByUserNameArgsForCall(i int) string {
-	fake.getByUserNameMutex.RLock()
-	defer fake.getByUserNameMutex.RUnlock()
-	return fake.getByUserNameArgsForCall[i].arg1
+func (fake *FakeCustomerRepo) UpdateCalls(stub func(*model.Customer) error) {
+	fake.updateMutex.Lock()
+	defer fake.updateMutex.Unlock()
+	fake.UpdateStub = stub
 }
 
-func (fake *FakeCustomerRepo) GetByUserNameReturns(result1 *model.Customer, result2 error) {
-	fake.GetByUserNameStub = nil
-	fake.getByUserNameReturns = struct {
-		result1 *model.Customer
-		result2 error
-	}{result1, result2}
+func (fake *FakeCustomerRepo) UpdateArgsForCall(i int) *model.Customer {
+	fake.updateMutex.RLock()
+	defer fake.updateMutex.RUnlock()
+	argsForCall := fake.updateArgsForCall[i]
+	return argsForCall.arg1
 }
 
-func (fake *FakeCustomerRepo) GetByUserNameReturnsOnCall(i int, result1 *model.Customer, result2 error) {
-	fake.GetByUserNameStub = nil
-	if fake.getByUserNameReturnsOnCall == nil {
-		fake.getByUserNameReturnsOnCall = make(map[int]struct {
-			result1 *model.Customer
-			result2 error
+func (fake *FakeCustomerRepo) UpdateReturns(result1 error) {
+	fake.updateMutex.Lock()
+	defer fake.updateMutex.Unlock()
+	fake.UpdateStub = nil
+	fake.updateReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeCustomerRepo) UpdateReturnsOnCall(i int, result1 error) {
+	fake.updateMutex.Lock()
+	defer fake.updateMutex.Unlock()
+	fake.UpdateStub = nil
+	if fake.updateReturnsOnCall == nil {
+		fake.updateReturnsOnCall = make(map[int]struct {
+			result1 error
 		})
 	}
-	fake.getByUserNameReturnsOnCall[i] = struct {
-		result1 *model.Customer
-		result2 error
-	}{result1, result2}
+	fake.updateReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
 }
 
 func (fake *FakeCustomerRepo) Invocations() map[string][][]interface{} {
@@ -387,16 +459,16 @@ func (fake *FakeCustomerRepo) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.createMutex.RLock()
 	defer fake.createMutex.RUnlock()
-	fake.updateMutex.RLock()
-	defer fake.updateMutex.RUnlock()
 	fake.deleteMutex.RLock()
 	defer fake.deleteMutex.RUnlock()
 	fake.getByIDMutex.RLock()
 	defer fake.getByIDMutex.RUnlock()
-	fake.getByVetOrgIDMutex.RLock()
-	defer fake.getByVetOrgIDMutex.RUnlock()
 	fake.getByUserNameMutex.RLock()
 	defer fake.getByUserNameMutex.RUnlock()
+	fake.getByVetOrgIDMutex.RLock()
+	defer fake.getByVetOrgIDMutex.RUnlock()
+	fake.updateMutex.RLock()
+	defer fake.updateMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

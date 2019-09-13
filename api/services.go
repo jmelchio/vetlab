@@ -7,7 +7,7 @@ import (
 	"github.com/jmelchio/vetlab/model"
 )
 
-//go:generate counterfeiter . UserService
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 . UserService
 
 // UserService provides the business operations for maintaining users within the application
 type UserService interface {

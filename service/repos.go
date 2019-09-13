@@ -2,7 +2,7 @@ package service
 
 import "github.com/jmelchio/vetlab/model"
 
-//go:generate counterfeiter . UserRepo
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 . UserRepo
 
 // UserRepo declares the persistence interface for the User struct
 type UserRepo interface {
