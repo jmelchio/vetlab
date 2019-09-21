@@ -25,7 +25,7 @@ var _ = Describe("CustomerRepo", func() {
 
 	BeforeEach(func() {
 		customerRepoImpl := CustomerRepo{Database: database}
-		customerRepo = customerRepoImpl
+		customerRepo = &customerRepoImpl
 
 		userName = "user_name"
 		firstName = "first_name"

@@ -15,7 +15,7 @@ type CustomerRepo struct {
 }
 
 // Create creates a persistent Customer row in the sql datastore
-func (customerRepo CustomerRepo) Create(customer *model.Customer) error {
+func (customerRepo *CustomerRepo) Create(customer *model.Customer) error {
 	if customerRepo.Database.NewRecord(customer) {
 		if err := customerRepo.Database.Create(customer).Error; err != nil {
 			return err
@@ -28,7 +28,7 @@ func (customerRepo CustomerRepo) Create(customer *model.Customer) error {
 // Update modifies a Customer row in the sql datastore
 // If the password is less than 50 characters long it's probably not hashed and
 // should therefore not be saved to the database
-func (customerRepo CustomerRepo) Update(customer *model.Customer) error {
+func (customerRepo *CustomerRepo) Update(customer *model.Customer) error {
 	if !customerRepo.Database.NewRecord(customer) {
 		if len(customer.Password) < 50 {
 			if err := customerRepo.Database.Model(customer).Updates(
@@ -52,7 +52,7 @@ func (customerRepo CustomerRepo) Update(customer *model.Customer) error {
 }
 
 // Delete removes a Customer row in the sql datastore
-func (customerRepo CustomerRepo) Delete(customer *model.Customer) error {
+func (customerRepo *CustomerRepo) Delete(customer *model.Customer) error {
 	if err := customerRepo.Database.Delete(customer).Error; err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (customerRepo CustomerRepo) Delete(customer *model.Customer) error {
 }
 
 // GetByID fetches a Customer from the sql datastore
-func (customerRepo CustomerRepo) GetByID(customerID uint) (*model.Customer, error) {
+func (customerRepo *CustomerRepo) GetByID(customerID uint) (*model.Customer, error) {
 	var customer model.Customer
 
 	if err := customerRepo.Database.First(&customer, customerID).Error; err != nil {
@@ -70,12 +70,12 @@ func (customerRepo CustomerRepo) GetByID(customerID uint) (*model.Customer, erro
 }
 
 // GetByVetOrgID fetches all customers by VetOrg from the sql datastore
-func (customerRepo CustomerRepo) GetByVetOrgID(vetOrgID uint) ([]model.Customer, error) {
+func (customerRepo *CustomerRepo) GetByVetOrgID(vetOrgID uint) ([]model.Customer, error) {
 	return nil, nil
 }
 
 // GetByUserName fetches all customers by UserName from the sql datastore
-func (customerRepo CustomerRepo) GetByUserName(userName string) (*model.Customer, error) {
+func (customerRepo *CustomerRepo) GetByUserName(userName string) (*model.Customer, error) {
 	var customer model.Customer
 
 	if err := customerRepo.Database.Where("user_name = ?", userName).Find(&customer).Error; err != nil {

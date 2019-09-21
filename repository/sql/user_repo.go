@@ -15,7 +15,7 @@ type UserRepo struct {
 }
 
 // Create creates a persistent User row in the sql datastore
-func (userRepo UserRepo) Create(user *model.User) error {
+func (userRepo *UserRepo) Create(user *model.User) error {
 	if userRepo.Database.NewRecord(user) {
 		if err := userRepo.Database.Create(user).Error; err != nil {
 			return err
@@ -28,7 +28,7 @@ func (userRepo UserRepo) Create(user *model.User) error {
 // Update modifies a User row in the sql datastore
 // If the password is less than 50 characters long it's probably not hashed and
 // should therefore not be saved to the database (yes, it's janky)
-func (userRepo UserRepo) Update(user *model.User) error {
+func (userRepo *UserRepo) Update(user *model.User) error {
 	if !userRepo.Database.NewRecord(user) {
 		if len(user.Password) < 50 {
 			if err := userRepo.Database.Model(user).Updates(
@@ -52,7 +52,7 @@ func (userRepo UserRepo) Update(user *model.User) error {
 }
 
 // Delete removes a User row in the sql datastore
-func (userRepo UserRepo) Delete(user *model.User) error {
+func (userRepo *UserRepo) Delete(user *model.User) error {
 	if err := userRepo.Database.Delete(user).Error; err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (userRepo UserRepo) Delete(user *model.User) error {
 }
 
 // GetByID fetches a User from the sql datastore
-func (userRepo UserRepo) GetByID(userID uint) (*model.User, error) {
+func (userRepo *UserRepo) GetByID(userID uint) (*model.User, error) {
 	var user model.User
 
 	if err := userRepo.Database.First(&user, userID).Error; err != nil {
@@ -70,7 +70,7 @@ func (userRepo UserRepo) GetByID(userID uint) (*model.User, error) {
 }
 
 // GetByUserName fetches all users by UserName from the sql datastore
-func (userRepo UserRepo) GetByUserName(userName string) (*model.User, error) {
+func (userRepo *UserRepo) GetByUserName(userName string) (*model.User, error) {
 	var user model.User
 
 	if err := userRepo.Database.Where("user_name = ?", userName).Find(&user).Error; err != nil {

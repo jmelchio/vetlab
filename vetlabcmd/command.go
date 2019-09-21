@@ -32,7 +32,7 @@ func Run() {
 	autoMigrateDB(&model.User{})
 
 	userRepo := sql.UserRepo{Database: database}
-	userService := service.User{UserRepo: userRepo}
+	userService := service.User{UserRepo: &userRepo}
 	userHandler, err = api.NewUserHandler(userService)
 	if err != nil {
 		log.Fatalf("Unable to create the user handler: %s", err.Error())
@@ -41,7 +41,7 @@ func Run() {
 	http.Handle("/user/", userHandler)
 
 	customerRepo := sql.CustomerRepo{Database: database}
-	customerService := service.Customer{CustomerRepo: customerRepo}
+	customerService := service.Customer{CustomerRepo: &customerRepo}
 	customerHandler, err = api.NewCustomerHandler(customerService)
 	if err != nil {
 		log.Fatalf("Unable to create the customer handler: %s", err.Error())
