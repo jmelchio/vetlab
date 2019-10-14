@@ -38,12 +38,12 @@ const (
 
 // DiagnosticRequestRoutes are the REST endpoint routes for the diagnostic requests REST interface
 var DiagnosticRequestRoutes = rata.Routes{
-	{Path: "/diagnosticrequest", Method: rata.POST, Name: SubmitDiagnosticRequest},
-	{Path: "/diagnosticrequest/:request_id", Method: rata.GET, Name: DiagnosticRequestByID},
-	{Path: "/diagnosticrequest/vetorg/:vetorg_id", Method: rata.GET, Name: DiagnosticRequestsByVetOrgID},
-	{Path: "/diagnosticrequest/vetorg/:vetorg_id/start/:start_date/end/:end_date", Method: rata.GET, Name: DiagnosticRequestsByVetOrgIDAndDateRange},
-	{Path: "/diagnosticrequest/user/:user_id", Method: rata.GET, Name: DiagnosticRequestsByUserID},
-	{Path: "/diagnosticrequest/customer/:customer_id", Method: rata.GET, Name: DiagnosticRequestsByCustomerID},
+	{Path: "/diagnosticrequests", Method: rata.POST, Name: SubmitDiagnosticRequest},
+	{Path: "/diagnosticrequests/:request_id", Method: rata.GET, Name: DiagnosticRequestByID},
+	{Path: "/diagnosticrequests/vetorg/:vetorg_id", Method: rata.GET, Name: DiagnosticRequestsByVetOrgID},
+	{Path: "/diagnosticrequests/vetorg/:vetorg_id/start/:start_date/end/:end_date", Method: rata.GET, Name: DiagnosticRequestsByVetOrgIDAndDateRange},
+	{Path: "/diagnosticrequests/user/:user_id", Method: rata.GET, Name: DiagnosticRequestsByUserID},
+	{Path: "/diagnosticrequests/customer/:customer_id", Method: rata.GET, Name: DiagnosticRequestsByCustomerID},
 }
 
 // NewDiagnosticRequestHandler provides the factory function to create the REST interface for report requests
