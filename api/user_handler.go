@@ -34,12 +34,12 @@ const (
 
 // UserRoutes are the REST endpoint routes for the user REST interface
 var UserRoutes = rata.Routes{
-	{Path: "/user", Method: rata.POST, Name: CreateUser},
-	{Path: "/user", Method: rata.PUT, Name: UpdateUser},
-	{Path: "/user", Method: rata.DELETE, Name: DeleteUser},
-	{Path: "/user/login", Method: rata.POST, Name: Login},
-	{Path: "/user/:user_id", Method: rata.GET, Name: FindUser},
-	{Path: "/user/username/:user_name", Method: rata.GET, Name: FindUserByUserName},
+	{Path: "/users", Method: rata.POST, Name: CreateUser},
+	{Path: "/users", Method: rata.PUT, Name: UpdateUser},
+	{Path: "/users", Method: rata.DELETE, Name: DeleteUser},
+	{Path: "/users/login", Method: rata.POST, Name: Login},
+	{Path: "/users/:user_id", Method: rata.GET, Name: FindUser},
+	{Path: "/users/username/:user_name", Method: rata.GET, Name: FindUserByUserName},
 }
 
 // NewUserHandler provides the factory function to create the REST interface for user actions

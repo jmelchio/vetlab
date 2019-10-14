@@ -34,12 +34,12 @@ const (
 
 // CustomerRoutes are the REST endpoint routes for the customer REST interface
 var CustomerRoutes = rata.Routes{
-	{Path: "/customer", Method: rata.POST, Name: CreateCustomer},
-	{Path: "/customer", Method: rata.PUT, Name: UpdateCustomer},
-	{Path: "/customer", Method: rata.DELETE, Name: DeleteCustomer},
-	{Path: "/customer/login", Method: rata.POST, Name: CustomerLogin},
-	{Path: "/customer/:customer_id", Method: rata.GET, Name: FindCustomer},
-	{Path: "/customer/user_name/:user_name", Method: rata.GET, Name: FindCustomerByUserName},
+	{Path: "/customers", Method: rata.POST, Name: CreateCustomer},
+	{Path: "/customers", Method: rata.PUT, Name: UpdateCustomer},
+	{Path: "/customers", Method: rata.DELETE, Name: DeleteCustomer},
+	{Path: "/customers/login", Method: rata.POST, Name: CustomerLogin},
+	{Path: "/customers/:customer_id", Method: rata.GET, Name: FindCustomer},
+	{Path: "/customers/user_name/:user_name", Method: rata.GET, Name: FindCustomerByUserName},
 }
 
 // NewCustomerHandler provides the factory function to create the REST interface for customer actions
