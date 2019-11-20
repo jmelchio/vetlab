@@ -37,8 +37,8 @@ func Run() {
 	if err != nil {
 		log.Fatalf("Unable to create the user handler: %s", err.Error())
 	}
-	http.Handle("/user", userHandler)
-	http.Handle("/user/", userHandler)
+	http.Handle("/users", userHandler)
+	http.Handle("/users/", userHandler)
 
 	customerRepo := sql.CustomerRepo{Database: database}
 	customerService := service.Customer{CustomerRepo: &customerRepo}
@@ -46,8 +46,8 @@ func Run() {
 	if err != nil {
 		log.Fatalf("Unable to create the customer handler: %s", err.Error())
 	}
-	http.Handle("/customer", customerHandler)
-	http.Handle("/customer/", customerHandler)
+	http.Handle("/customers", customerHandler)
+	http.Handle("/customers/", customerHandler)
 
 	log.Println("Starting listner on port: 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
