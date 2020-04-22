@@ -8,10 +8,10 @@ import (
 
 // Package wide error messages
 const (
-	EmptyBody         = "Body of the request is empty"
-	InvalidBody       = "Body of the request is invalid"
-	UnableToParseBody = "Unable to parse request body"
-	NoParamsFound     = "No parameters found on request"
+	EmptyBody         = "body of the request is empty"
+	InvalidBody       = "body of the request is invalid"
+	UnableToParseBody = "enable to parse request body"
+	NoParamsFound     = "no parameters found on request"
 )
 
 func openCors(handler http.Handler, domain string) http.Handler {

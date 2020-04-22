@@ -23,17 +23,17 @@ type DiagnosticRequestServer struct {
 // Constants for error messages and request naming
 const (
 	SubmitDiagnosticRequest                  = "submit_diagnostic_request"
-	UnableToSubmitDiagnosticRequest          = "Unable to submit diagnostic request"
+	UnableToSubmitDiagnosticRequest          = "unable to submit diagnostic request"
 	DiagnosticRequestByID                    = "diagnostic_request_by_id"
 	DiagnosticRequestsByVetOrgID             = "diagnotistic_requests_by_vetorg_id"
 	DiagnosticRequestsByUserID               = "diagnotistic_requests_by_user_id"
 	DiagnosticRequestsByCustomerID           = "diagnotistic_requests_by_customer_id"
 	DiagnosticRequestsByVetOrgIDAndDateRange = "diagnostic_requests_by_vetorg_id_and_date_range"
-	UnableToParseParams                      = "Unable to parse request parameters(s)"
-	ErrorFetchingDiagnosticRequests          = "Error occurred attempting to retrieve diagnostic request(s)"
-	ErrorFetchingVetOrg                      = "Error occurred attempting to retrieve vetOrg"
-	ErrorFetchingUser                        = "Error occurred attempting to retrieve user"
-	ErrorFetchingCustomer                    = "Error occurred attempting to retrieve customer"
+	UnableToParseParams                      = "unable to parse request parameters(s)"
+	ErrorFetchingDiagnosticRequests          = "error occurred attempting to retrieve diagnostic request(s)"
+	ErrorFetchingVetOrg                      = "error occurred attempting to retrieve vetOrg"
+	ErrorFetchingUser                        = "error occurred attempting to retrieve user"
+	ErrorFetchingCustomer                    = "error occurred attempting to retrieve customer"
 )
 
 // DiagnosticRequestRoutes are the REST endpoint routes for the diagnostic requests REST interface

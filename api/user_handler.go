@@ -25,11 +25,11 @@ const (
 	FindUser           = "find_user"
 	FindUserByUserName = "find_user_by_user_name"
 
-	UnableToCreateUser = "Unable to create a user"
-	UnableToUpdateUser = "Unable to update a user"
-	UnableToDeleteUser = "Unable to delete a user"
-	UnableToLoginUser  = "Unable to login the user"
-	UnableToFindUser   = "Unable to find the user(s)"
+	UnableToCreateUser = "unable to create a user"
+	UnableToUpdateUser = "unable to update a user"
+	UnableToDeleteUser = "unable to delete a user"
+	UnableToLoginUser  = "unable to login the user"
+	UnableToFindUser   = "unable to find the user(s)"
 )
 
 // UserRoutes are the REST endpoint routes for the user REST interface

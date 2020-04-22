@@ -7,11 +7,11 @@ import (
 )
 
 const (
-	MissingContext     = "Context is required"
-	PasswordTooShort   = "Password should be at least 8 characters"
-	HashingFailed      = "Failed to salt and hash password: %s"
-	UserOrPasswordFail = "User or Password mismatch"
-	VetOrgRequired     = "VetOrg ID is required"
+	MissingContext     = "context is required"
+	PasswordTooShort   = "password should be at least 8 characters"
+	HashingFailed      = "failed to salt and hash password: %s"
+	UserOrPasswordFail = "user or password mismatch"
+	VetOrgRequired     = "vetOrg ID is required"
 )
 
 func hashAndSalt(pwd string) (*string, error) {
