@@ -22,7 +22,7 @@ func (userRepo *UserRepo) Create(user *model.User) error {
 		}
 		return nil
 	}
-	return errors.New("Record already in database")
+	return errors.New("record already in database")
 }
 
 // Update modifies a User row in the sql datastore
@@ -48,7 +48,7 @@ func (userRepo *UserRepo) Update(user *model.User) error {
 		}
 		return nil
 	}
-	return errors.New("Record does not exist in database")
+	return errors.New("record does not exist in database")
 }
 
 // Delete removes a User row in the sql datastore

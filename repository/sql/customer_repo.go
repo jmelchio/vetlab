@@ -22,7 +22,7 @@ func (customerRepo *CustomerRepo) Create(customer *model.Customer) error {
 		}
 		return nil
 	}
-	return errors.New("Record already in database")
+	return errors.New("record already in database")
 }
 
 // Update modifies a Customer row in the sql datastore
@@ -48,7 +48,7 @@ func (customerRepo *CustomerRepo) Update(customer *model.Customer) error {
 		}
 		return nil
 	}
-	return errors.New("Record does not exist in database")
+	return errors.New("record does not exist in database")
 }
 
 // Delete removes a Customer row in the sql datastore
