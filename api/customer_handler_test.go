@@ -65,7 +65,7 @@ var _ = Describe("CustomerHandler", func() {
 			}
 		})
 
-		Context("Valid customer information is passed", func() {
+		When("Valid customer information is passed", func() {
 
 			BeforeEach(func() {
 				customerService.CreateCustomerReturns(&createCustomer, nil)
@@ -92,10 +92,10 @@ var _ = Describe("CustomerHandler", func() {
 
 		})
 
-		Context("Valid customer information is passed but downstream call fails", func() {
+		When("Valid customer information is passed but downstream call fails", func() {
 
 			BeforeEach(func() {
-				customerService.CreateCustomerReturns(nil, errors.New("Whoot?"))
+				customerService.CreateCustomerReturns(nil, errors.New("whoot"))
 				customerBytes, err := json.Marshal(createCustomer)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
@@ -196,7 +196,7 @@ var _ = Describe("CustomerHandler", func() {
 		Context("Valid customer information is passed but downstream call fails", func() {
 
 			BeforeEach(func() {
-				customerService.UpdateCustomerReturns(nil, errors.New("Whoot?"))
+				customerService.UpdateCustomerReturns(nil, errors.New("whoot"))
 				customerBytes, err := json.Marshal(updateCustomer)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
@@ -288,7 +288,7 @@ var _ = Describe("CustomerHandler", func() {
 		Context("Valid customer information is passed but downstream call fails", func() {
 
 			BeforeEach(func() {
-				customerService.DeleteCustomerReturns(errors.New("Whoot?"))
+				customerService.DeleteCustomerReturns(errors.New("whoot"))
 				customerBytes, err := json.Marshal(deleteCustomer)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
@@ -395,7 +395,7 @@ var _ = Describe("CustomerHandler", func() {
 		Context("Valid customer information is passed but downstream call fails", func() {
 
 			BeforeEach(func() {
-				customerService.LoginReturns(nil, errors.New("Whoot?"))
+				customerService.LoginReturns(nil, errors.New("whoot"))
 				customerBytes, err := json.Marshal(loginRequest)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
@@ -500,7 +500,7 @@ var _ = Describe("CustomerHandler", func() {
 			Context("Customer with userName does not exist", func() {
 
 				BeforeEach(func() {
-					customerService.FindCustomerByUserNameReturns(nil, errors.New("Whoot?"))
+					customerService.FindCustomerByUserNameReturns(nil, errors.New("whoot"))
 					recorder = httptest.NewRecorder()
 					request, _ := requestGenerator.CreateRequest(
 						FindCustomerByUserName,
@@ -554,7 +554,7 @@ var _ = Describe("CustomerHandler", func() {
 		Context("Valid search parameter information is passed but downstream call fails", func() {
 
 			BeforeEach(func() {
-				customerService.FindCustomerByUserNameReturns(nil, errors.New("Whoot?"))
+				customerService.FindCustomerByUserNameReturns(nil, errors.New("whoot"))
 				recorder = httptest.NewRecorder()
 				request, _ := requestGenerator.CreateRequest(
 					FindCustomerByUserName,
