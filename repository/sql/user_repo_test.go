@@ -2,7 +2,7 @@ package sql_test
 
 import (
 	"github.com/jmelchio/vetlab/model"
-	. "github.com/jmelchio/vetlab/repository/sql"
+	"github.com/jmelchio/vetlab/repository/sql"
 	"github.com/jmelchio/vetlab/service"
 
 	. "github.com/onsi/ginkgo"
@@ -23,7 +23,7 @@ var _ = Describe("UserRepo", func() {
 	)
 
 	BeforeEach(func() {
-		userRepoImpl := UserRepo{Database: database}
+		userRepoImpl := sql.UserRepo{Database: database}
 		userRepo = &userRepoImpl
 
 		userName = "user_name"

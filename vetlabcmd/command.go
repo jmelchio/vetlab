@@ -5,12 +5,13 @@ import (
 	"net/http"
 	"reflect"
 
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+
 	"github.com/jmelchio/vetlab/api"
 	"github.com/jmelchio/vetlab/model"
 	"github.com/jmelchio/vetlab/repository/sql"
 	"github.com/jmelchio/vetlab/service"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 var (
@@ -21,7 +22,8 @@ var (
 )
 
 func Run() {
-	database, err = gorm.Open(postgres.Open("host=localhost port=5432 user=postgres password=password dbname=vetlab sslmode=disable"), &gorm.Config{})
+	dsn := "host=localhost port=5432 user=postgres password=password dbname=vetlab sslmode=disable"
+	database, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %s", err.Error())
 	}

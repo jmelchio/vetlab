@@ -1,11 +1,12 @@
 package sql_test
 
 import (
-	"github.com/jmelchio/vetlab/model"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"github.com/jmelchio/vetlab/model"
 
 	"testing"
 )

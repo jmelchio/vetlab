@@ -3,8 +3,10 @@ package sql
 import (
 	"errors"
 	"fmt"
-	"github.com/jmelchio/vetlab/model"
+
 	"gorm.io/gorm"
+
+	"github.com/jmelchio/vetlab/model"
 )
 
 // CustomerRepo describes the sql database that persists the Customer
