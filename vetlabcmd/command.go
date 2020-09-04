@@ -5,11 +5,12 @@ import (
 	"net/http"
 	"reflect"
 
-	"github.com/jinzhu/gorm"
 	"github.com/jmelchio/vetlab/api"
 	"github.com/jmelchio/vetlab/model"
 	"github.com/jmelchio/vetlab/repository/sql"
 	"github.com/jmelchio/vetlab/service"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var (
@@ -20,7 +21,7 @@ var (
 )
 
 func Run() {
-	database, err = gorm.Open("postgres", "host=localhost user=postgres dbname=vetlab sslmode=disable")
+	database, err = gorm.Open(postgres.Open("host=localhost port=5432 user=postgres password=password dbname=vetlab sslmode=disable"), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %s", err.Error())
 	}
@@ -54,10 +55,10 @@ func Run() {
 }
 
 func autoMigrateDB(table interface{}) {
-	if err := database.AutoMigrate(table).Error; err != nil {
+	if err := database.AutoMigrate(table); err != nil {
 		dbCreateFatal(table, err)
 	}
-	if !database.HasTable(table) {
+	if !database.Migrator().HasTable(table) {
 		dbMissing(reflect.TypeOf(table).String())
 	} else {
 		dbMigrated(reflect.TypeOf(table).String())

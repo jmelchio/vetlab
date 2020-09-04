@@ -52,7 +52,7 @@ var _ = Describe("UserRepo", func() {
 		Context("User table has been created during in BeforeSuite", func() {
 
 			It("Has a user table", func() {
-				hasUserTable := database.HasTable(&model.User{})
+				hasUserTable := database.Migrator().HasTable(&model.User{})
 				Expect(hasUserTable).To(BeTrue())
 			})
 		})

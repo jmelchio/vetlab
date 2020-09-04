@@ -2,11 +2,9 @@ package sql
 
 import (
 	"errors"
-
-	"github.com/jinzhu/gorm"
-	// import the proper dialect for Gorm
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"fmt"
 	"github.com/jmelchio/vetlab/model"
+	"gorm.io/gorm"
 )
 
 // UserRepo describes the sql database that persists the User
@@ -16,7 +14,7 @@ type UserRepo struct {
 
 // Create creates a persistent User row in the sql datastore
 func (userRepo *UserRepo) Create(user *model.User) error {
-	if userRepo.Database.NewRecord(user) {
+	if user.ID == 0 {
 		if err := userRepo.Database.Create(user).Error; err != nil {
 			return err
 		}
@@ -29,7 +27,7 @@ func (userRepo *UserRepo) Create(user *model.User) error {
 // If the password is less than 50 characters long it's probably not hashed and
 // should therefore not be saved to the database (yes, it's janky)
 func (userRepo *UserRepo) Update(user *model.User) error {
-	if !userRepo.Database.NewRecord(user) {
+	if user.ID != 0 {
 		if len(user.Password) < 50 {
 			if err := userRepo.Database.Model(user).Updates(
 				model.User{
@@ -73,8 +71,12 @@ func (userRepo *UserRepo) GetByID(userID uint) (*model.User, error) {
 func (userRepo *UserRepo) GetByUserName(userName string) (*model.User, error) {
 	var user model.User
 
-	if err := userRepo.Database.Where("user_name = ?", userName).Find(&user).Error; err != nil {
-		return nil, err
+	result := userRepo.Database.Where("user_name = ?", userName).Find(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return nil, fmt.Errorf("user with username '%s' not found", userName)
 	}
 	return &user, nil
 }

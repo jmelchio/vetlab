@@ -4,8 +4,8 @@ package model
 // UserName is a pointer because we want to catch if it's null in
 // the database.
 type Customer struct {
-	ID                 uint                `json:"id" gorm:"primary_key"`
-	UserName           *string             `json:"user_name" gorm:"not null;unique_index"`
+	ID                 uint                `json:"id" gorm:"primaryKey"`
+	UserName           *string             `json:"user_name" gorm:"not null;uniqueIndex"`
 	FirstName          string              `json:"first_name,omitempty"`
 	LastName           string              `json:"last_name,omitempty"`
 	Email              string              `json:"email,omitempty"`

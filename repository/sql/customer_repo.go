@@ -2,11 +2,9 @@ package sql
 
 import (
 	"errors"
-
-	"github.com/jinzhu/gorm"
-	// import the proper dialect for Gorm
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"fmt"
 	"github.com/jmelchio/vetlab/model"
+	"gorm.io/gorm"
 )
 
 // CustomerRepo describes the sql database that persists the Customer
@@ -16,7 +14,7 @@ type CustomerRepo struct {
 
 // Create creates a persistent Customer row in the sql datastore
 func (customerRepo *CustomerRepo) Create(customer *model.Customer) error {
-	if customerRepo.Database.NewRecord(customer) {
+	if customer.ID == 0 {
 		if err := customerRepo.Database.Create(customer).Error; err != nil {
 			return err
 		}
@@ -29,7 +27,7 @@ func (customerRepo *CustomerRepo) Create(customer *model.Customer) error {
 // If the password is less than 50 characters long it's probably not hashed and
 // should therefore not be saved to the database
 func (customerRepo *CustomerRepo) Update(customer *model.Customer) error {
-	if !customerRepo.Database.NewRecord(customer) {
+	if customer.ID != 0 {
 		if len(customer.Password) < 50 {
 			if err := customerRepo.Database.Model(customer).Updates(
 				model.Customer{
@@ -78,8 +76,12 @@ func (customerRepo *CustomerRepo) GetByVetOrgID(vetOrgID uint) ([]model.Customer
 func (customerRepo *CustomerRepo) GetByUserName(userName string) (*model.Customer, error) {
 	var customer model.Customer
 
-	if err := customerRepo.Database.Where("user_name = ?", userName).Find(&customer).Error; err != nil {
-		return nil, err
+	result := customerRepo.Database.Where("user_name = ?", userName).Find(&customer)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return nil, fmt.Errorf("customer with username '%s' not found", userName)
 	}
 	return &customer, nil
 }
