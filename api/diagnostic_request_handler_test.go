@@ -14,7 +14,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/tedsuo/rata"
 
-	. "github.com/jmelchio/vetlab/api"
+	"github.com/jmelchio/vetlab/api"
 	"github.com/jmelchio/vetlab/api/apifakes"
 	"github.com/jmelchio/vetlab/model"
 )
@@ -36,13 +36,13 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 		vetOrgService = new(apifakes.FakeVetOrgService)
 		userService = new(apifakes.FakeUserService)
 		customerService = new(apifakes.FakeCustomerService)
-		handler, err = NewDiagnosticRequestHandler(
+		handler, err = api.NewDiagnosticRequestHandler(
 			diagnosticRequestService,
 			vetOrgService,
 			userService,
 			customerService,
 		)
-		requestGenerator = rata.NewRequestGenerator("", DiagnosticRequestRoutes)
+		requestGenerator = rata.NewRequestGenerator("", api.DiagnosticRequestRoutes)
 		Expect(err).NotTo(HaveOccurred())
 	})
 
@@ -67,7 +67,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				requestBytes, err := json.Marshal(diagnosticRequest)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(SubmitDiagnosticRequest, nil, bytes.NewReader(requestBytes))
+				request, _ := requestGenerator.CreateRequest(api.SubmitDiagnosticRequest, nil, bytes.NewReader(requestBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -92,11 +92,11 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 		Context("Valid diagnostic request is passed but downstream call fails", func() {
 
 			BeforeEach(func() {
-				diagnosticRequestService.SubmitDiagnosticRequestReturns(nil, errors.New("Whoot?"))
+				diagnosticRequestService.SubmitDiagnosticRequestReturns(nil, errors.New("whoot"))
 				userBytes, err := json.Marshal(diagnosticRequest)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(SubmitDiagnosticRequest, nil, bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(api.SubmitDiagnosticRequest, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -105,7 +105,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToSubmitDiagnosticRequest))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToSubmitDiagnosticRequest))
 				Expect(diagnosticRequestService.SubmitDiagnosticRequestCallCount()).To(Equal(1))
 			})
 		})
@@ -114,7 +114,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(SubmitDiagnosticRequest, nil, nil)
+				request, _ := requestGenerator.CreateRequest(api.SubmitDiagnosticRequest, nil, nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -122,7 +122,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(EmptyBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.EmptyBody))
 				Expect(diagnosticRequestService.SubmitDiagnosticRequestCallCount()).To(Equal(0))
 			})
 		})
@@ -133,7 +133,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				userBytes, err := json.Marshal("diagnosticRequest")
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(SubmitDiagnosticRequest, nil, bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(api.SubmitDiagnosticRequest, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -141,7 +141,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(InvalidBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.InvalidBody))
 				Expect(diagnosticRequestService.SubmitDiagnosticRequestCallCount()).To(Equal(0))
 			})
 		})
@@ -173,7 +173,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					params := rata.Params{
 						"request_id": "98765",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestByID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestByID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -195,13 +195,13 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			Context("Id is not found in backing storage", func() {
 
 				BeforeEach(func() {
-					notFoundError := errors.New("Not found")
+					notFoundError := errors.New("not found")
 					diagnosticRequestService.FindRequestByIDReturns(nil, notFoundError)
 					recorder = httptest.NewRecorder()
 					params := rata.Params{
 						"request_id": "12345",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestByID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestByID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -209,7 +209,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingDiagnosticRequests))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingDiagnosticRequests))
 					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(1))
 				})
 			})
@@ -235,7 +235,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					params := rata.Params{
 						"request_id": "one",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestByID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestByID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -243,7 +243,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.UnableToParseParams))
 					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(0))
 				})
 			})
@@ -285,7 +285,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					params := rata.Params{
 						"vetorg_id": "12345",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByVetOrgID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -308,14 +308,14 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			Context("VetOrg not found in backing storage", func() {
 
 				BeforeEach(func() {
-					notFoundError := errors.New("Not found")
+					notFoundError := errors.New("not found")
 					vetOrgService.FindVetOrgByIDReturns(nil, notFoundError)
 					diagnosticRequestService.FindRequestByVetOrgReturns(nil, notFoundError)
 					recorder = httptest.NewRecorder()
 					params := rata.Params{
 						"vetorg_id": "12345",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByVetOrgID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -323,7 +323,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingVetOrg))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingVetOrg))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
 					Expect(diagnosticRequestService.FindRequestByVetOrgCallCount()).To(Equal(0))
 				})
@@ -332,14 +332,14 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			Context("Request(s) not found in backing storage", func() {
 
 				BeforeEach(func() {
-					notFoundError := errors.New("Not found")
+					notFoundError := errors.New("not found")
 					vetOrgService.FindVetOrgByIDReturns(&vetOrg, nil)
 					diagnosticRequestService.FindRequestByVetOrgReturns(nil, notFoundError)
 					recorder = httptest.NewRecorder()
 					params := rata.Params{
 						"vetorg_id": "12345",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByVetOrgID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -347,7 +347,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingDiagnosticRequests))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingDiagnosticRequests))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
 					Expect(diagnosticRequestService.FindRequestByVetOrgCallCount()).To(Equal(1))
 				})
@@ -375,7 +375,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					params := rata.Params{
 						"vetorg_id": "one",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByVetOrgID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -383,7 +383,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.UnableToParseParams))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(0))
 					Expect(diagnosticRequestService.FindRequestByVetOrgCallCount()).To(Equal(0))
 				})
@@ -426,7 +426,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					params := rata.Params{
 						"user_id": "12345",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByUserID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByUserID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -449,14 +449,14 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			Context("User not found in backing storage", func() {
 
 				BeforeEach(func() {
-					notFoundError := errors.New("Not found")
+					notFoundError := errors.New("not found")
 					userService.FindUserByIDReturns(nil, notFoundError)
 					diagnosticRequestService.FindRequestByUserReturns(nil, notFoundError)
 					recorder = httptest.NewRecorder()
 					params := rata.Params{
 						"user_id": "12345",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByUserID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByUserID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -464,7 +464,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingUser))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingUser))
 					Expect(userService.FindUserByIDCallCount()).To(Equal(1))
 					Expect(diagnosticRequestService.FindRequestByUserCallCount()).To(Equal(0))
 				})
@@ -473,14 +473,14 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			Context("Request(s) not found in backing storage", func() {
 
 				BeforeEach(func() {
-					notFoundError := errors.New("Not found")
+					notFoundError := errors.New("not found")
 					userService.FindUserByIDReturns(&user, nil)
 					diagnosticRequestService.FindRequestByUserReturns(nil, notFoundError)
 					recorder = httptest.NewRecorder()
 					params := rata.Params{
 						"user_id": "12345",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByUserID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByUserID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -488,7 +488,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingDiagnosticRequests))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingDiagnosticRequests))
 					Expect(userService.FindUserByIDCallCount()).To(Equal(1))
 					Expect(diagnosticRequestService.FindRequestByUserCallCount()).To(Equal(1))
 				})
@@ -516,7 +516,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					params := rata.Params{
 						"user_id": "one",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByUserID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByUserID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -524,7 +524,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.UnableToParseParams))
 					Expect(userService.FindUserByIDCallCount()).To(Equal(0))
 					Expect(diagnosticRequestService.FindRequestByUserCallCount()).To(Equal(0))
 				})
@@ -567,7 +567,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					params := rata.Params{
 						"customer_id": "12345",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByCustomerID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByCustomerID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -590,14 +590,14 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			Context("Customer not found in backing storage", func() {
 
 				BeforeEach(func() {
-					notFoundError := errors.New("Not found")
+					notFoundError := errors.New("not found")
 					customerService.FindCustomerByIDReturns(nil, notFoundError)
 					diagnosticRequestService.FindRequestByCustomerReturns(nil, notFoundError)
 					recorder = httptest.NewRecorder()
 					params := rata.Params{
 						"customer_id": "12345",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByCustomerID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByCustomerID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -605,7 +605,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingCustomer))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingCustomer))
 					Expect(customerService.FindCustomerByIDCallCount()).To(Equal(1))
 					Expect(diagnosticRequestService.FindRequestByCustomerCallCount()).To(Equal(0))
 				})
@@ -614,14 +614,14 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			Context("Request(s) not found in backing storage", func() {
 
 				BeforeEach(func() {
-					notFoundError := errors.New("Not found")
+					notFoundError := errors.New("not found")
 					customerService.FindCustomerByIDReturns(&customer, nil)
 					diagnosticRequestService.FindRequestByCustomerReturns(nil, notFoundError)
 					recorder = httptest.NewRecorder()
 					params := rata.Params{
 						"customer_id": "12345",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByCustomerID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByCustomerID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -629,7 +629,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingDiagnosticRequests))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingDiagnosticRequests))
 					Expect(customerService.FindCustomerByIDCallCount()).To(Equal(1))
 					Expect(diagnosticRequestService.FindRequestByCustomerCallCount()).To(Equal(1))
 				})
@@ -657,7 +657,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					params := rata.Params{
 						"customer_id": "one",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByCustomerID, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByCustomerID, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -665,7 +665,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.UnableToParseParams))
 					Expect(customerService.FindCustomerByIDCallCount()).To(Equal(0))
 					Expect(diagnosticRequestService.FindRequestByCustomerCallCount()).To(Equal(0))
 				})
@@ -713,7 +713,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 						"start_date": "20190101",
 						"end_date":   "20191231",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -736,7 +736,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			Context("VetOrg not found in backing storage", func() {
 
 				BeforeEach(func() {
-					notFoundError := errors.New("Not found")
+					notFoundError := errors.New("not found")
 					vetOrgService.FindVetOrgByIDReturns(nil, notFoundError)
 					diagnosticRequestService.FindRequestByDateRangeReturns(nil, notFoundError)
 					recorder = httptest.NewRecorder()
@@ -745,7 +745,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 						"start_date": "20190101",
 						"end_date":   "20191231",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -753,7 +753,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingVetOrg))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingVetOrg))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
 					Expect(diagnosticRequestService.FindRequestByDateRangeCallCount()).To(Equal(0))
 				})
@@ -762,7 +762,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			Context("Request(s) not found in backing storage", func() {
 
 				BeforeEach(func() {
-					notFoundError := errors.New("Not found")
+					notFoundError := errors.New("not found")
 					vetOrgService.FindVetOrgByIDReturns(&vetOrg, nil)
 					diagnosticRequestService.FindRequestByDateRangeReturns(nil, notFoundError)
 					recorder = httptest.NewRecorder()
@@ -771,7 +771,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 						"start_date": "20190101",
 						"end_date":   "20191231",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -779,7 +779,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(ErrorFetchingDiagnosticRequests))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingDiagnosticRequests))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
 					Expect(diagnosticRequestService.FindRequestByDateRangeCallCount()).To(Equal(1))
 				})
@@ -809,7 +809,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 						"start_date": "20190101",
 						"end_date":   "20191231",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -817,7 +817,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.UnableToParseParams))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(0))
 					Expect(diagnosticRequestService.FindRequestByDateRangeCallCount()).To(Equal(0))
 				})
@@ -832,7 +832,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 						"start_date": "20190101",
 						"end_date":   "20191231",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -840,7 +840,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.UnableToParseParams))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(0))
 					Expect(diagnosticRequestService.FindRequestByDateRangeCallCount()).To(Equal(0))
 				})
@@ -855,7 +855,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 						"start_date": "20190101",
 						"end_date":   "20191231",
 					}
-					request, _ := requestGenerator.CreateRequest(DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
+					request, _ := requestGenerator.CreateRequest(api.DiagnosticRequestsByVetOrgIDAndDateRange, params, nil)
 					handler.ServeHTTP(recorder, request)
 				})
 
@@ -863,7 +863,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(strings.TrimSpace(string(respBody))).To(Equal(UnableToParseParams))
+					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.UnableToParseParams))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(0))
 					Expect(diagnosticRequestService.FindRequestByDateRangeCallCount()).To(Equal(0))
 				})

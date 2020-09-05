@@ -9,11 +9,12 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/jmelchio/vetlab/api/apifakes"
-	"github.com/jmelchio/vetlab/model"
 	"github.com/tedsuo/rata"
 
-	. "github.com/jmelchio/vetlab/api"
+	"github.com/jmelchio/vetlab/api/apifakes"
+	"github.com/jmelchio/vetlab/model"
+
+	"github.com/jmelchio/vetlab/api"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -36,8 +37,8 @@ var _ = Describe("CustomerHandler", func() {
 
 	BeforeEach(func() {
 		customerService = new(apifakes.FakeCustomerService)
-		handler, err = NewCustomerHandler(customerService)
-		requestGenerator = rata.NewRequestGenerator("", CustomerRoutes)
+		handler, err = api.NewCustomerHandler(customerService)
+		requestGenerator = rata.NewRequestGenerator("", api.CustomerRoutes)
 		Expect(err).NotTo(HaveOccurred())
 
 		userName = "user_name"
@@ -72,7 +73,7 @@ var _ = Describe("CustomerHandler", func() {
 				customerBytes, err := json.Marshal(createCustomer)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(CreateCustomer, nil, bytes.NewReader(customerBytes))
+				request, _ := requestGenerator.CreateRequest(api.CreateCustomer, nil, bytes.NewReader(customerBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -99,7 +100,7 @@ var _ = Describe("CustomerHandler", func() {
 				customerBytes, err := json.Marshal(createCustomer)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(CreateCustomer, nil, bytes.NewReader(customerBytes))
+				request, _ := requestGenerator.CreateRequest(api.CreateCustomer, nil, bytes.NewReader(customerBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -108,7 +109,7 @@ var _ = Describe("CustomerHandler", func() {
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToCreateCustomer))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToCreateCustomer))
 				Expect(customerService.CreateCustomerCallCount()).To(Equal(1))
 			})
 		})
@@ -117,7 +118,7 @@ var _ = Describe("CustomerHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(CreateCustomer, nil, nil)
+				request, _ := requestGenerator.CreateRequest(api.CreateCustomer, nil, nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -125,7 +126,7 @@ var _ = Describe("CustomerHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(EmptyBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.EmptyBody))
 				Expect(customerService.CreateCustomerCallCount()).To(Equal(0))
 			})
 		})
@@ -136,7 +137,7 @@ var _ = Describe("CustomerHandler", func() {
 				customerBytes, err := json.Marshal("createCustomer")
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(CreateCustomer, nil, bytes.NewReader(customerBytes))
+				request, _ := requestGenerator.CreateRequest(api.CreateCustomer, nil, bytes.NewReader(customerBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -144,7 +145,7 @@ var _ = Describe("CustomerHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(InvalidBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.InvalidBody))
 				Expect(customerService.CreateCustomerCallCount()).To(Equal(0))
 			})
 		})
@@ -174,7 +175,7 @@ var _ = Describe("CustomerHandler", func() {
 				customerBytes, err := json.Marshal(updateCustomer)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(UpdateCustomer, nil, bytes.NewReader(customerBytes))
+				request, _ := requestGenerator.CreateRequest(api.UpdateCustomer, nil, bytes.NewReader(customerBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -200,7 +201,7 @@ var _ = Describe("CustomerHandler", func() {
 				customerBytes, err := json.Marshal(updateCustomer)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(UpdateCustomer, nil, bytes.NewReader(customerBytes))
+				request, _ := requestGenerator.CreateRequest(api.UpdateCustomer, nil, bytes.NewReader(customerBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -209,7 +210,7 @@ var _ = Describe("CustomerHandler", func() {
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToUpdateCustomer))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToUpdateCustomer))
 				Expect(customerService.UpdateCustomerCallCount()).To(Equal(1))
 			})
 		})
@@ -218,7 +219,7 @@ var _ = Describe("CustomerHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(UpdateCustomer, nil, nil)
+				request, _ := requestGenerator.CreateRequest(api.UpdateCustomer, nil, nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -226,7 +227,7 @@ var _ = Describe("CustomerHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(EmptyBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.EmptyBody))
 				Expect(customerService.UpdateCustomerCallCount()).To(Equal(0))
 			})
 		})
@@ -237,7 +238,7 @@ var _ = Describe("CustomerHandler", func() {
 				customerBytes, err := json.Marshal("updateCustomer")
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(UpdateCustomer, nil, bytes.NewReader(customerBytes))
+				request, _ := requestGenerator.CreateRequest(api.UpdateCustomer, nil, bytes.NewReader(customerBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -245,7 +246,7 @@ var _ = Describe("CustomerHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(InvalidBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.InvalidBody))
 				Expect(customerService.UpdateCustomerCallCount()).To(Equal(0))
 			})
 		})
@@ -275,7 +276,7 @@ var _ = Describe("CustomerHandler", func() {
 				customerBytes, err := json.Marshal(deleteCustomer)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(DeleteCustomer, nil, bytes.NewReader(customerBytes))
+				request, _ := requestGenerator.CreateRequest(api.DeleteCustomer, nil, bytes.NewReader(customerBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -292,7 +293,7 @@ var _ = Describe("CustomerHandler", func() {
 				customerBytes, err := json.Marshal(deleteCustomer)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(DeleteCustomer, nil, bytes.NewReader(customerBytes))
+				request, _ := requestGenerator.CreateRequest(api.DeleteCustomer, nil, bytes.NewReader(customerBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -300,7 +301,7 @@ var _ = Describe("CustomerHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToDeleteCustomer))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToDeleteCustomer))
 				Expect(customerService.DeleteCustomerCallCount()).To(Equal(1))
 			})
 		})
@@ -309,7 +310,7 @@ var _ = Describe("CustomerHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(DeleteCustomer, nil, nil)
+				request, _ := requestGenerator.CreateRequest(api.DeleteCustomer, nil, nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -317,7 +318,7 @@ var _ = Describe("CustomerHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(EmptyBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.EmptyBody))
 				Expect(customerService.DeleteCustomerCallCount()).To(Equal(0))
 			})
 		})
@@ -328,7 +329,7 @@ var _ = Describe("CustomerHandler", func() {
 				customerBytes, err := json.Marshal("deleteCustomer")
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(DeleteCustomer, nil, bytes.NewReader(customerBytes))
+				request, _ := requestGenerator.CreateRequest(api.DeleteCustomer, nil, bytes.NewReader(customerBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -336,7 +337,7 @@ var _ = Describe("CustomerHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(InvalidBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.InvalidBody))
 				Expect(customerService.DeleteCustomerCallCount()).To(Equal(0))
 			})
 		})
@@ -373,7 +374,7 @@ var _ = Describe("CustomerHandler", func() {
 				customerBytes, err := json.Marshal(loginRequest)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(CustomerLogin, nil, bytes.NewReader(customerBytes))
+				request, _ := requestGenerator.CreateRequest(api.CustomerLogin, nil, bytes.NewReader(customerBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -399,7 +400,7 @@ var _ = Describe("CustomerHandler", func() {
 				customerBytes, err := json.Marshal(loginRequest)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(CustomerLogin, nil, bytes.NewReader(customerBytes))
+				request, _ := requestGenerator.CreateRequest(api.CustomerLogin, nil, bytes.NewReader(customerBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -407,7 +408,7 @@ var _ = Describe("CustomerHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToLoginCustomer))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToLoginCustomer))
 				Expect(customerService.LoginCallCount()).To(Equal(1))
 			})
 		})
@@ -416,7 +417,7 @@ var _ = Describe("CustomerHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(CustomerLogin, nil, nil)
+				request, _ := requestGenerator.CreateRequest(api.CustomerLogin, nil, nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -424,7 +425,7 @@ var _ = Describe("CustomerHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(EmptyBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.EmptyBody))
 				Expect(customerService.DeleteCustomerCallCount()).To(Equal(0))
 			})
 		})
@@ -435,7 +436,7 @@ var _ = Describe("CustomerHandler", func() {
 				customerBytes, err := json.Marshal("loginRequest")
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(CustomerLogin, nil, bytes.NewReader(customerBytes))
+				request, _ := requestGenerator.CreateRequest(api.CustomerLogin, nil, bytes.NewReader(customerBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -443,7 +444,7 @@ var _ = Describe("CustomerHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(InvalidBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.InvalidBody))
 				Expect(customerService.DeleteCustomerCallCount()).To(Equal(0))
 			})
 		})
@@ -476,7 +477,7 @@ var _ = Describe("CustomerHandler", func() {
 					customerService.FindCustomerByUserNameReturns(&sampleCustomer, nil)
 					recorder = httptest.NewRecorder()
 					request, _ := requestGenerator.CreateRequest(
-						FindCustomerByUserName,
+						api.FindCustomerByUserName,
 						rata.Params{"user_name": userName},
 						nil)
 					handler.ServeHTTP(recorder, request)
@@ -503,7 +504,7 @@ var _ = Describe("CustomerHandler", func() {
 					customerService.FindCustomerByUserNameReturns(nil, errors.New("whoot"))
 					recorder = httptest.NewRecorder()
 					request, _ := requestGenerator.CreateRequest(
-						FindCustomerByUserName,
+						api.FindCustomerByUserName,
 						rata.Params{"user_name": "bad_name"},
 						nil)
 					handler.ServeHTTP(recorder, request)
@@ -514,7 +515,7 @@ var _ = Describe("CustomerHandler", func() {
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 
-					Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToFindCustomer))
+					Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToFindCustomer))
 					Expect(customerService.FindCustomerByUserNameCallCount()).To(Equal(1))
 				})
 			})
@@ -529,7 +530,7 @@ var _ = Describe("CustomerHandler", func() {
 					customerID = uint(12345)
 					recorder = httptest.NewRecorder()
 					request, _ := requestGenerator.CreateRequest(
-						FindCustomer,
+						api.FindCustomer,
 						rata.Params{"customer_id": fmt.Sprint(customerID)},
 						nil)
 					handler.ServeHTTP(recorder, request)
@@ -557,7 +558,7 @@ var _ = Describe("CustomerHandler", func() {
 				customerService.FindCustomerByUserNameReturns(nil, errors.New("whoot"))
 				recorder = httptest.NewRecorder()
 				request, _ := requestGenerator.CreateRequest(
-					FindCustomerByUserName,
+					api.FindCustomerByUserName,
 					rata.Params{"user_name": userName},
 					nil)
 				handler.ServeHTTP(recorder, request)
@@ -567,7 +568,7 @@ var _ = Describe("CustomerHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToFindCustomer))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToFindCustomer))
 				Expect(customerService.FindCustomerByUserNameCallCount()).To(Equal(1))
 			})
 		})

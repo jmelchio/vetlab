@@ -8,8 +8,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/jmelchio/vetlab/model"
 	"github.com/tedsuo/rata"
+
+	"github.com/jmelchio/vetlab/model"
 )
 
 // DiagnosticRequestServer struct allows the DiagnosticReportService injection into the REST handler

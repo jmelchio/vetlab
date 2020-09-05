@@ -7,8 +7,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/jmelchio/vetlab/model"
 	"github.com/tedsuo/rata"
+
+	"github.com/jmelchio/vetlab/model"
 )
 
 // UserServer struct allows the UserService injection into the REST handler

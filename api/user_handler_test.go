@@ -9,11 +9,12 @@ import (
 	"net/http/httptest"
 	"strconv"
 
-	"github.com/jmelchio/vetlab/api/apifakes"
-	"github.com/jmelchio/vetlab/model"
 	"github.com/tedsuo/rata"
 
-	. "github.com/jmelchio/vetlab/api"
+	"github.com/jmelchio/vetlab/api/apifakes"
+	"github.com/jmelchio/vetlab/model"
+
+	"github.com/jmelchio/vetlab/api"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -35,8 +36,8 @@ var _ = Describe("UserHandler", func() {
 
 	BeforeEach(func() {
 		userService = new(apifakes.FakeUserService)
-		handler, err = NewUserHandler(userService)
-		requestGenerator = rata.NewRequestGenerator("", UserRoutes)
+		handler, err = api.NewUserHandler(userService)
+		requestGenerator = rata.NewRequestGenerator("", api.UserRoutes)
 		Expect(err).NotTo(HaveOccurred())
 
 		userName = "user_name"
@@ -70,7 +71,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal(createUser)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(CreateUser, nil, bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(api.CreateUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -93,11 +94,11 @@ var _ = Describe("UserHandler", func() {
 		Context("Valid user information is passed but downstream call fails", func() {
 
 			BeforeEach(func() {
-				userService.CreateUserReturns(nil, errors.New("Whoot?"))
+				userService.CreateUserReturns(nil, errors.New("whoot"))
 				userBytes, err := json.Marshal(createUser)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(CreateUser, nil, bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(api.CreateUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -106,7 +107,7 @@ var _ = Describe("UserHandler", func() {
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToCreateUser))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToCreateUser))
 				Expect(userService.CreateUserCallCount()).To(Equal(1))
 			})
 		})
@@ -115,7 +116,7 @@ var _ = Describe("UserHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(CreateUser, nil, nil)
+				request, _ := requestGenerator.CreateRequest(api.CreateUser, nil, nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -123,7 +124,7 @@ var _ = Describe("UserHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(EmptyBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.EmptyBody))
 				Expect(userService.CreateUserCallCount()).To(Equal(0))
 			})
 		})
@@ -134,7 +135,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal("createUser")
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(CreateUser, nil, bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(api.CreateUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -142,7 +143,7 @@ var _ = Describe("UserHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(InvalidBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.InvalidBody))
 				Expect(userService.CreateUserCallCount()).To(Equal(0))
 			})
 		})
@@ -172,7 +173,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal(updateUser)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(UpdateUser, nil, bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(api.UpdateUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -194,11 +195,11 @@ var _ = Describe("UserHandler", func() {
 		Context("Valid user information is passed but downstream call fails", func() {
 
 			BeforeEach(func() {
-				userService.UpdateUserReturns(nil, errors.New("Whoot?"))
+				userService.UpdateUserReturns(nil, errors.New("whoot"))
 				userBytes, err := json.Marshal(updateUser)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(UpdateUser, nil, bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(api.UpdateUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -207,7 +208,7 @@ var _ = Describe("UserHandler", func() {
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToUpdateUser))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToUpdateUser))
 				Expect(userService.UpdateUserCallCount()).To(Equal(1))
 			})
 		})
@@ -216,7 +217,7 @@ var _ = Describe("UserHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(UpdateUser, nil, nil)
+				request, _ := requestGenerator.CreateRequest(api.UpdateUser, nil, nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -224,7 +225,7 @@ var _ = Describe("UserHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(EmptyBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.EmptyBody))
 				Expect(userService.UpdateUserCallCount()).To(Equal(0))
 			})
 		})
@@ -235,7 +236,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal("updateUser")
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(UpdateUser, nil, bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(api.UpdateUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -243,7 +244,7 @@ var _ = Describe("UserHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(InvalidBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.InvalidBody))
 				Expect(userService.UpdateUserCallCount()).To(Equal(0))
 			})
 		})
@@ -273,7 +274,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal(deleteUser)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(DeleteUser, nil, bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(api.DeleteUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -286,11 +287,11 @@ var _ = Describe("UserHandler", func() {
 		Context("Valid user information is passed but downstream call fails", func() {
 
 			BeforeEach(func() {
-				userService.DeleteUserReturns(errors.New("Whoot?"))
+				userService.DeleteUserReturns(errors.New("whoot"))
 				userBytes, err := json.Marshal(deleteUser)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(DeleteUser, nil, bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(api.DeleteUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -298,7 +299,7 @@ var _ = Describe("UserHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToDeleteUser))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToDeleteUser))
 				Expect(userService.DeleteUserCallCount()).To(Equal(1))
 			})
 		})
@@ -307,7 +308,7 @@ var _ = Describe("UserHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(DeleteUser, nil, nil)
+				request, _ := requestGenerator.CreateRequest(api.DeleteUser, nil, nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -315,7 +316,7 @@ var _ = Describe("UserHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(EmptyBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.EmptyBody))
 				Expect(userService.DeleteUserCallCount()).To(Equal(0))
 			})
 		})
@@ -326,7 +327,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal("deleteUser")
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(DeleteUser, nil, bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(api.DeleteUser, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -334,7 +335,7 @@ var _ = Describe("UserHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(InvalidBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.InvalidBody))
 				Expect(userService.DeleteUserCallCount()).To(Equal(0))
 			})
 		})
@@ -371,7 +372,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal(loginRequest)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(Login, nil, bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(api.Login, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -393,11 +394,11 @@ var _ = Describe("UserHandler", func() {
 		Context("Valid user information is passed but downstream call fails", func() {
 
 			BeforeEach(func() {
-				userService.LoginReturns(nil, errors.New("Whoot?"))
+				userService.LoginReturns(nil, errors.New("whoot"))
 				userBytes, err := json.Marshal(loginRequest)
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(Login, nil, bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(api.Login, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -405,7 +406,7 @@ var _ = Describe("UserHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToLoginUser))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToLoginUser))
 				Expect(userService.LoginCallCount()).To(Equal(1))
 			})
 		})
@@ -414,7 +415,7 @@ var _ = Describe("UserHandler", func() {
 
 			BeforeEach(func() {
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(Login, nil, nil)
+				request, _ := requestGenerator.CreateRequest(api.Login, nil, nil)
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -422,7 +423,7 @@ var _ = Describe("UserHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(EmptyBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.EmptyBody))
 				Expect(userService.DeleteUserCallCount()).To(Equal(0))
 			})
 		})
@@ -433,7 +434,7 @@ var _ = Describe("UserHandler", func() {
 				userBytes, err := json.Marshal("loginRequest")
 				Expect(err).NotTo(HaveOccurred())
 				recorder = httptest.NewRecorder()
-				request, _ := requestGenerator.CreateRequest(Login, nil, bytes.NewReader(userBytes))
+				request, _ := requestGenerator.CreateRequest(api.Login, nil, bytes.NewReader(userBytes))
 				handler.ServeHTTP(recorder, request)
 			})
 
@@ -441,7 +442,7 @@ var _ = Describe("UserHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(InvalidBody))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.InvalidBody))
 				Expect(userService.DeleteUserCallCount()).To(Equal(0))
 			})
 		})
@@ -474,7 +475,7 @@ var _ = Describe("UserHandler", func() {
 					userService.FindUserByUserNameReturns(&sampleUser, nil)
 					recorder = httptest.NewRecorder()
 					request, _ := requestGenerator.CreateRequest(
-						FindUserByUserName,
+						api.FindUserByUserName,
 						rata.Params{"user_name": userName},
 						nil)
 					handler.ServeHTTP(recorder, request)
@@ -498,10 +499,10 @@ var _ = Describe("UserHandler", func() {
 			Context("User with userName does not exist", func() {
 
 				BeforeEach(func() {
-					userService.FindUserByUserNameReturns(nil, errors.New("Whoot?"))
+					userService.FindUserByUserNameReturns(nil, errors.New("whoot"))
 					recorder = httptest.NewRecorder()
 					request, _ := requestGenerator.CreateRequest(
-						FindUserByUserName,
+						api.FindUserByUserName,
 						rata.Params{"user_name": userName},
 						nil)
 					handler.ServeHTTP(recorder, request)
@@ -512,7 +513,7 @@ var _ = Describe("UserHandler", func() {
 					respBody, err := ioutil.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 
-					Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToFindUser))
+					Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToFindUser))
 					Expect(userService.FindUserByUserNameCallCount()).To(Equal(1))
 				})
 			})
@@ -527,7 +528,7 @@ var _ = Describe("UserHandler", func() {
 					userID = uint(12345)
 					recorder = httptest.NewRecorder()
 					request, _ := requestGenerator.CreateRequest(
-						FindUser,
+						api.FindUser,
 						rata.Params{"user_id": strconv.FormatUint(uint64(userID), 10)},
 						nil)
 					handler.ServeHTTP(recorder, request)
@@ -552,10 +553,10 @@ var _ = Describe("UserHandler", func() {
 		Context("Valid search parameter information is passed but downstream call fails", func() {
 
 			BeforeEach(func() {
-				userService.FindUserByUserNameReturns(nil, errors.New("Whoot?"))
+				userService.FindUserByUserNameReturns(nil, errors.New("whoot"))
 				recorder = httptest.NewRecorder()
 				request, _ := requestGenerator.CreateRequest(
-					FindUserByUserName,
+					api.FindUserByUserName,
 					rata.Params{"user_name": userName},
 					nil)
 				handler.ServeHTTP(recorder, request)
@@ -565,7 +566,7 @@ var _ = Describe("UserHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
 				respBody, err := ioutil.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(UnableToFindUser))
+				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToFindUser))
 				Expect(userService.FindUserByUserNameCallCount()).To(Equal(1))
 			})
 		})

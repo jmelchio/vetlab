@@ -5,11 +5,12 @@ import (
 	"errors"
 	"fmt"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/jmelchio/vetlab/api"
 	"github.com/jmelchio/vetlab/model"
 	. "github.com/jmelchio/vetlab/service"
 	"github.com/jmelchio/vetlab/service/servicefakes"
-	"golang.org/x/crypto/bcrypt"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
