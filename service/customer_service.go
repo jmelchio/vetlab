@@ -23,7 +23,7 @@ func (customerService Customer) CreateCustomer(ctx context.Context, customer mod
 
 	pwdHash, err := hashAndSalt(customer.Password)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(HashingFailed, err.Error())
 	}
 
 	customer.Password = *pwdHash

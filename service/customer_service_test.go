@@ -75,7 +75,7 @@ var _ = Describe("CustomerService", func() {
 				zeCustomer, err := customerService.CreateCustomer(context.TODO(), customer)
 				Expect(err).To(HaveOccurred())
 				Expect(zeCustomer).To(BeNil())
-				Expect(err.Error()).To(Equal(PasswordTooShort))
+				Expect(err.Error()).To(ContainSubstring(PasswordTooShort))
 				Expect(customerRepo.CreateCallCount()).To(Equal(0))
 			})
 		})
