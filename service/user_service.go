@@ -23,7 +23,7 @@ func (userService User) CreateUser(ctx context.Context, user model.User) (*model
 
 	pwdHash, err := hashAndSalt(user.Password)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(HashingFailed, err.Error())
 	}
 
 	user.Password = *pwdHash

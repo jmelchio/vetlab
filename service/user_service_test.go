@@ -75,7 +75,7 @@ var _ = Describe("UserService", func() {
 				zeUser, err := userService.CreateUser(context.TODO(), user)
 				Expect(err).To(HaveOccurred())
 				Expect(zeUser).To(BeNil())
-				Expect(err.Error()).To(Equal(PasswordTooShort))
+				Expect(err.Error()).To(ContainSubstring(PasswordTooShort))
 				Expect(userRepo.CreateCallCount()).To(Equal(0))
 			})
 		})
