@@ -115,7 +115,7 @@ func (userServer *UserServer) UpdateUser(writer http.ResponseWriter, request *ht
 	writeJSONResponse(writer, http.StatusOK, newUser)
 }
 
-// DeleteUser takes care of hanlding the api request for deleting a User
+// DeleteUser takes care of handling the api request for deleting a User
 func (userServer *UserServer) DeleteUser(writer http.ResponseWriter, request *http.Request) {
 	if request.Body == nil {
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
