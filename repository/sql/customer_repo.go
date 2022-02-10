@@ -73,20 +73,9 @@ func (customerRepo *CustomerRepo) GetByID(customerID uint) (*model.Customer, err
 func (customerRepo *CustomerRepo) GetByVetOrgID(vetOrgID uint) ([]model.Customer, error) {
 	var customers []model.Customer
 
-	result := customerRepo.Database.Where("vet_org_id = ?", vetOrgID)
+	result := customerRepo.Database.Where("vet_org_id = ?", vetOrgID).Find(&customers)
 	if result.Error != nil {
 		return nil, result.Error
-	}
-	if result.RowsAffected == 0 {
-		return nil, fmt.Errorf("customers from vetOrg '%d' not found", vetOrgID)
-	}
-	rows, err := result.Rows()
-	if err != nil {
-		return nil, fmt.Errorf("unable to process resultset: `%s`", err)
-	}
-	err = result.ScanRows(rows, customers)
-	if err != nil {
-		return nil, fmt.Errorf("unable to convert resultset: `%s`", err)
 	}
 	return customers, nil
 }
