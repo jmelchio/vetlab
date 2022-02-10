@@ -71,7 +71,24 @@ func (customerRepo *CustomerRepo) GetByID(customerID uint) (*model.Customer, err
 
 // GetByVetOrgID fetches all customers by VetOrg from the sql datastore
 func (customerRepo *CustomerRepo) GetByVetOrgID(vetOrgID uint) ([]model.Customer, error) {
-	return nil, nil
+	var customers []model.Customer
+
+	result := customerRepo.Database.Where("vet_org_id = ?", vetOrgID)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return nil, fmt.Errorf("customers from vetOrg '%d' not found", vetOrgID)
+	}
+	rows, err := result.Rows()
+	if err != nil {
+		return nil, fmt.Errorf("unable to process resultset: `%s`", err)
+	}
+	err = result.ScanRows(rows, customers)
+	if err != nil {
+		return nil, fmt.Errorf("unable to convert resultset: `%s`", err)
+	}
+	return customers, nil
 }
 
 // GetByUserName fetches all customers by UserName from the sql datastore
