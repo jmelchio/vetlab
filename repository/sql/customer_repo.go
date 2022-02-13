@@ -77,6 +77,9 @@ func (customerRepo *CustomerRepo) GetByVetOrgID(vetOrgID uint) ([]model.Customer
 	if result.Error != nil {
 		return nil, result.Error
 	}
+	if result.RowsAffected == 0 {
+		return nil, fmt.Errorf("customers with vetOrgId '%d' not found", vetOrgID)
+	}
 	return customers, nil
 }
 

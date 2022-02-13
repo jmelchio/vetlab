@@ -47,7 +47,7 @@ func (customerService Customer) UpdateCustomer(ctx context.Context, customer mod
 	return &customer, nil
 }
 
-// DeleteCustomer delets a model.Customer from the vetlab system
+// DeleteCustomer deletes a model.Customer from the vetlab system
 func (customerService Customer) DeleteCustomer(ctx context.Context, customer model.Customer) error {
 	if ctx == nil {
 		return errors.New(MissingContext)

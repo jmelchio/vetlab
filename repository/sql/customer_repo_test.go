@@ -220,8 +220,45 @@ var _ = Describe("CustomerRepo", func() {
 
 			It("It returns the customer and nil for error", func() {
 				foundCustomer, err = customerRepo.GetByUserName("some_user_name")
-				//Expect(err).To(HaveOccurred())
+				Expect(err).To(HaveOccurred())
 				Expect(foundCustomer).To(BeNil())
+			})
+		})
+	})
+
+	Describe("Get customers by VetOrgID", func() {
+
+		Context("When customer(s) are found", func() {
+
+			var foundCustomers []model.Customer
+
+			BeforeEach(func() {
+				err = customerRepo.Create(&customerOne)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(customerOne.ID).NotTo(Equal(uint(0)))
+			})
+
+			It("It returns an array with one customer and nil for error", func() {
+				foundCustomers, err = customerRepo.GetByVetOrgID(customerOne.VetOrgID)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(foundCustomers).NotTo(BeNil())
+				Expect(foundCustomers).To(HaveLen(1))
+				Expect(foundCustomers[0].ID).To(Equal(customerOne.ID))
+				Expect(foundCustomers[0].UserName).To(Equal(customerOne.UserName))
+			})
+		})
+
+		Context("When no customers are found", func() {
+
+			var foundCustomers []model.Customer
+
+			BeforeEach(func() {
+			})
+
+			It("It returns no customers and an error", func() {
+				foundCustomers, err = customerRepo.GetByVetOrgID(19)
+				Expect(err).To(HaveOccurred())
+				Expect(foundCustomers).To(BeNil())
 			})
 		})
 	})
