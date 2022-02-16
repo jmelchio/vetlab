@@ -13,7 +13,7 @@ type VetOrg struct {
 	Email              string              `json:"email,omitempty"`
 	Phone              string              `json:"phone,omitempty"`
 	Fax                string              `json:"fax,omitempty"`
-	Employees          []Customer          `json:"employees,omitempty"`
+	Customers          []Customer          `json:"customers,omitempty"`
 	DiagnosticReports  []DiagnosticReport  `json:"diagnostic_reports,omitempty"`
 	DiagnosticRequests []DiagnosticRequest `json:"diagnostic_requests,omitempty"`
 }
