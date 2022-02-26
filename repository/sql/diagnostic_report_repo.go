@@ -24,7 +24,13 @@ func (diagnosticReportRepo *DiagnosticReportRepo) Create(diagnosticReport *model
 }
 
 func (diagnosticReportRepo *DiagnosticReportRepo) Update(diagnosticReport *model.DiagnosticReport) error {
-	return errors.New("not implemented")
+	if diagnosticReport.ID != 0 {
+		if err := diagnosticReportRepo.Database.Save(diagnosticReport).Error; err != nil {
+			return err
+		}
+		return nil
+	}
+	return errors.New("record does not exist in database")
 }
 
 func (diagnosticReportRepo *DiagnosticReportRepo) Delete(name string) error {
@@ -32,7 +38,12 @@ func (diagnosticReportRepo *DiagnosticReportRepo) Delete(name string) error {
 }
 
 func (diagnosticReportRepo *DiagnosticReportRepo) GetByID(diagnosticReportID uint) (*model.DiagnosticReport, error) {
-	return nil, errors.New("not implemented")
+	var diagnosticReport model.DiagnosticReport
+
+	if err := diagnosticReportRepo.Database.First(&diagnosticReport, diagnosticReportID).Error; err != nil {
+		return nil, err
+	}
+	return &diagnosticReport, nil
 }
 
 func (diagnosticReportRepo *DiagnosticReportRepo) GetByVetOrgID(vetOrgID uint) ([]model.DiagnosticReport, error) {
