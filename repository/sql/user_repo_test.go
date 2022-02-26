@@ -118,8 +118,8 @@ var _ = Describe("UserRepo", func() {
 					userOne.Password = "long_password_of_more_than_fifty_characters_so_that_its"
 					err = userRepo.Update(&userOne)
 					Expect(err).NotTo(HaveOccurred())
-					userFound, ferr := userRepo.GetByID(userOne.ID)
-					Expect(ferr).NotTo(HaveOccurred())
+					userFound, err := userRepo.GetByID(userOne.ID)
+					Expect(err).NotTo(HaveOccurred())
 					Expect(userFound.Password).To(Equal(userOne.Password))
 					Expect(userFound.UserName).To(Equal(userOne.UserName))
 				})

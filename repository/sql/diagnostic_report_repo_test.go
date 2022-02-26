@@ -1,6 +1,8 @@
 package sql_test
 
 import (
+	"time"
+
 	"github.com/jmelchio/vetlab/model"
 	"github.com/jmelchio/vetlab/repository/sql"
 	"github.com/jmelchio/vetlab/service"
@@ -13,29 +15,102 @@ var _ = Describe("DiagnosticReportRepo", func() {
 	var (
 		diagnosticReportRepo service.DiagnosticReportRepo
 		diagnosticReportOne  model.DiagnosticReport
-		diagnosticReportTwo  model.DiagnosticReport
-		diagnosticReportID   uint
 		userID               uint
 		vetOrgID             uint
 		customerID           uint
+		requestID            uint
+		date                 time.Time
+		reportBody           string
+		reportFile           string
 	)
 
 	BeforeEach(func() {
 		diagnosticReportRepoImpl := sql.DiagnosticReportRepo{Database: database}
 		diagnosticReportRepo = &diagnosticReportRepoImpl
 
-		diagnosticReportID = 12345
 		userID = 12345
 		vetOrgID = 12345
 		customerID = 12345
+		requestID = 12345
+		date = time.Now()
+		reportBody = "the body of the report"
+		reportFile = "filename.txt"
 
-		diagnosticReportOne = model.DiagnosticReport{}
-		diagnosticReportTwo = model.DiagnosticReport{}
+		diagnosticReportOne = model.DiagnosticReport{
+			RequestID:  requestID,
+			VetOrgID:   vetOrgID,
+			CustomerID: customerID,
+			UserID:     userID,
+			Date:       &date,
+			ReportBody: reportBody,
+			ReportFile: reportFile,
+		}
 	})
 
 	AfterEach(func() {
 		err = database.Where("1 = 1").Delete(&model.DiagnosticReport{}).Error
 		Expect(err).NotTo(HaveOccurred())
+	})
+
+	Describe("Diagnostic Report table", func() {
+
+		Context("Diagnostic report table has been created during in BeforeSuite", func() {
+
+			It("Has a diagnostic report table", func() {
+				hasDiagnosticReportTable := database.Migrator().HasTable(&model.DiagnosticReport{})
+				Expect(hasDiagnosticReportTable).To(BeTrue())
+			})
+		})
+	})
+
+	Describe("Create a diagnosticReport", func() {
+
+		BeforeEach(func() {
+			Expect(diagnosticReportOne.ID).To(Equal(uint(0)))
+		})
+
+		It("Creates a new diagnosticReport record", func() {
+			err = diagnosticReportRepo.Create(&diagnosticReportOne)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(diagnosticReportOne.ID).NotTo(Equal(uint(0)))
+		})
+	})
+
+	Describe("Update a diagnosticReport", func() {
+
+		Context("When a diagnosticReport is found", func() {
+
+			BeforeEach(func() {
+				err = diagnosticReportRepo.Create(&diagnosticReportOne)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(diagnosticReportOne.ID).NotTo(Equal(uint(0)))
+			})
+
+			Context("When the diagnosticReport exists", func() {
+
+				It("It updates the diagnosticReport record and returns updated diagnosticReport", func() {
+					diagnosticReportOne.ReportFile = "new_diagnosticReport_filename.txt"
+					diagnosticReportOne.ReportBody = "look at this fancy new body of mine"
+					err = diagnosticReportRepo.Update(&diagnosticReportOne)
+					Expect(err).NotTo(HaveOccurred())
+					diagnosticReportFound, err := diagnosticReportRepo.GetByID(diagnosticReportOne.ID)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(diagnosticReportFound.ReportFile).To(Equal(diagnosticReportOne.ReportFile))
+					Expect(diagnosticReportFound.ReportBody).To(Equal(diagnosticReportOne.ReportBody))
+				})
+			})
+		})
+
+		Context("When the diagnosticReport does not exist", func() {
+
+			BeforeEach(func() {
+			})
+
+			It("Returns an error and nil for the diagnosticReport", func() {
+				err = diagnosticReportRepo.Update(&diagnosticReportOne)
+				Expect(err).To(HaveOccurred())
+			})
+		})
 	})
 
 })
