@@ -20,10 +20,10 @@ type FakeDiagnosticReportRepo struct {
 	createReturnsOnCall map[int]struct {
 		result1 error
 	}
-	DeleteStub        func(string) error
+	DeleteStub        func(*model.DiagnosticReport) error
 	deleteMutex       sync.RWMutex
 	deleteArgsForCall []struct {
-		arg1 string
+		arg1 *model.DiagnosticReport
 	}
 	deleteReturns struct {
 		result1 error
@@ -158,11 +158,11 @@ func (fake *FakeDiagnosticReportRepo) CreateReturnsOnCall(i int, result1 error) 
 	}{result1}
 }
 
-func (fake *FakeDiagnosticReportRepo) Delete(arg1 string) error {
+func (fake *FakeDiagnosticReportRepo) Delete(arg1 *model.DiagnosticReport) error {
 	fake.deleteMutex.Lock()
 	ret, specificReturn := fake.deleteReturnsOnCall[len(fake.deleteArgsForCall)]
 	fake.deleteArgsForCall = append(fake.deleteArgsForCall, struct {
-		arg1 string
+		arg1 *model.DiagnosticReport
 	}{arg1})
 	fake.recordInvocation("Delete", []interface{}{arg1})
 	fake.deleteMutex.Unlock()
@@ -182,13 +182,13 @@ func (fake *FakeDiagnosticReportRepo) DeleteCallCount() int {
 	return len(fake.deleteArgsForCall)
 }
 
-func (fake *FakeDiagnosticReportRepo) DeleteCalls(stub func(string) error) {
+func (fake *FakeDiagnosticReportRepo) DeleteCalls(stub func(*model.DiagnosticReport) error) {
 	fake.deleteMutex.Lock()
 	defer fake.deleteMutex.Unlock()
 	fake.DeleteStub = stub
 }
 
-func (fake *FakeDiagnosticReportRepo) DeleteArgsForCall(i int) string {
+func (fake *FakeDiagnosticReportRepo) DeleteArgsForCall(i int) *model.DiagnosticReport {
 	fake.deleteMutex.RLock()
 	defer fake.deleteMutex.RUnlock()
 	argsForCall := fake.deleteArgsForCall[i]

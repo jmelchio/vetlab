@@ -34,7 +34,7 @@ func (diagnosticRequestRepo *DiagnosticRequestRepo) Update(diagnosticRequest *mo
 }
 
 func (diagnosticRequestRepo *DiagnosticRequestRepo) Delete(diagnosticRequest *model.DiagnosticRequest) error {
-	return errors.New("not implemented")
+	return diagnosticRequestRepo.Database.Delete(diagnosticRequest).Error
 }
 
 func (diagnosticRequestRepo *DiagnosticRequestRepo) GetByID(diagnosticRequestID uint) (*model.DiagnosticRequest, error) {

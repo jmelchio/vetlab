@@ -34,7 +34,7 @@ func (diagnosticReportRepo *DiagnosticReportRepo) Update(diagnosticReport *model
 }
 
 func (diagnosticReportRepo *DiagnosticReportRepo) Delete(diagnosticReport *model.DiagnosticReport) error {
-	return errors.New("not implemented")
+	return diagnosticReportRepo.Database.Delete(diagnosticReport).Error
 }
 
 func (diagnosticReportRepo *DiagnosticReportRepo) GetByID(diagnosticReportID uint) (*model.DiagnosticReport, error) {
