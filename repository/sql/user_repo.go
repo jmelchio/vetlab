@@ -53,10 +53,7 @@ func (userRepo *UserRepo) Update(user *model.User) error {
 
 // Delete removes a User row in the sql datastore
 func (userRepo *UserRepo) Delete(user *model.User) error {
-	if err := userRepo.Database.Delete(user).Error; err != nil {
-		return err
-	}
-	return nil
+	return userRepo.Database.Delete(user).Error
 }
 
 // GetByID fetches a User from the sql datastore

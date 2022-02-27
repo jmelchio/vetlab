@@ -53,10 +53,7 @@ func (customerRepo *CustomerRepo) Update(customer *model.Customer) error {
 
 // Delete removes a Customer row in the sql datastore
 func (customerRepo *CustomerRepo) Delete(customer *model.Customer) error {
-	if err := customerRepo.Database.Delete(customer).Error; err != nil {
-		return err
-	}
-	return nil
+	return customerRepo.Database.Delete(customer).Error
 }
 
 // GetByID fetches a Customer from the sql datastore
