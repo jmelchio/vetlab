@@ -31,7 +31,7 @@ type CustomerRepo interface {
 type DiagnosticReportRepo interface {
 	Create(*model.DiagnosticReport) error
 	Update(*model.DiagnosticReport) error
-	Delete(string) error
+	Delete(report *model.DiagnosticReport) error
 	GetByID(uint) (*model.DiagnosticReport, error)
 	GetByVetOrgID(uint) ([]model.DiagnosticReport, error)
 	GetByUserID(uint) ([]model.DiagnosticRequest, error)

@@ -33,7 +33,7 @@ func (diagnosticReportRepo *DiagnosticReportRepo) Update(diagnosticReport *model
 	return errors.New("record does not exist in database")
 }
 
-func (diagnosticReportRepo *DiagnosticReportRepo) Delete(name string) error {
+func (diagnosticReportRepo *DiagnosticReportRepo) Delete(diagnosticReport *model.DiagnosticReport) error {
 	return errors.New("not implemented")
 }
 

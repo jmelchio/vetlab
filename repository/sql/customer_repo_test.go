@@ -139,7 +139,7 @@ var _ = Describe("CustomerRepo", func() {
 
 	Describe("Delete a customer", func() {
 
-		Context("When the use is found", func() {
+		Context("When the customer exists", func() {
 
 			BeforeEach(func() {
 				err = customerRepo.Create(&customerOne)

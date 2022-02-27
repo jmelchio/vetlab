@@ -113,4 +113,25 @@ var _ = Describe("DiagnosticReportRepo", func() {
 		})
 	})
 
+	Describe("Delete a diagnosticReport", func() {
+
+		Context("When the diagnosticReport exists", func() {
+
+			BeforeEach(func() {
+				err = diagnosticReportRepo.Create(&diagnosticReportOne)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(diagnosticReportOne.ID).NotTo(Equal(uint(0)))
+			})
+
+			It("Deletes the record and returns no error", func() {
+				err = diagnosticReportRepo.Delete(&diagnosticReportOne)
+				Expect(err).NotTo(HaveOccurred())
+				var foundDiagnosticReport *model.DiagnosticReport
+				foundDiagnosticReport, err = diagnosticReportRepo.GetByID(diagnosticReportOne.ID)
+				Expect(err).To(HaveOccurred())
+				Expect(foundDiagnosticReport).To(BeNil())
+			})
+		})
+	})
+
 })
