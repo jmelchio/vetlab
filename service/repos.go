@@ -34,8 +34,8 @@ type DiagnosticReportRepo interface {
 	Delete(report *model.DiagnosticReport) error
 	GetByID(uint) (*model.DiagnosticReport, error)
 	GetByVetOrgID(uint) ([]model.DiagnosticReport, error)
-	GetByUserID(uint) ([]model.DiagnosticRequest, error)
-	GetByCustomerID(uint) ([]model.DiagnosticRequest, error)
+	GetByUserID(uint) ([]model.DiagnosticReport, error)
+	GetByCustomerID(uint) ([]model.DiagnosticReport, error)
 }
 
 //go:generate counterfeiter . DiagnosticRequestRepo

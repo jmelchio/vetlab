@@ -194,4 +194,41 @@ var _ = Describe("DiagnosticRequestRepo", func() {
 			})
 		})
 	})
+
+	Describe("Get diagnosticRequests by UserID", func() {
+
+		Context("When diagnosticRequest(s) are found", func() {
+
+			var foundDiagnosticRequests []model.DiagnosticRequest
+
+			BeforeEach(func() {
+				err = diagnosticRequestRepo.Create(&diagnosticRequestOne)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(diagnosticRequestOne.ID).NotTo(Equal(uint(0)))
+			})
+
+			It("It returns an array with one diagnosticRequest and nil for error", func() {
+				foundDiagnosticRequests, err = diagnosticRequestRepo.GetByUserID(diagnosticRequestOne.UserID)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(foundDiagnosticRequests).NotTo(BeNil())
+				Expect(foundDiagnosticRequests).To(HaveLen(1))
+				Expect(foundDiagnosticRequests[0].ID).To(Equal(diagnosticRequestOne.ID))
+				Expect(foundDiagnosticRequests[0].Description).To(Equal(diagnosticRequestOne.Description))
+			})
+		})
+
+		Context("When no diagnosticRequests are found", func() {
+
+			var foundDiagnosticRequests []model.DiagnosticRequest
+
+			BeforeEach(func() {
+			})
+
+			It("It returns no diagnosticRequests and an error", func() {
+				foundDiagnosticRequests, err = diagnosticRequestRepo.GetByUserID(19)
+				Expect(err).To(HaveOccurred())
+				Expect(foundDiagnosticRequests).To(BeNil())
+			})
+		})
+	})
 })

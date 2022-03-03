@@ -60,10 +60,10 @@ func (diagnosticReportRepo *DiagnosticReportRepo) GetByVetOrgID(vetOrgID uint) (
 	return diagnosticReports, nil
 }
 
-func (diagnosticReportRepo *DiagnosticReportRepo) GetByUserID(userID uint) ([]model.DiagnosticRequest, error) {
+func (diagnosticReportRepo *DiagnosticReportRepo) GetByUserID(userID uint) ([]model.DiagnosticReport, error) {
 	return nil, errors.New("not implemented")
 }
 
-func (diagnosticReportRepo *DiagnosticReportRepo) GetByCustomerID(customerID uint) ([]model.DiagnosticRequest, error) {
+func (diagnosticReportRepo *DiagnosticReportRepo) GetByCustomerID(customerID uint) ([]model.DiagnosticReport, error) {
 	return nil, errors.New("not implemented")
 }
