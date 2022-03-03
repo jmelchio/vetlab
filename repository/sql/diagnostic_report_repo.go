@@ -2,6 +2,7 @@ package sql
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/jmelchio/vetlab/model"
 	"gorm.io/gorm"
@@ -47,7 +48,16 @@ func (diagnosticReportRepo *DiagnosticReportRepo) GetByID(diagnosticReportID uin
 }
 
 func (diagnosticReportRepo *DiagnosticReportRepo) GetByVetOrgID(vetOrgID uint) ([]model.DiagnosticReport, error) {
-	return nil, errors.New("not implemented")
+	var diagnosticReports []model.DiagnosticReport
+
+	result := diagnosticReportRepo.Database.Where("vet_org_id = ?", vetOrgID).Find(&diagnosticReports)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return nil, fmt.Errorf("diagnosticReports with vetOrgId '%d' not found", vetOrgID)
+	}
+	return diagnosticReports, nil
 }
 
 func (diagnosticReportRepo *DiagnosticReportRepo) GetByUserID(userID uint) ([]model.DiagnosticRequest, error) {
