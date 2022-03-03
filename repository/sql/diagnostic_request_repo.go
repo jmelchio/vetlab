@@ -61,7 +61,16 @@ func (diagnosticRequestRepo *DiagnosticRequestRepo) GetByVetOrgID(vetOrgID uint)
 }
 
 func (diagnosticRequestRepo *DiagnosticRequestRepo) GetByUserID(userID uint) ([]model.DiagnosticRequest, error) {
-	return nil, errors.New("not implemented")
+	var diagnosticRequests []model.DiagnosticRequest
+
+	result := diagnosticRequestRepo.Database.Where("user_id = ?", userID).Find(&diagnosticRequests)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return nil, fmt.Errorf("diagnosticRequests with userId '%d' not found", userID)
+	}
+	return diagnosticRequests, nil
 }
 
 func (diagnosticRequestRepo *DiagnosticRequestRepo) GetByCustomerID(customerID uint) ([]model.DiagnosticRequest, error) {
