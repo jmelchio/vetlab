@@ -74,5 +74,14 @@ func (diagnosticRequestRepo *DiagnosticRequestRepo) GetByUserID(userID uint) ([]
 }
 
 func (diagnosticRequestRepo *DiagnosticRequestRepo) GetByCustomerID(customerID uint) ([]model.DiagnosticRequest, error) {
-	return nil, nil
+	var diagnosticRequests []model.DiagnosticRequest
+
+	result := diagnosticRequestRepo.Database.Where("customer_id = ?", customerID).Find(&diagnosticRequests)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return nil, fmt.Errorf("diagnosticRequests with customerId '%d' not found", customerID)
+	}
+	return diagnosticRequests, nil
 }

@@ -239,4 +239,41 @@ var _ = Describe("DiagnosticReportRepo", func() {
 			})
 		})
 	})
+
+	Describe("Get diagnosticReports by CustomerID", func() {
+
+		Context("When diagnosticReport(s) are found", func() {
+
+			var foundDiagnosticReports []model.DiagnosticReport
+
+			BeforeEach(func() {
+				err = diagnosticReportRepo.Create(&diagnosticReportOne)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(diagnosticReportOne.ID).NotTo(Equal(uint(0)))
+			})
+
+			It("It returns an array with one diagnosticReport and nil for error", func() {
+				foundDiagnosticReports, err = diagnosticReportRepo.GetByCustomerID(diagnosticReportOne.CustomerID)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(foundDiagnosticReports).NotTo(BeNil())
+				Expect(foundDiagnosticReports).To(HaveLen(1))
+				Expect(foundDiagnosticReports[0].ID).To(Equal(diagnosticReportOne.ID))
+				Expect(foundDiagnosticReports[0].ReportBody).To(Equal(diagnosticReportOne.ReportBody))
+			})
+		})
+
+		Context("When no diagnosticReports are found", func() {
+
+			var foundDiagnosticReports []model.DiagnosticReport
+
+			BeforeEach(func() {
+			})
+
+			It("It returns no diagnosticReports and an error", func() {
+				foundDiagnosticReports, err = diagnosticReportRepo.GetByCustomerID(19)
+				Expect(err).To(HaveOccurred())
+				Expect(foundDiagnosticReports).To(BeNil())
+			})
+		})
+	})
 })
