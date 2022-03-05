@@ -13,6 +13,7 @@ var _ = Describe("VetOrgRepo", func() {
 	var (
 		vetOrgRepo         service.VetOrgRepo
 		vetOrgOne          model.VetOrg
+		vetOrgTwo          model.VetOrg
 		orgName            string
 		street             string
 		houseNumber        string
@@ -66,5 +67,45 @@ var _ = Describe("VetOrgRepo", func() {
 	AfterEach(func() {
 		err = database.Where("1 = 1").Delete(&model.VetOrg{}).Error
 		Expect(err).NotTo(HaveOccurred())
+	})
+
+	Describe("VetOrg table", func() {
+
+		Context("VetOrg table has been created during in BeforeSuite", func() {
+
+			It("Has a customer table", func() {
+				hasVetOrgTable := database.Migrator().HasTable(&model.VetOrg{})
+				Expect(hasVetOrgTable).To(BeTrue())
+			})
+		})
+	})
+
+	Describe("Create a vetOrg", func() {
+
+		Context("When a username is not taken yet", func() {
+			BeforeEach(func() {
+				Expect(vetOrgOne.ID).To(Equal(uint(0)))
+			})
+
+			It("Creates a new vetOrg record", func() {
+				err = vetOrgRepo.Create(&vetOrgOne)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(vetOrgOne.ID).NotTo(Equal(uint(0)))
+			})
+		})
+
+		Context("When a username is taken already", func() {
+
+			BeforeEach(func() {
+				vetOrgTwo = vetOrgOne
+			})
+
+			It("It returns an error", func() {
+				err = vetOrgRepo.Create(&vetOrgOne)
+				Expect(err).NotTo(HaveOccurred())
+				err = vetOrgRepo.Create(&vetOrgTwo)
+				Expect(err).To(HaveOccurred())
+			})
+		})
 	})
 })
