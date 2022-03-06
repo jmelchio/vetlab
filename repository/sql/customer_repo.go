@@ -28,22 +28,17 @@ func (customerRepo *CustomerRepo) Create(customer *model.Customer) error {
 func (customerRepo *CustomerRepo) Update(customer *model.Customer) error {
 	if customer.ID != 0 {
 		if len(customer.Password) < 50 {
-			if err := customerRepo.Database.Model(customer).Updates(
+			return customerRepo.Database.Model(customer).Updates(
 				model.Customer{
 					UserName:  customer.UserName,
 					FirstName: customer.FirstName,
 					LastName:  customer.LastName,
 					Email:     customer.Email,
 					VetOrgID:  customer.VetOrgID,
-				}).Error; err != nil {
-				return err
-			}
+				}).Error
 		} else {
-			if err := customerRepo.Database.Save(customer).Error; err != nil {
-				return err
-			}
+			return customerRepo.Database.Save(customer).Error
 		}
-		return nil
 	}
 	return errors.New("record does not exist in database")
 }

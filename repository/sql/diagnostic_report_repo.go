@@ -23,10 +23,7 @@ func (diagnosticReportRepo *DiagnosticReportRepo) Create(diagnosticReport *model
 
 func (diagnosticReportRepo *DiagnosticReportRepo) Update(diagnosticReport *model.DiagnosticReport) error {
 	if diagnosticReport.ID != 0 {
-		if err := diagnosticReportRepo.Database.Save(diagnosticReport).Error; err != nil {
-			return err
-		}
-		return nil
+		return diagnosticReportRepo.Database.Save(diagnosticReport).Error
 	}
 	return errors.New("record does not exist in database")
 }

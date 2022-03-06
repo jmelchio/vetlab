@@ -28,22 +28,17 @@ func (userRepo *UserRepo) Create(user *model.User) error {
 func (userRepo *UserRepo) Update(user *model.User) error {
 	if user.ID != 0 {
 		if len(user.Password) < 50 {
-			if err := userRepo.Database.Model(user).Updates(
+			return userRepo.Database.Model(user).Updates(
 				model.User{
 					UserName:  user.UserName,
 					FirstName: user.FirstName,
 					LastName:  user.LastName,
 					Email:     user.Email,
 					AdminUser: user.AdminUser,
-				}).Error; err != nil {
-				return err
-			}
+				}).Error
 		} else {
-			if err := userRepo.Database.Save(user).Error; err != nil {
-				return err
-			}
+			return userRepo.Database.Save(user).Error
 		}
-		return nil
 	}
 	return errors.New("record does not exist in database")
 }
