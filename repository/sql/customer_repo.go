@@ -17,10 +17,7 @@ type CustomerRepo struct {
 // Create creates a persistent Customer row in the sql datastore
 func (customerRepo *CustomerRepo) Create(customer *model.Customer) error {
 	if customer.ID == 0 {
-		if err := customerRepo.Database.Create(customer).Error; err != nil {
-			return err
-		}
-		return nil
+		return customerRepo.Database.Create(customer).Error
 	}
 	return errors.New("record already in database")
 }

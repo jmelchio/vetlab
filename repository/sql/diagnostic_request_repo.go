@@ -16,20 +16,14 @@ type DiagnosticRequestRepo struct {
 // When a given DiagnosticRequest already has a non-zero ID an error will be returned
 func (diagnosticRequestRepo *DiagnosticRequestRepo) Create(diagnosticRequest *model.DiagnosticRequest) error {
 	if diagnosticRequest.ID == 0 {
-		if err := diagnosticRequestRepo.Database.Create(diagnosticRequest).Error; err != nil {
-			return err
-		}
-		return nil
+		return diagnosticRequestRepo.Database.Create(diagnosticRequest).Error
 	}
 	return errors.New("record already in database")
 }
 
 func (diagnosticRequestRepo *DiagnosticRequestRepo) Update(diagnosticRequest *model.DiagnosticRequest) error {
 	if diagnosticRequest.ID != 0 {
-		if err := diagnosticRequestRepo.Database.Save(diagnosticRequest).Error; err != nil {
-			return err
-		}
-		return nil
+		return diagnosticRequestRepo.Database.Save(diagnosticRequest).Error
 	}
 	return errors.New("record does not exist in database")
 }

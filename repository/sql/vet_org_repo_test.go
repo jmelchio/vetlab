@@ -82,7 +82,7 @@ var _ = Describe("VetOrgRepo", func() {
 
 	Describe("Create a vetOrg", func() {
 
-		Context("When a username is not taken yet", func() {
+		Context("When a vetOrgname is not taken yet", func() {
 			BeforeEach(func() {
 				Expect(vetOrgOne.ID).To(Equal(uint(0)))
 			})
@@ -94,7 +94,7 @@ var _ = Describe("VetOrgRepo", func() {
 			})
 		})
 
-		Context("When a username is taken already", func() {
+		Context("When a vetOrgname is taken already", func() {
 
 			BeforeEach(func() {
 				vetOrgTwo = vetOrgOne

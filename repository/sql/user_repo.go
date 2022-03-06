@@ -17,10 +17,7 @@ type UserRepo struct {
 // Create creates a persistent User row in the sql datastore
 func (userRepo *UserRepo) Create(user *model.User) error {
 	if user.ID == 0 {
-		if err := userRepo.Database.Create(user).Error; err != nil {
-			return err
-		}
-		return nil
+		return userRepo.Database.Create(user).Error
 	}
 	return errors.New("record already in database")
 }

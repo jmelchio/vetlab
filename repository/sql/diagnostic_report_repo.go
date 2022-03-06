@@ -16,10 +16,7 @@ type DiagnosticReportRepo struct {
 // When a given DiagnosticReport already has a non-zero ID an error will be returned
 func (diagnosticReportRepo *DiagnosticReportRepo) Create(diagnosticReport *model.DiagnosticReport) error {
 	if diagnosticReport.ID == 0 {
-		if err := diagnosticReportRepo.Database.Create(diagnosticReport).Error; err != nil {
-			return err
-		}
-		return nil
+		return diagnosticReportRepo.Database.Create(diagnosticReport).Error
 	}
 	return errors.New("record already in database")
 }
