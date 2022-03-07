@@ -108,4 +108,41 @@ var _ = Describe("VetOrgRepo", func() {
 			})
 		})
 	})
+
+	Describe("Update a vetOrg", func() {
+
+		Context("When a vetOrg is found", func() {
+
+			BeforeEach(func() {
+				err = vetOrgRepo.Create(&vetOrgOne)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(vetOrgOne.ID).NotTo(Equal(uint(0)))
+			})
+
+			Context("When the vetOrg exists", func() {
+
+				It("It updates the vetOrg record and returns updated vetOrg", func() {
+					vetOrgOne.City = "weupdatedthiscity"
+					vetOrgOne.Country = "weupdatedthiscountry"
+					err = vetOrgRepo.Update(&vetOrgOne)
+					Expect(err).NotTo(HaveOccurred())
+					vetOrgFound, err := vetOrgRepo.GetByID(vetOrgOne.ID)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(vetOrgFound.City).To(Equal(vetOrgOne.City))
+					Expect(vetOrgFound.Country).To(Equal(vetOrgOne.Country))
+				})
+			})
+		})
+
+		Context("When the vetOrg does not exist", func() {
+
+			BeforeEach(func() {
+			})
+
+			It("Returns an error and nil for the vetOrg", func() {
+				err = vetOrgRepo.Update(&vetOrgOne)
+				Expect(err).To(HaveOccurred())
+			})
+		})
+	})
 })
