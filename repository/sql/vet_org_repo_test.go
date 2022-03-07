@@ -166,4 +166,36 @@ var _ = Describe("VetOrgRepo", func() {
 			})
 		})
 	})
+
+	Describe("Get a vetOrg by ID", func() {
+
+		Context("When the vetOrg is found", func() {
+
+			var foundDiagnosticReport *model.VetOrg
+
+			BeforeEach(func() {
+				err = vetOrgRepo.Create(&vetOrgOne)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(vetOrgOne.ID).NotTo(Equal(uint(0)))
+			})
+
+			It("It returns the vetOrg and nil for error", func() {
+				foundDiagnosticReport, err = vetOrgRepo.GetByID(vetOrgOne.ID)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(foundDiagnosticReport).NotTo(BeNil())
+				Expect(foundDiagnosticReport.City).To(Equal(vetOrgOne.City))
+			})
+		})
+
+		Context("When the vetOrg is not found", func() {
+
+			var foundDiagnosticReport *model.VetOrg
+
+			It("It returns and error and nil for the vetOrg", func() {
+				foundDiagnosticReport, err = vetOrgRepo.GetByID(uint(10))
+				Expect(err).To(HaveOccurred())
+				Expect(foundDiagnosticReport).To(BeNil())
+			})
+		})
+	})
 })
