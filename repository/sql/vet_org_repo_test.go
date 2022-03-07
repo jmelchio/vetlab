@@ -145,4 +145,25 @@ var _ = Describe("VetOrgRepo", func() {
 			})
 		})
 	})
+
+	Describe("Delete a vetOrg", func() {
+
+		Context("When the vetOrg exists", func() {
+
+			BeforeEach(func() {
+				err = vetOrgRepo.Create(&vetOrgOne)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(vetOrgOne.ID).NotTo(Equal(uint(0)))
+			})
+
+			It("Deletes the record and returns no error", func() {
+				err = vetOrgRepo.Delete(&vetOrgOne)
+				Expect(err).NotTo(HaveOccurred())
+				var foundDiagnosticReport *model.VetOrg
+				foundDiagnosticReport, err = vetOrgRepo.GetByID(vetOrgOne.ID)
+				Expect(err).To(HaveOccurred())
+				Expect(foundDiagnosticReport).To(BeNil())
+			})
+		})
+	})
 })
