@@ -68,7 +68,7 @@ func (userRepo *UserRepo) GetByUserName(userName string) (*model.User, error) {
 		return nil, result.Error
 	}
 	if result.RowsAffected == 0 {
-		return nil, fmt.Errorf("user with username '%s' not found", userName)
+		return nil, fmt.Errorf("user(s) with username like '%s' not found", userName)
 	}
 	return &user, nil
 }

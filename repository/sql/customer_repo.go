@@ -82,7 +82,7 @@ func (customerRepo *CustomerRepo) GetByUserName(userName string) (*model.Custome
 		return nil, result.Error
 	}
 	if result.RowsAffected == 0 {
-		return nil, fmt.Errorf("customer with username '%s' not found", userName)
+		return nil, fmt.Errorf("customer(s) with username like '%s' not found", userName)
 	}
 	return &customer, nil
 }

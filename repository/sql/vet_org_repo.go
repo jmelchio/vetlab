@@ -2,6 +2,7 @@ package sql
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/jmelchio/vetlab/model"
 	"gorm.io/gorm"
@@ -39,5 +40,14 @@ func (vetOrgRepo VetOrgRepo) GetByID(vetOrgID uint) (*model.VetOrg, error) {
 }
 
 func (vetOrgRepo VetOrgRepo) GetByName(vetOrgName string) ([]model.VetOrg, error) {
-	return nil, errors.New("not yet implemented")
+	var vetOrgs []model.VetOrg
+
+	result := vetOrgRepo.Database.Where("org_name LIKE ?", "%"+vetOrgName+"%").Find(&vetOrgs)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return nil, fmt.Errorf("vetOrg(s) with orgName like '%s' not found", vetOrgName)
+	}
+	return vetOrgs, nil
 }
