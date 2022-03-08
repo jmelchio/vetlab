@@ -19,7 +19,10 @@ func (vetOrgRepo VetOrgRepo) Create(vetOrg *model.VetOrg) error {
 }
 
 func (vetOrgRepo VetOrgRepo) Update(vetOrg *model.VetOrg) error {
-	return errors.New("not yet implemented")
+	if vetOrg.ID != 0 {
+		return vetOrgRepo.Database.Save(vetOrg).Error
+	}
+	return errors.New("record does exist in database")
 }
 
 func (vetOrgRepo VetOrgRepo) Delete(vetOrg *model.VetOrg) error {
