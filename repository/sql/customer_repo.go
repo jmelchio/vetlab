@@ -73,10 +73,11 @@ func (customerRepo *CustomerRepo) GetByVetOrgID(vetOrgID uint) ([]model.Customer
 }
 
 // GetByUserName fetches all customers by UserName from the sql datastore
+// The username search string should be at least 3 characters long
 func (customerRepo *CustomerRepo) GetByUserName(userName string) (*model.Customer, error) {
 	var customer model.Customer
 
-	result := customerRepo.Database.Where("user_name = ?", userName).Find(&customer)
+	result := customerRepo.Database.Where("user_name LIKE ?", "%"+userName+"%").Find(&customer)
 	if result.Error != nil {
 		return nil, result.Error
 	}

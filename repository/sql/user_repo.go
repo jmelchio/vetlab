@@ -59,10 +59,11 @@ func (userRepo *UserRepo) GetByID(userID uint) (*model.User, error) {
 }
 
 // GetByUserName fetches all users by UserName from the sql datastore
+// The username search string should be at least 3 characters long
 func (userRepo *UserRepo) GetByUserName(userName string) (*model.User, error) {
 	var user model.User
 
-	result := userRepo.Database.Where("user_name = ?", userName).Find(&user)
+	result := userRepo.Database.Where("user_name LIKE ?", "%"+userName+"%").Find(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}
