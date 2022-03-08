@@ -198,4 +198,40 @@ var _ = Describe("VetOrgRepo", func() {
 			})
 		})
 	})
+
+	Describe("Get a vetOrg by Name", func() {
+
+		Context("When the vetOrg is found", func() {
+
+			var foundVetOrg []model.VetOrg
+
+			BeforeEach(func() {
+				err = vetOrgRepo.Create(&vetOrgOne)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(vetOrgOne.ID).NotTo(Equal(uint(0)))
+			})
+
+			It("It returns the vetOrg and nil for error", func() {
+				foundVetOrg, err = vetOrgRepo.GetByName(*vetOrgOne.OrgName)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(foundVetOrg).Should(HaveLen(1))
+				Expect(foundVetOrg[0].ID).To(Equal(vetOrgOne.ID))
+				Expect(foundVetOrg[0].OrgName).To(Equal(vetOrgOne.OrgName))
+			})
+		})
+
+		Context("When the vetOrg is not found", func() {
+
+			var foundCustomer []model.VetOrg
+
+			BeforeEach(func() {
+			})
+
+			It("It returns the vetOrg and nil for error", func() {
+				foundCustomer, err = vetOrgRepo.GetByName("some_user_name")
+				Expect(err).To(HaveOccurred())
+				Expect(foundCustomer).To(BeNil())
+			})
+		})
+	})
 })
