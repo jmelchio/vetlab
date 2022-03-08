@@ -27,7 +27,12 @@ func (vetOrgRepo VetOrgRepo) Delete(vetOrg *model.VetOrg) error {
 }
 
 func (vetOrgRepo VetOrgRepo) GetByID(vetOrgID uint) (*model.VetOrg, error) {
-	return nil, errors.New("not yet implemented")
+	var vetOrg model.VetOrg
+
+	if err := vetOrgRepo.Database.First(&vetOrg, vetOrgID).Error; err != nil {
+		return nil, err
+	}
+	return &vetOrg, nil
 }
 
 func (vetOrgRepo VetOrgRepo) GetByName(vetOrgName string) ([]model.VetOrg, error) {
