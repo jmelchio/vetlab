@@ -23,7 +23,7 @@ func (vetOrgRepo VetOrgRepo) Update(vetOrg *model.VetOrg) error {
 }
 
 func (vetOrgRepo VetOrgRepo) Delete(vetOrg *model.VetOrg) error {
-	return errors.New("not yet implemented")
+	return vetOrgRepo.Database.Delete(vetOrg).Error
 }
 
 func (vetOrgRepo VetOrgRepo) GetByID(vetOrgID uint) (*model.VetOrg, error) {
