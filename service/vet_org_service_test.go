@@ -1,11 +1,14 @@
 package service_test
 
 import (
+	"context"
+
 	"github.com/jmelchio/vetlab/api"
 	"github.com/jmelchio/vetlab/model"
 	. "github.com/jmelchio/vetlab/service"
 	"github.com/jmelchio/vetlab/service/servicefakes"
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("VetOrgService", func() {
@@ -59,4 +62,20 @@ var _ = Describe("VetOrgService", func() {
 		}
 	})
 
+	Describe("Create a vetOrg", func() {
+
+		BeforeEach(func() {
+			vetOrgRepo.CreateReturns(nil)
+		})
+
+		Context("We have a valid vetOrg and 'todo' context", func() {
+
+			It("Returns a vetOrg with a new vetOrg ID and calls VetOrgRepo.Create", func() {
+				zeCustomer, err := vetOrgService.CreateVetOrg(context.TODO(), vetOrg)
+				Expect(err).ToNot(HaveOccurred())
+				Expect(zeCustomer).NotTo(BeNil())
+				Expect(vetOrgRepo.CreateCallCount()).To(Equal(1))
+			})
+		})
+	})
 })
