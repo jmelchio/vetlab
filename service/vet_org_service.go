@@ -13,8 +13,15 @@ type VetOrg struct {
 }
 
 func (vetOrgService VetOrg) CreateVetOrg(ctx context.Context, vetOrg model.VetOrg) (*model.VetOrg, error) {
-	//TODO implement me
-	return nil, errors.New("not yet implemented")
+	if ctx == nil {
+		return nil, errors.New(MissingContext)
+	}
+
+	err := vetOrgService.VetOrgRepo.Create(&vetOrg)
+	if err != nil {
+		return nil, err
+	}
+	return &vetOrg, nil
 }
 
 func (vetOrgService VetOrg) UpdateVetOrg(ctx context.Context, vetOrg model.VetOrg) (*model.VetOrg, error) {
