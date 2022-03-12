@@ -77,5 +77,16 @@ var _ = Describe("VetOrgService", func() {
 				Expect(vetOrgRepo.CreateCallCount()).To(Equal(1))
 			})
 		})
+
+		Context("We have a valid vetOrg but context is missing", func() {
+
+			It("Fails to create a vetOrg and returns a 'missing context' error", func() {
+				zeCustomer, err := vetOrgService.CreateVetOrg(nil, vetOrg)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal(MissingContext))
+				Expect(zeCustomer).To(BeNil())
+				Expect(vetOrgRepo.CreateCallCount()).To(Equal(0))
+			})
+		})
 	})
 })
