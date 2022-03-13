@@ -2,6 +2,7 @@ package service_test
 
 import (
 	"context"
+	"errors"
 
 	"github.com/jmelchio/vetlab/api"
 	"github.com/jmelchio/vetlab/model"
@@ -86,6 +87,20 @@ var _ = Describe("VetOrgService", func() {
 				Expect(err.Error()).To(Equal(MissingContext))
 				Expect(zeCustomer).To(BeNil())
 				Expect(vetOrgRepo.CreateCallCount()).To(Equal(0))
+			})
+		})
+
+		Context("We have a valid vetOrg and context but repo fails to save", func() {
+
+			BeforeEach(func() {
+				vetOrgRepo.CreateReturns(errors.New("Failed to save record"))
+			})
+
+			It("Fails to create a vetOrg and returns a 'missing context' error", func() {
+				zeCustomer, err := vetOrgService.CreateVetOrg(context.TODO(), vetOrg)
+				Expect(err).To(HaveOccurred())
+				Expect(zeCustomer).To(BeNil())
+				Expect(vetOrgRepo.CreateCallCount()).To(Equal(1))
 			})
 		})
 	})
