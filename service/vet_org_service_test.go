@@ -147,4 +147,44 @@ var _ = Describe("VetOrgService", func() {
 			})
 		})
 	})
+
+	Describe("Delete a vetOrg", func() {
+
+		BeforeEach(func() {
+			vetOrgRepo.DeleteReturns(nil)
+		})
+
+		Context("We have a valid vetOrg and context", func() {
+
+			It("Returns no error", func() {
+				err := vetOrgService.DeleteVetOrg(context.TODO(), vetOrg)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(vetOrgRepo.DeleteCallCount()).To(Equal(1))
+			})
+		})
+
+		Context("We have a valid vetOrg but no context", func() {
+
+			It("Returns and error and no updated vetOrg", func() {
+				err := vetOrgService.DeleteVetOrg(nil, vetOrg)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal(MissingContext))
+				Expect(vetOrgRepo.DeleteCallCount()).To(Equal(0))
+			})
+		})
+
+		Context("We have a vetOrg and Context but repo cannot delete vetOrg", func() {
+
+			BeforeEach(func() {
+				vetOrgRepo.DeleteReturns(errors.New("unable to delete the vetOrg"))
+			})
+
+			It("Returns an error after calling VetOrgRepo.Create", func() {
+				err := vetOrgService.DeleteVetOrg(context.TODO(), vetOrg)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal("unable to delete the vetOrg"))
+				Expect(vetOrgRepo.DeleteCallCount()).To(Equal(1))
+			})
+		})
+	})
 })
