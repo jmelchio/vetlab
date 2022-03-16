@@ -29,7 +29,7 @@ func (vetOrgService VetOrg) UpdateVetOrg(ctx context.Context, vetOrg model.VetOr
 	return nil, errors.New("not yet implemented")
 }
 
-func (vetOrgService VetOrg) DeteleVetOrg(ctx context.Context, vetOrg model.VetOrg) error {
+func (vetOrgService VetOrg) DeleteVetOrg(ctx context.Context, vetOrg model.VetOrg) error {
 	//TODO implement me
 	return errors.New("not yet implemented")
 }

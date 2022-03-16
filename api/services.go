@@ -71,7 +71,7 @@ type DiagnosticReportService interface {
 type VetOrgService interface {
 	CreateVetOrg(ctx context.Context, vetOrg model.VetOrg) (*model.VetOrg, error)
 	UpdateVetOrg(ctx context.Context, vetOrg model.VetOrg) (*model.VetOrg, error)
-	DeteleVetOrg(ctx context.Context, vetOrg model.VetOrg) error
+	DeleteVetOrg(ctx context.Context, vetOrg model.VetOrg) error
 
 	AddUserToVetOrg(ctx context.Context, user model.User, vetOrg model.VetOrg) (*model.User, error)
 
