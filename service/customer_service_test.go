@@ -134,16 +134,16 @@ var _ = Describe("CustomerService", func() {
 			})
 		})
 
-		Context("We have a customer and Context but repo cannot create customer", func() {
+		Context("We have a customer and Context but repo cannot update the customer", func() {
 
 			BeforeEach(func() {
-				customerRepo.UpdateReturns(errors.New("Unable to update customer"))
+				customerRepo.UpdateReturns(errors.New("unable to update the customer"))
 			})
 
 			It("Returns an error after calling CustomerRepo.Create", func() {
 				zeCustomer, err := customerService.UpdateCustomer(context.TODO(), customer)
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal("Unable to update customer"))
+				Expect(err.Error()).To(Equal("unable to update the customer"))
 				Expect(zeCustomer).To(BeNil())
 				Expect(customerRepo.UpdateCallCount()).To(Equal(1))
 			})
