@@ -104,4 +104,47 @@ var _ = Describe("VetOrgService", func() {
 			})
 		})
 	})
+
+	Describe("Update a vetOrg", func() {
+
+		BeforeEach(func() {
+			vetOrgRepo.UpdateReturns(nil)
+		})
+
+		Context("We have a valid vetOrg and context", func() {
+
+			It("Returns the updated vetOrg and no error", func() {
+				zeVetOrg, err := vetOrgService.UpdateVetOrg(context.TODO(), vetOrg)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(vetOrgRepo.UpdateCallCount()).To(Equal(1))
+				Expect(zeVetOrg).NotTo(BeNil())
+			})
+		})
+
+		Context("We have a valid vetOrg but no context", func() {
+
+			It("Returns and error and no updated vetOrg", func() {
+				zeVetOrg, err := vetOrgService.UpdateVetOrg(nil, vetOrg)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal(MissingContext))
+				Expect(zeVetOrg).To(BeNil())
+				Expect(vetOrgRepo.UpdateCallCount()).To(Equal(0))
+			})
+		})
+
+		Context("We have a vetOrg and Context but repo cannot update the vetOrg", func() {
+
+			BeforeEach(func() {
+				vetOrgRepo.UpdateReturns(errors.New("unable to update the vetOrg"))
+			})
+
+			It("Returns an error after calling VetOrgRepo.Create", func() {
+				zeVetOrg, err := vetOrgService.UpdateVetOrg(context.TODO(), vetOrg)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal("unable to update the vetOrg"))
+				Expect(zeVetOrg).To(BeNil())
+				Expect(vetOrgRepo.UpdateCallCount()).To(Equal(1))
+			})
+		})
+	})
 })
