@@ -52,8 +52,7 @@ func (customerService Customer) DeleteCustomer(ctx context.Context, customer mod
 	if ctx == nil {
 		return errors.New(MissingContext)
 	}
-	err := customerService.CustomerRepo.Delete(&customer)
-	return err
+	return customerService.CustomerRepo.Delete(&customer)
 }
 
 // UpdatePassword allows for the change of a customer password
