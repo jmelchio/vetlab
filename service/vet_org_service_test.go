@@ -93,7 +93,7 @@ var _ = Describe("VetOrgService", func() {
 		Context("We have a valid vetOrg and context but repo fails to save", func() {
 
 			BeforeEach(func() {
-				vetOrgRepo.CreateReturns(errors.New("Failed to save record"))
+				vetOrgRepo.CreateReturns(errors.New("failed to save record"))
 			})
 
 			It("Fails to create a vetOrg and returns a 'missing context' error", func() {
