@@ -94,13 +94,13 @@ var _ = Describe("CustomerService", func() {
 		Context("We have a customer and Context but repo cannot create customer", func() {
 
 			BeforeEach(func() {
-				customerRepo.CreateReturns(errors.New("Unable to create customer"))
+				customerRepo.CreateReturns(errors.New("unable to create customer"))
 			})
 
 			It("Returns an error after calling CustomerRepo.Create", func() {
 				zeCustomer, err := customerService.CreateCustomer(context.TODO(), customer)
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal("Unable to create customer"))
+				Expect(err.Error()).To(Equal("unable to create customer"))
 				Expect(zeCustomer).To(BeNil())
 				Expect(customerRepo.CreateCallCount()).To(Equal(1))
 			})
@@ -178,13 +178,13 @@ var _ = Describe("CustomerService", func() {
 		Context("We have a customer and Context but repo cannot delete customer", func() {
 
 			BeforeEach(func() {
-				customerRepo.DeleteReturns(errors.New("Unable to delete customer"))
+				customerRepo.DeleteReturns(errors.New("unable to delete customer"))
 			})
 
 			It("Returns an error after calling CustomerRepo.Create", func() {
 				err := customerService.DeleteCustomer(context.TODO(), customer)
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal("Unable to delete customer"))
+				Expect(err.Error()).To(Equal("unable to delete customer"))
 				Expect(customerRepo.DeleteCallCount()).To(Equal(1))
 			})
 		})
@@ -226,14 +226,14 @@ var _ = Describe("CustomerService", func() {
 		Context("We have a valid customer, password and context but update fails", func() {
 
 			BeforeEach(func() {
-				customerRepo.UpdateReturns(errors.New("Unable to update customer"))
+				customerRepo.UpdateReturns(errors.New("unable to update customer"))
 			})
 
 			It("returns an error", func() {
 				updatedCustomer, err := customerService.UpdatePassword(context.TODO(), customer, newPwd)
 				Expect(err).To(HaveOccurred())
 				Expect(updatedCustomer).To(BeNil())
-				Expect(err.Error()).To(Equal("Unable to update customer"))
+				Expect(err.Error()).To(Equal("unable to update customer"))
 				Expect(customerRepo.UpdateCallCount()).To(Equal(1))
 			})
 		})
@@ -242,7 +242,7 @@ var _ = Describe("CustomerService", func() {
 
 			BeforeEach(func() {
 				newPwd = "uhseven"
-				customerRepo.UpdateReturns(errors.New("Unable to update customer"))
+				customerRepo.UpdateReturns(errors.New("unable to update customer"))
 			})
 
 			It("returns an error", func() {
@@ -413,13 +413,13 @@ var _ = Describe("CustomerService", func() {
 		Context("Context and userName are correct but Repo returns error", func() {
 
 			BeforeEach(func() {
-				customerRepo.GetByUserNameReturns(nil, errors.New("BAM!"))
+				customerRepo.GetByUserNameReturns(nil, errors.New("BAM"))
 			})
 
 			It("Returns an error", func() {
 				foundCustomer, err := customerService.FindCustomerByUserName(context.TODO(), userName)
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal("BAM!"))
+				Expect(err.Error()).To(Equal("BAM"))
 				Expect(foundCustomer).To(BeNil())
 			})
 		})
@@ -490,13 +490,13 @@ var _ = Describe("CustomerService", func() {
 		Context("Context and customerID are correct but Repo returns error", func() {
 
 			BeforeEach(func() {
-				customerRepo.GetByIDReturns(nil, errors.New("BAM!"))
+				customerRepo.GetByIDReturns(nil, errors.New("BAM"))
 			})
 
 			It("Returns an error", func() {
 				foundCustomer, err := customerService.FindCustomerByID(context.TODO(), customerID)
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal("BAM!"))
+				Expect(err.Error()).To(Equal("BAM"))
 				Expect(foundCustomer).To(BeNil())
 			})
 		})
@@ -583,13 +583,13 @@ var _ = Describe("CustomerService", func() {
 		Context("Context and vetOrg are correct but Repo returns error", func() {
 
 			BeforeEach(func() {
-				customerRepo.GetByVetOrgIDReturns(nil, errors.New("BAM!"))
+				customerRepo.GetByVetOrgIDReturns(nil, errors.New("BAM"))
 			})
 
 			It("Returns an error", func() {
 				foundCustomer, err := customerService.FindCustomerByVetOrg(context.TODO(), vetOrg)
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal("BAM!"))
+				Expect(err.Error()).To(Equal("BAM"))
 				Expect(foundCustomer).To(BeNil())
 			})
 		})
