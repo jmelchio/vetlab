@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -66,7 +66,7 @@ func (customerServer *CustomerServer) CreateCustomer(writer http.ResponseWriter,
 		return
 	}
 
-	requestBody, err := ioutil.ReadAll(request.Body)
+	requestBody, err := io.ReadAll(request.Body)
 	if err != nil {
 		http.Error(writer, UnableToParseBody, http.StatusBadRequest)
 		return
@@ -94,7 +94,7 @@ func (customerServer *CustomerServer) UpdateCustomer(writer http.ResponseWriter,
 		return
 	}
 
-	requestBody, err := ioutil.ReadAll(request.Body)
+	requestBody, err := io.ReadAll(request.Body)
 	if err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
@@ -122,7 +122,7 @@ func (customerServer *CustomerServer) DeleteCustomer(writer http.ResponseWriter,
 		return
 	}
 
-	requestBody, err := ioutil.ReadAll(request.Body)
+	requestBody, err := io.ReadAll(request.Body)
 	if err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
@@ -150,7 +150,7 @@ func (customerServer *CustomerServer) CustomerLogin(writer http.ResponseWriter, 
 		return
 	}
 
-	requestBody, err := ioutil.ReadAll(request.Body)
+	requestBody, err := io.ReadAll(request.Body)
 	if err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
