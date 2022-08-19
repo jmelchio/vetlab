@@ -94,13 +94,13 @@ var _ = Describe("UserService", func() {
 		Context("We have a user and Context but repo cannot create user", func() {
 
 			BeforeEach(func() {
-				userRepo.CreateReturns(errors.New("Unable to create user"))
+				userRepo.CreateReturns(errors.New("unable to create user"))
 			})
 
 			It("Returns an error after calling UserRepo.Create", func() {
 				zeUser, err := userService.CreateUser(context.TODO(), user)
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal("Unable to create user"))
+				Expect(err.Error()).To(Equal("unable to create user"))
 				Expect(zeUser).To(BeNil())
 				Expect(userRepo.CreateCallCount()).To(Equal(1))
 			})
@@ -137,13 +137,13 @@ var _ = Describe("UserService", func() {
 		Context("We have a user and Context but repo cannot create user", func() {
 
 			BeforeEach(func() {
-				userRepo.UpdateReturns(errors.New("Unable to update user"))
+				userRepo.UpdateReturns(errors.New("unable to update user"))
 			})
 
 			It("Returns an error after calling UserRepo.Create", func() {
 				zeUser, err := userService.UpdateUser(context.TODO(), user)
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal("Unable to update user"))
+				Expect(err.Error()).To(Equal("unable to update user"))
 				Expect(zeUser).To(BeNil())
 				Expect(userRepo.UpdateCallCount()).To(Equal(1))
 			})
@@ -178,13 +178,13 @@ var _ = Describe("UserService", func() {
 		Context("We have a user and Context but repo cannot delete user", func() {
 
 			BeforeEach(func() {
-				userRepo.DeleteReturns(errors.New("Unable to delete user"))
+				userRepo.DeleteReturns(errors.New("unable to delete user"))
 			})
 
 			It("Returns an error after calling UserRepo.Create", func() {
 				err := userService.DeleteUser(context.TODO(), user)
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal("Unable to delete user"))
+				Expect(err.Error()).To(Equal("unable to delete user"))
 				Expect(userRepo.DeleteCallCount()).To(Equal(1))
 			})
 		})
@@ -226,14 +226,14 @@ var _ = Describe("UserService", func() {
 		Context("We have a valid user, password and context but update fails", func() {
 
 			BeforeEach(func() {
-				userRepo.UpdateReturns(errors.New("Unable to update user"))
+				userRepo.UpdateReturns(errors.New("unable to update user"))
 			})
 
 			It("returns an error", func() {
 				updatedUser, err := userService.UpdatePassword(context.TODO(), user, newPwd)
 				Expect(err).To(HaveOccurred())
 				Expect(updatedUser).To(BeNil())
-				Expect(err.Error()).To(Equal("Unable to update user"))
+				Expect(err.Error()).To(Equal("unable to update user"))
 				Expect(userRepo.UpdateCallCount()).To(Equal(1))
 			})
 		})
@@ -242,7 +242,7 @@ var _ = Describe("UserService", func() {
 
 			BeforeEach(func() {
 				newPwd = "uhseven"
-				userRepo.UpdateReturns(errors.New("Unable to update user"))
+				userRepo.UpdateReturns(errors.New("unable to update user"))
 			})
 
 			It("returns an error", func() {
@@ -413,13 +413,13 @@ var _ = Describe("UserService", func() {
 		Context("Context and userName are correct but Repo returns error", func() {
 
 			BeforeEach(func() {
-				userRepo.GetByUserNameReturns(nil, errors.New("BAM!"))
+				userRepo.GetByUserNameReturns(nil, errors.New("BAM"))
 			})
 
 			It("Returns an error", func() {
 				foundUser, err := userService.FindUserByUserName(context.TODO(), userName)
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal("BAM!"))
+				Expect(err.Error()).To(Equal("BAM"))
 				Expect(foundUser).To(BeNil())
 			})
 		})
@@ -490,13 +490,13 @@ var _ = Describe("UserService", func() {
 		Context("Context and userID are correct but Repo returns error", func() {
 
 			BeforeEach(func() {
-				userRepo.GetByIDReturns(nil, errors.New("BAM!"))
+				userRepo.GetByIDReturns(nil, errors.New("BAM"))
 			})
 
 			It("Returns an error", func() {
 				foundUser, err := userService.FindUserByID(context.TODO(), userID)
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal("BAM!"))
+				Expect(err.Error()).To(Equal("BAM"))
 				Expect(foundUser).To(BeNil())
 			})
 		})
