@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -77,7 +77,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Creates a user and returns 201 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusCreated))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 
 				var newUser model.User
@@ -104,7 +104,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Fails to return a users and returns 500 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToCreateUser))
@@ -122,7 +122,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Fails to create a user and returns a 400 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.EmptyBody))
 				Expect(userService.CreateUserCallCount()).To(Equal(0))
@@ -141,7 +141,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Fails to create a user and returns a 400 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.InvalidBody))
 				Expect(userService.CreateUserCallCount()).To(Equal(0))
@@ -179,7 +179,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Updates a user and returns 200 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 
 				var newUser model.User
@@ -205,7 +205,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Fails to return a users and returns 500 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToUpdateUser))
@@ -223,7 +223,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Fails to update a user and returns a 400 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.EmptyBody))
 				Expect(userService.UpdateUserCallCount()).To(Equal(0))
@@ -242,7 +242,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Fails to update a user and returns a 400 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.InvalidBody))
 				Expect(userService.UpdateUserCallCount()).To(Equal(0))
@@ -297,7 +297,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Fails to delete a user and returns a 500 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToDeleteUser))
 				Expect(userService.DeleteUserCallCount()).To(Equal(1))
@@ -314,7 +314,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Fails to delete a user and returns a 400 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.EmptyBody))
 				Expect(userService.DeleteUserCallCount()).To(Equal(0))
@@ -333,7 +333,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Fails to delete a user and returns a 400 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.InvalidBody))
 				Expect(userService.DeleteUserCallCount()).To(Equal(0))
@@ -378,7 +378,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Logs a user in and returns 200 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 
 				var newUser model.User
@@ -404,7 +404,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Fails to login a user and returns a 500 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToLoginUser))
 				Expect(userService.LoginCallCount()).To(Equal(1))
@@ -421,7 +421,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Fails to login a user and returns a 400 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.EmptyBody))
 				Expect(userService.DeleteUserCallCount()).To(Equal(0))
@@ -440,7 +440,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Fails to login a user and returns a 400 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.InvalidBody))
 				Expect(userService.DeleteUserCallCount()).To(Equal(0))
@@ -483,7 +483,7 @@ var _ = Describe("UserHandler", func() {
 
 				It("Finds and returns a user and returns 200 status code", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 
 					var foundUser model.User
@@ -510,7 +510,7 @@ var _ = Describe("UserHandler", func() {
 
 				It("Doesn't find a user and returns 404 status code", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 
 					Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToFindUser))
@@ -536,7 +536,7 @@ var _ = Describe("UserHandler", func() {
 
 				It("Finds and returns a user and returns 200 status code", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 
 					var foundUser model.User
@@ -564,7 +564,7 @@ var _ = Describe("UserHandler", func() {
 
 			It("Fails to find a user and returns a 404 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToFindUser))
 				Expect(userService.FindUserByUserNameCallCount()).To(Equal(1))

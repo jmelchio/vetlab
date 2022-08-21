@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -66,7 +66,7 @@ func (userServer *UserServer) CreateUser(writer http.ResponseWriter, request *ht
 		return
 	}
 
-	requestBody, err := ioutil.ReadAll(request.Body)
+	requestBody, err := io.ReadAll(request.Body)
 	if err != nil {
 		http.Error(writer, UnableToParseBody, http.StatusBadRequest)
 		return
@@ -94,7 +94,7 @@ func (userServer *UserServer) UpdateUser(writer http.ResponseWriter, request *ht
 		return
 	}
 
-	requestBody, err := ioutil.ReadAll(request.Body)
+	requestBody, err := io.ReadAll(request.Body)
 	if err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
@@ -122,7 +122,7 @@ func (userServer *UserServer) DeleteUser(writer http.ResponseWriter, request *ht
 		return
 	}
 
-	requestBody, err := ioutil.ReadAll(request.Body)
+	requestBody, err := io.ReadAll(request.Body)
 	if err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
@@ -150,7 +150,7 @@ func (userServer *UserServer) Login(writer http.ResponseWriter, request *http.Re
 		return
 	}
 
-	requestBody, err := ioutil.ReadAll(request.Body)
+	requestBody, err := io.ReadAll(request.Body)
 	if err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
