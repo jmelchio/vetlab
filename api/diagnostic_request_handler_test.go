@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -73,7 +73,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 			It("Creates a diagnosticRequest and returns 201 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusCreated))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 
 				var newDiagnosticRequest model.DiagnosticRequest
@@ -102,7 +102,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 			It("Fails to return a users and returns 500 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToSubmitDiagnosticRequest))
@@ -120,7 +120,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 			It("Fails to create a user and returns a 400 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.EmptyBody))
 				Expect(diagnosticRequestService.SubmitDiagnosticRequestCallCount()).To(Equal(0))
@@ -139,7 +139,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 			It("Fails to create a user and returns a 400 status code", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-				respBody, err := ioutil.ReadAll(recorder.Result().Body)
+				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.InvalidBody))
 				Expect(diagnosticRequestService.SubmitDiagnosticRequestCallCount()).To(Equal(0))
@@ -179,7 +179,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns the requested diagnostic request information", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 
 					var findDiagnosticRequest model.DiagnosticRequest
@@ -207,7 +207,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it is unable to find diagnostic request", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingDiagnosticRequests))
 					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(1))
@@ -241,7 +241,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it cannot parse the request", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.UnableToParseParams))
 					Expect(diagnosticRequestService.FindRequestByIDCallCount()).To(Equal(0))
@@ -291,7 +291,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns the requested diagnostic request information", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 
 					var findDiagnosticRequest []model.DiagnosticRequest
@@ -321,7 +321,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it is unable to find VetOrg", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingVetOrg))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
@@ -345,7 +345,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it is unable to find diagnostic request", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingDiagnosticRequests))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
@@ -381,7 +381,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it cannot parse the request", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.UnableToParseParams))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(0))
@@ -432,7 +432,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns the requested diagnostic request information", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 
 					var findDiagnosticRequest []model.DiagnosticRequest
@@ -462,7 +462,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it is unable to find User", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingUser))
 					Expect(userService.FindUserByIDCallCount()).To(Equal(1))
@@ -486,7 +486,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it is unable to find diagnostic request", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingDiagnosticRequests))
 					Expect(userService.FindUserByIDCallCount()).To(Equal(1))
@@ -522,7 +522,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it cannot parse the request", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.UnableToParseParams))
 					Expect(userService.FindUserByIDCallCount()).To(Equal(0))
@@ -573,7 +573,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns the requested diagnostic request information", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 
 					var findDiagnosticRequest []model.DiagnosticRequest
@@ -603,7 +603,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it is unable to find Customer", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingCustomer))
 					Expect(customerService.FindCustomerByIDCallCount()).To(Equal(1))
@@ -627,7 +627,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it is unable to find diagnostic request", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingDiagnosticRequests))
 					Expect(customerService.FindCustomerByIDCallCount()).To(Equal(1))
@@ -663,7 +663,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it cannot parse the request", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.UnableToParseParams))
 					Expect(customerService.FindCustomerByIDCallCount()).To(Equal(0))
@@ -719,7 +719,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns the requested diagnostic request information", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusOK))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 
 					var findDiagnosticRequest []model.DiagnosticRequest
@@ -751,7 +751,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it is unable to find VetOrg", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingVetOrg))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
@@ -777,7 +777,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it is unable to find diagnostic request", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusNotFound))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.ErrorFetchingDiagnosticRequests))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(1))
@@ -815,7 +815,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it cannot parse the request", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.UnableToParseParams))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(0))
@@ -838,7 +838,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it cannot parse the request", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.UnableToParseParams))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(0))
@@ -861,7 +861,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 				It("Returns an error indicating it cannot parse the request", func() {
 					Expect(recorder.Result().StatusCode).To(Equal(http.StatusBadRequest))
-					respBody, err := ioutil.ReadAll(recorder.Result().Body)
+					respBody, err := io.ReadAll(recorder.Result().Body)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(strings.TrimSpace(string(respBody))).To(Equal(api.UnableToParseParams))
 					Expect(vetOrgService.FindVetOrgByIDCallCount()).To(Equal(0))
