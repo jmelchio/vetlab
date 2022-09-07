@@ -75,6 +75,6 @@ type VetOrgService interface {
 
 	AddUserToVetOrg(ctx context.Context, user model.User, vetOrg model.VetOrg) (*model.User, error)
 
-	FindVetOrgByName(ctx context.Context, orgName string) (*model.VetOrg, error)
+	FindVetOrgByName(ctx context.Context, orgName string) ([]model.VetOrg, error)
 	FindVetOrgByID(ctx context.Context, orgID uint) (*model.VetOrg, error)
 }

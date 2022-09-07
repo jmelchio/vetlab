@@ -48,7 +48,7 @@ func (vetOrgService VetOrg) AddUserToVetOrg(ctx context.Context, user model.User
 	return nil, errors.New("not yet implemented")
 }
 
-func (vetOrgService VetOrg) FindVetOrgByName(ctx context.Context, orgName string) (*model.VetOrg, error) {
+func (vetOrgService VetOrg) FindVetOrgByName(ctx context.Context, orgName string) ([]model.VetOrg, error) {
 	//TODO implement me
 	return nil, errors.New("not yet implemented")
 }

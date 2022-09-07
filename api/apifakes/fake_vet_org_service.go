@@ -65,18 +65,18 @@ type FakeVetOrgService struct {
 		result1 *model.VetOrg
 		result2 error
 	}
-	FindVetOrgByNameStub        func(context.Context, string) (*model.VetOrg, error)
+	FindVetOrgByNameStub        func(context.Context, string) ([]model.VetOrg, error)
 	findVetOrgByNameMutex       sync.RWMutex
 	findVetOrgByNameArgsForCall []struct {
 		arg1 context.Context
 		arg2 string
 	}
 	findVetOrgByNameReturns struct {
-		result1 *model.VetOrg
+		result1 []model.VetOrg
 		result2 error
 	}
 	findVetOrgByNameReturnsOnCall map[int]struct {
-		result1 *model.VetOrg
+		result1 []model.VetOrg
 		result2 error
 	}
 	UpdateVetOrgStub        func(context.Context, model.VetOrg) (*model.VetOrg, error)
@@ -351,7 +351,7 @@ func (fake *FakeVetOrgService) FindVetOrgByIDReturnsOnCall(i int, result1 *model
 	}{result1, result2}
 }
 
-func (fake *FakeVetOrgService) FindVetOrgByName(arg1 context.Context, arg2 string) (*model.VetOrg, error) {
+func (fake *FakeVetOrgService) FindVetOrgByName(arg1 context.Context, arg2 string) ([]model.VetOrg, error) {
 	fake.findVetOrgByNameMutex.Lock()
 	ret, specificReturn := fake.findVetOrgByNameReturnsOnCall[len(fake.findVetOrgByNameArgsForCall)]
 	fake.findVetOrgByNameArgsForCall = append(fake.findVetOrgByNameArgsForCall, struct {
@@ -376,7 +376,7 @@ func (fake *FakeVetOrgService) FindVetOrgByNameCallCount() int {
 	return len(fake.findVetOrgByNameArgsForCall)
 }
 
-func (fake *FakeVetOrgService) FindVetOrgByNameCalls(stub func(context.Context, string) (*model.VetOrg, error)) {
+func (fake *FakeVetOrgService) FindVetOrgByNameCalls(stub func(context.Context, string) ([]model.VetOrg, error)) {
 	fake.findVetOrgByNameMutex.Lock()
 	defer fake.findVetOrgByNameMutex.Unlock()
 	fake.FindVetOrgByNameStub = stub
@@ -389,28 +389,28 @@ func (fake *FakeVetOrgService) FindVetOrgByNameArgsForCall(i int) (context.Conte
 	return argsForCall.arg1, argsForCall.arg2
 }
 
-func (fake *FakeVetOrgService) FindVetOrgByNameReturns(result1 *model.VetOrg, result2 error) {
+func (fake *FakeVetOrgService) FindVetOrgByNameReturns(result1 []model.VetOrg, result2 error) {
 	fake.findVetOrgByNameMutex.Lock()
 	defer fake.findVetOrgByNameMutex.Unlock()
 	fake.FindVetOrgByNameStub = nil
 	fake.findVetOrgByNameReturns = struct {
-		result1 *model.VetOrg
+		result1 []model.VetOrg
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeVetOrgService) FindVetOrgByNameReturnsOnCall(i int, result1 *model.VetOrg, result2 error) {
+func (fake *FakeVetOrgService) FindVetOrgByNameReturnsOnCall(i int, result1 []model.VetOrg, result2 error) {
 	fake.findVetOrgByNameMutex.Lock()
 	defer fake.findVetOrgByNameMutex.Unlock()
 	fake.FindVetOrgByNameStub = nil
 	if fake.findVetOrgByNameReturnsOnCall == nil {
 		fake.findVetOrgByNameReturnsOnCall = make(map[int]struct {
-			result1 *model.VetOrg
+			result1 []model.VetOrg
 			result2 error
 		})
 	}
 	fake.findVetOrgByNameReturnsOnCall[i] = struct {
-		result1 *model.VetOrg
+		result1 []model.VetOrg
 		result2 error
 	}{result1, result2}
 }
