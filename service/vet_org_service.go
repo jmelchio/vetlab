@@ -49,8 +49,10 @@ func (vetOrgService VetOrg) AddUserToVetOrg(ctx context.Context, user model.User
 }
 
 func (vetOrgService VetOrg) FindVetOrgByName(ctx context.Context, orgName string) ([]model.VetOrg, error) {
-	//TODO implement me
-	return nil, errors.New("not yet implemented")
+	if ctx == nil {
+		return nil, errors.New(MissingContext)
+	}
+	return vetOrgService.VetOrgRepo.GetByName(orgName)
 }
 
 func (vetOrgService VetOrg) FindVetOrgByID(ctx context.Context, orgID uint) (*model.VetOrg, error) {

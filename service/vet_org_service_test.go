@@ -189,23 +189,23 @@ var _ = Describe("VetOrgService", func() {
 	})
 
 	Describe("Find VetOrg by name", func() {
-		resultVetOrgList := []model.VetOrg{vetOrg}
-
 		Context("We have a valid VetOrg name and Context", func() {
 
 			BeforeEach(func() {
+				resultVetOrgList := []model.VetOrg{vetOrg}
 				vetOrgRepo.GetByNameReturns(resultVetOrgList, nil)
 			})
 
 			It("Returns a list of VetOrg(s) and no error from the repo", func() {
 				result, err := vetOrgService.FindVetOrgByName(context.TODO(), "orgName")
 				Expect(err).ToNot(HaveOccurred())
-				Expect(result).ToNot(BeNil())
+				Expect(len(result)).To(Equal(1))
 				Expect(result[0]).To(Equal(vetOrg))
 			})
 		})
 
 		Context("We have a valid VetOrg name but no Context", func() {
+
 			BeforeEach(func() {
 				vetOrgRepo.GetByNameReturns(nil, errors.New(MissingContext))
 			})
@@ -219,6 +219,7 @@ var _ = Describe("VetOrgService", func() {
 		})
 
 		Context("We have a valid Context but no valid VetOrg name", func() {
+
 			BeforeEach(func() {
 				vetOrgRepo.GetByNameReturns(nil, nil)
 			})
@@ -231,6 +232,7 @@ var _ = Describe("VetOrgService", func() {
 		})
 
 		Context("We have a valid Context and VetOrg name but repo errors out", func() {
+
 			BeforeEach(func() {
 				vetOrgRepo.GetByNameReturns(nil, errors.New("BAM"))
 			})
