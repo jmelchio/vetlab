@@ -258,10 +258,10 @@ var _ = Describe("VetOrgService", func() {
 				vetOrgRepo.GetByIDReturns(&vetOrg, nil)
 			})
 
-			It("Returns a list of VetOrg(s) and no error from the repo", func() {
+			It("Returns a VetOrg and no error from the repo", func() {
 				result, err := vetOrgService.FindVetOrgByID(context.TODO(), vetOrgID)
 				Expect(err).ToNot(HaveOccurred())
-				Expect(result).To(Equal(vetOrg))
+				Expect(result).To(Equal(&vetOrg))
 			})
 		})
 

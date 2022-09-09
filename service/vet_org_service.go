@@ -56,6 +56,8 @@ func (vetOrgService VetOrg) FindVetOrgByName(ctx context.Context, orgName string
 }
 
 func (vetOrgService VetOrg) FindVetOrgByID(ctx context.Context, orgID uint) (*model.VetOrg, error) {
-	//TODO implement me
-	return nil, errors.New("not yet implemented")
+	if ctx == nil {
+		return nil, errors.New(MissingContext)
+	}
+	return vetOrgService.VetOrgRepo.GetByID(orgID)
 }
