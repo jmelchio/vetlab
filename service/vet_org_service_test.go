@@ -245,4 +245,65 @@ var _ = Describe("VetOrgService", func() {
 			})
 		})
 	})
+
+	Describe("Find VetOrg by ID", func() {
+
+		var (
+			vetOrgID = uint(12345)
+		)
+
+		Context("We have a valid VetOrg ID and Context", func() {
+
+			BeforeEach(func() {
+				vetOrgRepo.GetByIDReturns(&vetOrg, nil)
+			})
+
+			It("Returns a list of VetOrg(s) and no error from the repo", func() {
+				result, err := vetOrgService.FindVetOrgByID(context.TODO(), vetOrgID)
+				Expect(err).ToNot(HaveOccurred())
+				Expect(result).To(Equal(vetOrg))
+			})
+		})
+
+		Context("We have a valid VetOrg ID but no Context", func() {
+
+			BeforeEach(func() {
+				vetOrgRepo.GetByIDReturns(nil, errors.New(MissingContext))
+			})
+
+			It("Returns an error indicating the absence of the context", func() {
+				result, err := vetOrgService.FindVetOrgByID(context.TODO(), vetOrgID)
+				Expect(err).To(HaveOccurred())
+				Expect(result).To(BeNil())
+				Expect(err.Error()).To(Equal(MissingContext))
+			})
+		})
+
+		Context("We have a valid Context but no valid VetOrg ID", func() {
+
+			BeforeEach(func() {
+				vetOrgRepo.GetByIDReturns(nil, nil)
+			})
+
+			It("Returns no result and no error", func() {
+				result, err := vetOrgService.FindVetOrgByID(context.TODO(), vetOrgID)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(BeNil())
+			})
+		})
+
+		Context("We have a valid Context and VetOrg ID but repo errors out", func() {
+
+			BeforeEach(func() {
+				vetOrgRepo.GetByIDReturns(nil, errors.New("BAM"))
+			})
+
+			It("Returns no result and an error", func() {
+				result, err := vetOrgService.FindVetOrgByID(context.TODO(), vetOrgID)
+				Expect(err).To(HaveOccurred())
+				Expect(result).To(BeNil())
+				Expect(err.Error()).To(Equal("BAM"))
+			})
+		})
+	})
 })
