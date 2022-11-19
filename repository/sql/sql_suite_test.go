@@ -1,7 +1,7 @@
 package sql_test
 
 import (
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -22,7 +22,7 @@ var (
 )
 
 var _ = BeforeSuite(func() {
-	database, err = gorm.Open(postgres.Open( "host=localhost port=5432 user=postgres password=password dbname=vetlab sslmode=disable"), &gorm.Config{})
+	database, err = gorm.Open(postgres.Open("host=localhost port=5432 user=postgres password=password dbname=vetlab sslmode=disable"), &gorm.Config{})
 	Expect(err).NotTo(HaveOccurred())
 
 	err = database.Migrator().AutoMigrate(&model.DiagnosticReport{})

@@ -6,7 +6,7 @@ import (
 	"github.com/jmelchio/vetlab/model"
 	"github.com/jmelchio/vetlab/repository/sql"
 	"github.com/jmelchio/vetlab/service"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
