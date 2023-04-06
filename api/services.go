@@ -66,7 +66,7 @@ type DiagnosticReportService interface {
 
 //go:generate counterfeiter . VetOrgService
 
-// VetOrgService provides the business operations for maintianing veterinary practices
+// VetOrgService provides the business operations for maintaining veterinary practices
 // within the application
 type VetOrgService interface {
 	CreateVetOrg(ctx context.Context, vetOrg model.VetOrg) (*model.VetOrg, error)
