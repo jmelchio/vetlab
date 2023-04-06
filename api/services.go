@@ -55,7 +55,7 @@ type DiagnosticRequestService interface {
 
 // DiagnosticReportService provides the business operations for providing diagnostic reports
 type DiagnosticReportService interface {
-	SumbmitDiagnosticReport(ctx context.Context, diagReport model.DiagnosticReport) (*model.DiagnosticReport, error)
+	SubmitDiagnosticReport(ctx context.Context, diagReport model.DiagnosticReport) (*model.DiagnosticReport, error)
 
 	FindReportByDateRange(ctx context.Context, start time.Time, end time.Time, vetOrg model.VetOrg) ([]model.DiagnosticReport, error)
 	FindReportByID(ctx context.Context, reportID uint) (*model.DiagnosticReport, error)

@@ -423,14 +423,14 @@ func (fake *FakeDiagnosticReportService) FindReportByVetOrgReturnsOnCall(i int, 
 	}{result1, result2}
 }
 
-func (fake *FakeDiagnosticReportService) SumbmitDiagnosticReport(arg1 context.Context, arg2 model.DiagnosticReport) (*model.DiagnosticReport, error) {
+func (fake *FakeDiagnosticReportService) SubmitDiagnosticReport(arg1 context.Context, arg2 model.DiagnosticReport) (*model.DiagnosticReport, error) {
 	fake.sumbmitDiagnosticReportMutex.Lock()
 	ret, specificReturn := fake.sumbmitDiagnosticReportReturnsOnCall[len(fake.sumbmitDiagnosticReportArgsForCall)]
 	fake.sumbmitDiagnosticReportArgsForCall = append(fake.sumbmitDiagnosticReportArgsForCall, struct {
 		arg1 context.Context
 		arg2 model.DiagnosticReport
 	}{arg1, arg2})
-	fake.recordInvocation("SumbmitDiagnosticReport", []interface{}{arg1, arg2})
+	fake.recordInvocation("SubmitDiagnosticReport", []interface{}{arg1, arg2})
 	fake.sumbmitDiagnosticReportMutex.Unlock()
 	if fake.SumbmitDiagnosticReportStub != nil {
 		return fake.SumbmitDiagnosticReportStub(arg1, arg2)
