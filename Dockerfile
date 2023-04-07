@@ -28,4 +28,6 @@ LABEL authors="joris.melchior@gmail.com"
 
 COPY --from=test-build-stage /opt/vetlab/vetlab /opt/vetlab/vetlab
 
+EXPOSE 8080
+
 ENTRYPOINT ["/opt/vetlab/vetlab"]

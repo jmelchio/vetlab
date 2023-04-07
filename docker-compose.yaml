@@ -4,6 +4,14 @@ volumes:
   postgres:
 
 services:
+  vetlab-api:
+    container_name: vetlab_api
+    image: vetlab:latest
+    ports:
+      - "8080:8080"
+    links:
+      - postgres
+    command: [-dbHost=postgres]
   postgres:
     container_name: vetlab_postgres
     image: "postgres:12"
