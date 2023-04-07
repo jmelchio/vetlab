@@ -1,6 +1,7 @@
 package vetlabcmd
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"reflect"
@@ -21,18 +22,25 @@ var (
 	customerHandler http.Handler
 )
 
-func Run() {
-	dsn := "host=localhost port=5432 user=postgres password=password dbname=vetlab sslmode=disable"
+func Run(dbHost string, dbPort int, dbUser string, dbPassword string, dbName string, autoMigrate bool, useSSL bool) {
+	sslMode := "disable"
+	if useSSL {
+		sslMode = "enable"
+	}
+	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
+		dbHost, dbPort, dbUser, dbPassword, dbName, sslMode)
 	database, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %s", err.Error())
 	}
 
-	autoMigrateDB(&model.DiagnosticReport{})
-	autoMigrateDB(&model.DiagnosticRequest{})
-	autoMigrateDB(&model.Customer{})
-	autoMigrateDB(&model.VetOrg{})
-	autoMigrateDB(&model.User{})
+	if autoMigrate {
+		autoMigrateDB(&model.DiagnosticReport{})
+		autoMigrateDB(&model.DiagnosticRequest{})
+		autoMigrateDB(&model.Customer{})
+		autoMigrateDB(&model.VetOrg{})
+		autoMigrateDB(&model.User{})
+	}
 
 	userRepo := sql.UserRepo{Database: database}
 	userService := service.User{UserRepo: &userRepo}
@@ -52,7 +60,7 @@ func Run() {
 	http.Handle("/customers", customerHandler)
 	http.Handle("/customers/", customerHandler)
 
-	log.Println("Starting listner on port: 8080")
+	log.Println("Starting listener on port: 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
