@@ -1,14 +1,16 @@
 package sql_test
 
 import (
+	"flag"
+	"fmt"
+	"testing"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
 	"github.com/jmelchio/vetlab/model"
-
-	"testing"
 )
 
 func TestRepository(t *testing.T) {
@@ -19,10 +21,16 @@ func TestRepository(t *testing.T) {
 var (
 	database *gorm.DB
 	err      error
+	dbHost   string
 )
 
+func init() {
+	flag.StringVar(&dbHost, "dbHost", "localhost", "Database hostname")
+}
+
 var _ = BeforeSuite(func() {
-	database, err = gorm.Open(postgres.Open("host=localhost port=5432 user=postgres password=password dbname=vetlab sslmode=disable"), &gorm.Config{})
+	dsn := fmt.Sprintf("host=%s port=5432 user=postgres password=password dbname=vetlab sslmode=disable", dbHost)
+	database, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	Expect(err).NotTo(HaveOccurred())
 
 	err = database.Migrator().AutoMigrate(&model.DiagnosticReport{})
