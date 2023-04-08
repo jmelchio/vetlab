@@ -24,6 +24,8 @@ var (
 	dbHost   string
 )
 
+// init makes it possible to set the database host name on the command line
+// i.e. 'ginkgo repository/... -- -dbHost=<hostname>
 func init() {
 	flag.StringVar(&dbHost, "dbHost", "localhost", "Database hostname")
 }
