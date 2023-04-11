@@ -143,7 +143,7 @@ func (userServer *UserServer) DeleteUser(writer http.ResponseWriter, request *ht
 	writer.WriteHeader(http.StatusNoContent)
 }
 
-// Login handles the api request to login to the system
+// Login handles the api request to log in to the system
 func (userServer *UserServer) Login(writer http.ResponseWriter, request *http.Request) {
 	if request.Body == nil {
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
@@ -187,7 +187,7 @@ func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http
 	http.Error(writer, NoParamsFound, http.StatusBadRequest)
 }
 
-// FindUserByUserName handles the request to find a user by their user name
+// FindUserByUserName handles the request to find a user by their username
 func (userServer *UserServer) FindUserByUserName(writer http.ResponseWriter, request *http.Request) {
 	userName := rata.Param(request, "user_name")
 
