@@ -77,7 +77,7 @@ func (customerService Customer) UpdatePassword(ctx context.Context, customer mod
 	return &customer, nil
 }
 
-// Login tries to login a customer into the vetlab system
+// Login tries to log in a customer into the vetlab system
 func (customerService Customer) Login(ctx context.Context, userName string, password string) (*model.Customer, error) {
 	if ctx == nil {
 		return nil, errors.New(MissingContext)
