@@ -108,15 +108,16 @@ func (fake *FakeDiagnosticRequestService) FindRequestByCustomer(arg1 context.Con
 		arg1 context.Context
 		arg2 model.Customer
 	}{arg1, arg2})
+	stub := fake.FindRequestByCustomerStub
+	fakeReturns := fake.findRequestByCustomerReturns
 	fake.recordInvocation("FindRequestByCustomer", []interface{}{arg1, arg2})
 	fake.findRequestByCustomerMutex.Unlock()
-	if fake.FindRequestByCustomerStub != nil {
-		return fake.FindRequestByCustomerStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.findRequestByCustomerReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -174,15 +175,16 @@ func (fake *FakeDiagnosticRequestService) FindRequestByDateRange(arg1 context.Co
 		arg3 time.Time
 		arg4 model.VetOrg
 	}{arg1, arg2, arg3, arg4})
+	stub := fake.FindRequestByDateRangeStub
+	fakeReturns := fake.findRequestByDateRangeReturns
 	fake.recordInvocation("FindRequestByDateRange", []interface{}{arg1, arg2, arg3, arg4})
 	fake.findRequestByDateRangeMutex.Unlock()
-	if fake.FindRequestByDateRangeStub != nil {
-		return fake.FindRequestByDateRangeStub(arg1, arg2, arg3, arg4)
+	if stub != nil {
+		return stub(arg1, arg2, arg3, arg4)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.findRequestByDateRangeReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -238,15 +240,16 @@ func (fake *FakeDiagnosticRequestService) FindRequestByID(arg1 context.Context, 
 		arg1 context.Context
 		arg2 uint
 	}{arg1, arg2})
+	stub := fake.FindRequestByIDStub
+	fakeReturns := fake.findRequestByIDReturns
 	fake.recordInvocation("FindRequestByID", []interface{}{arg1, arg2})
 	fake.findRequestByIDMutex.Unlock()
-	if fake.FindRequestByIDStub != nil {
-		return fake.FindRequestByIDStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.findRequestByIDReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -302,15 +305,16 @@ func (fake *FakeDiagnosticRequestService) FindRequestByUser(arg1 context.Context
 		arg1 context.Context
 		arg2 model.User
 	}{arg1, arg2})
+	stub := fake.FindRequestByUserStub
+	fakeReturns := fake.findRequestByUserReturns
 	fake.recordInvocation("FindRequestByUser", []interface{}{arg1, arg2})
 	fake.findRequestByUserMutex.Unlock()
-	if fake.FindRequestByUserStub != nil {
-		return fake.FindRequestByUserStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.findRequestByUserReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -366,15 +370,16 @@ func (fake *FakeDiagnosticRequestService) FindRequestByVetOrg(arg1 context.Conte
 		arg1 context.Context
 		arg2 model.VetOrg
 	}{arg1, arg2})
+	stub := fake.FindRequestByVetOrgStub
+	fakeReturns := fake.findRequestByVetOrgReturns
 	fake.recordInvocation("FindRequestByVetOrg", []interface{}{arg1, arg2})
 	fake.findRequestByVetOrgMutex.Unlock()
-	if fake.FindRequestByVetOrgStub != nil {
-		return fake.FindRequestByVetOrgStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.findRequestByVetOrgReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -430,15 +435,16 @@ func (fake *FakeDiagnosticRequestService) SubmitDiagnosticRequest(arg1 context.C
 		arg1 context.Context
 		arg2 model.DiagnosticRequest
 	}{arg1, arg2})
+	stub := fake.SubmitDiagnosticRequestStub
+	fakeReturns := fake.submitDiagnosticRequestReturns
 	fake.recordInvocation("SubmitDiagnosticRequest", []interface{}{arg1, arg2})
 	fake.submitDiagnosticRequestMutex.Unlock()
-	if fake.SubmitDiagnosticRequestStub != nil {
-		return fake.SubmitDiagnosticRequestStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.submitDiagnosticRequestReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 

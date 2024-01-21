@@ -43,7 +43,12 @@ func (vetOrgService VetOrg) DeleteVetOrg(ctx context.Context, vetOrg model.VetOr
 	return vetOrgService.VetOrgRepo.Delete(&vetOrg)
 }
 
-func (vetOrgService VetOrg) AddUserToVetOrg(ctx context.Context, user model.User, vetOrg model.VetOrg) (*model.User, error) {
+func (vetOrgService VetOrg) AddCustomerToVetOrg(ctx context.Context, user model.Customer, vetOrg model.VetOrg) (*model.Customer, error) {
+	//TODO implement me
+	return nil, errors.New("not yet implemented")
+}
+
+func (vetOrgService VetOrg) RemoveCustomerFromVetOrg(ctx context.Context, user model.Customer, vetOrg model.VetOrg) (*model.Customer, error) {
 	//TODO implement me
 	return nil, errors.New("not yet implemented")
 }

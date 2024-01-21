@@ -2,9 +2,11 @@ package service
 
 import "github.com/jmelchio/vetlab/model"
 
-//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 . UserRepo
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
 
 // UserRepo declares the persistence interface for the User struct
+//
+//counterfeiter:generate . UserRepo
 type UserRepo interface {
 	Create(*model.User) error
 	Update(*model.User) error
@@ -13,9 +15,9 @@ type UserRepo interface {
 	GetByUserName(string) (*model.User, error)
 }
 
-//go:generate counterfeiter . CustomerRepo
-
 // CustomerRepo declares the persistence interface for the Customer struct
+//
+//counterfeiter:generate . CustomerRepo
 type CustomerRepo interface {
 	Create(*model.Customer) error
 	Update(*model.Customer) error
@@ -25,9 +27,9 @@ type CustomerRepo interface {
 	GetByUserName(string) (*model.Customer, error)
 }
 
-//go:generate counterfeiter . DiagnosticReportRepo
-
 // DiagnosticReportRepo describes the persistence interface for a veterinary lab report
+//
+//counterfeiter:generate . DiagnosticReportRepo
 type DiagnosticReportRepo interface {
 	Create(*model.DiagnosticReport) error
 	Update(*model.DiagnosticReport) error
@@ -38,9 +40,9 @@ type DiagnosticReportRepo interface {
 	GetByCustomerID(uint) ([]model.DiagnosticReport, error)
 }
 
-//go:generate counterfeiter . DiagnosticRequestRepo
-
 // DiagnosticRequestRepo describes the persistence interface for diagnostic requests
+//
+//counterfeiter:generate . DiagnosticRequestRepo
 type DiagnosticRequestRepo interface {
 	Create(*model.DiagnosticRequest) error
 	Update(*model.DiagnosticRequest) error
@@ -51,9 +53,9 @@ type DiagnosticRequestRepo interface {
 	GetByCustomerID(uint) ([]model.DiagnosticRequest, error)
 }
 
-//go:generate counterfeiter . VetOrgRepo
-
 // VetOrgRepo declares the persistence interface for the model.VetOrg struct
+//
+//counterfeiter:generate . VetOrgRepo
 type VetOrgRepo interface {
 	Create(*model.VetOrg) error
 	Update(*model.VetOrg) error

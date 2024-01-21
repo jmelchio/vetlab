@@ -133,15 +133,16 @@ func (fake *FakeCustomerService) CreateCustomer(arg1 context.Context, arg2 model
 		arg1 context.Context
 		arg2 model.Customer
 	}{arg1, arg2})
+	stub := fake.CreateCustomerStub
+	fakeReturns := fake.createCustomerReturns
 	fake.recordInvocation("CreateCustomer", []interface{}{arg1, arg2})
 	fake.createCustomerMutex.Unlock()
-	if fake.CreateCustomerStub != nil {
-		return fake.CreateCustomerStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.createCustomerReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -197,15 +198,16 @@ func (fake *FakeCustomerService) DeleteCustomer(arg1 context.Context, arg2 model
 		arg1 context.Context
 		arg2 model.Customer
 	}{arg1, arg2})
+	stub := fake.DeleteCustomerStub
+	fakeReturns := fake.deleteCustomerReturns
 	fake.recordInvocation("DeleteCustomer", []interface{}{arg1, arg2})
 	fake.deleteCustomerMutex.Unlock()
-	if fake.DeleteCustomerStub != nil {
-		return fake.DeleteCustomerStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.deleteCustomerReturns
 	return fakeReturns.result1
 }
 
@@ -258,15 +260,16 @@ func (fake *FakeCustomerService) FindCustomerByID(arg1 context.Context, arg2 uin
 		arg1 context.Context
 		arg2 uint
 	}{arg1, arg2})
+	stub := fake.FindCustomerByIDStub
+	fakeReturns := fake.findCustomerByIDReturns
 	fake.recordInvocation("FindCustomerByID", []interface{}{arg1, arg2})
 	fake.findCustomerByIDMutex.Unlock()
-	if fake.FindCustomerByIDStub != nil {
-		return fake.FindCustomerByIDStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.findCustomerByIDReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -322,15 +325,16 @@ func (fake *FakeCustomerService) FindCustomerByUserName(arg1 context.Context, ar
 		arg1 context.Context
 		arg2 string
 	}{arg1, arg2})
+	stub := fake.FindCustomerByUserNameStub
+	fakeReturns := fake.findCustomerByUserNameReturns
 	fake.recordInvocation("FindCustomerByUserName", []interface{}{arg1, arg2})
 	fake.findCustomerByUserNameMutex.Unlock()
-	if fake.FindCustomerByUserNameStub != nil {
-		return fake.FindCustomerByUserNameStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.findCustomerByUserNameReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -386,15 +390,16 @@ func (fake *FakeCustomerService) FindCustomerByVetOrg(arg1 context.Context, arg2
 		arg1 context.Context
 		arg2 model.VetOrg
 	}{arg1, arg2})
+	stub := fake.FindCustomerByVetOrgStub
+	fakeReturns := fake.findCustomerByVetOrgReturns
 	fake.recordInvocation("FindCustomerByVetOrg", []interface{}{arg1, arg2})
 	fake.findCustomerByVetOrgMutex.Unlock()
-	if fake.FindCustomerByVetOrgStub != nil {
-		return fake.FindCustomerByVetOrgStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.findCustomerByVetOrgReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -451,15 +456,16 @@ func (fake *FakeCustomerService) Login(arg1 context.Context, arg2 string, arg3 s
 		arg2 string
 		arg3 string
 	}{arg1, arg2, arg3})
+	stub := fake.LoginStub
+	fakeReturns := fake.loginReturns
 	fake.recordInvocation("Login", []interface{}{arg1, arg2, arg3})
 	fake.loginMutex.Unlock()
-	if fake.LoginStub != nil {
-		return fake.LoginStub(arg1, arg2, arg3)
+	if stub != nil {
+		return stub(arg1, arg2, arg3)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.loginReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -515,15 +521,16 @@ func (fake *FakeCustomerService) UpdateCustomer(arg1 context.Context, arg2 model
 		arg1 context.Context
 		arg2 model.Customer
 	}{arg1, arg2})
+	stub := fake.UpdateCustomerStub
+	fakeReturns := fake.updateCustomerReturns
 	fake.recordInvocation("UpdateCustomer", []interface{}{arg1, arg2})
 	fake.updateCustomerMutex.Unlock()
-	if fake.UpdateCustomerStub != nil {
-		return fake.UpdateCustomerStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.updateCustomerReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -580,15 +587,16 @@ func (fake *FakeCustomerService) UpdatePassword(arg1 context.Context, arg2 model
 		arg2 model.Customer
 		arg3 string
 	}{arg1, arg2, arg3})
+	stub := fake.UpdatePasswordStub
+	fakeReturns := fake.updatePasswordReturns
 	fake.recordInvocation("UpdatePassword", []interface{}{arg1, arg2, arg3})
 	fake.updatePasswordMutex.Unlock()
-	if fake.UpdatePasswordStub != nil {
-		return fake.UpdatePasswordStub(arg1, arg2, arg3)
+	if stub != nil {
+		return stub(arg1, arg2, arg3)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.updatePasswordReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 

@@ -7,9 +7,11 @@ import (
 	"github.com/jmelchio/vetlab/model"
 )
 
-//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 . UserService
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
 
 // UserService provides the business operations for maintaining users within the application
+//
+//counterfeiter:generate . UserService
 type UserService interface {
 	CreateUser(ctx context.Context, user model.User) (*model.User, error)
 	UpdateUser(ctx context.Context, user model.User) (*model.User, error)
@@ -22,9 +24,9 @@ type UserService interface {
 	FindUserByID(ctx context.Context, userID uint) (*model.User, error)
 }
 
-//go:generate counterfeiter . CustomerService
-
 // CustomerService provides the business operations for maintaining users within the application
+//
+//counterfeiter:generate . CustomerService
 type CustomerService interface {
 	CreateCustomer(ctx context.Context, user model.Customer) (*model.Customer, error)
 	UpdateCustomer(ctx context.Context, user model.Customer) (*model.Customer, error)
@@ -38,9 +40,9 @@ type CustomerService interface {
 	FindCustomerByVetOrg(ctx context.Context, vetOrg model.VetOrg) ([]model.Customer, error)
 }
 
-//go:generate counterfeiter . DiagnosticRequestService
-
 // DiagnosticRequestService provides the business operations for requesting diagnostic reports
+//
+//counterfeiter:generate . DiagnosticRequestService
 type DiagnosticRequestService interface {
 	SubmitDiagnosticRequest(ctx context.Context, diagReq model.DiagnosticRequest) (*model.DiagnosticRequest, error)
 
@@ -51,9 +53,9 @@ type DiagnosticRequestService interface {
 	FindRequestByCustomer(ctx context.Context, customer model.Customer) ([]model.DiagnosticRequest, error)
 }
 
-//go:generate counterfeiter . DiagnosticReportService
-
 // DiagnosticReportService provides the business operations for providing diagnostic reports
+//
+//counterfeiter:generate . DiagnosticReportService
 type DiagnosticReportService interface {
 	SubmitDiagnosticReport(ctx context.Context, diagReport model.DiagnosticReport) (*model.DiagnosticReport, error)
 
@@ -64,16 +66,17 @@ type DiagnosticReportService interface {
 	FindReportByCustomer(ctx context.Context, customer model.Customer) ([]model.DiagnosticReport, error)
 }
 
-//go:generate counterfeiter . VetOrgService
-
 // VetOrgService provides the business operations for maintaining veterinary practices
 // within the application
+//
+//counterfeiter:generate . VetOrgService
 type VetOrgService interface {
 	CreateVetOrg(ctx context.Context, vetOrg model.VetOrg) (*model.VetOrg, error)
 	UpdateVetOrg(ctx context.Context, vetOrg model.VetOrg) (*model.VetOrg, error)
 	DeleteVetOrg(ctx context.Context, vetOrg model.VetOrg) error
 
-	AddUserToVetOrg(ctx context.Context, user model.User, vetOrg model.VetOrg) (*model.User, error)
+	AddCustomerToVetOrg(ctx context.Context, user model.Customer, vetOrg model.VetOrg) (*model.Customer, error)
+	RemoveCustomerFromVetOrg(ctx context.Context, user model.Customer, vetOrg model.VetOrg) (*model.Customer, error)
 
 	FindVetOrgByName(ctx context.Context, orgName string) ([]model.VetOrg, error)
 	FindVetOrgByID(ctx context.Context, orgID uint) (*model.VetOrg, error)

@@ -119,15 +119,16 @@ func (fake *FakeUserService) CreateUser(arg1 context.Context, arg2 model.User) (
 		arg1 context.Context
 		arg2 model.User
 	}{arg1, arg2})
+	stub := fake.CreateUserStub
+	fakeReturns := fake.createUserReturns
 	fake.recordInvocation("CreateUser", []interface{}{arg1, arg2})
 	fake.createUserMutex.Unlock()
-	if fake.CreateUserStub != nil {
-		return fake.CreateUserStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.createUserReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -183,15 +184,16 @@ func (fake *FakeUserService) DeleteUser(arg1 context.Context, arg2 model.User) e
 		arg1 context.Context
 		arg2 model.User
 	}{arg1, arg2})
+	stub := fake.DeleteUserStub
+	fakeReturns := fake.deleteUserReturns
 	fake.recordInvocation("DeleteUser", []interface{}{arg1, arg2})
 	fake.deleteUserMutex.Unlock()
-	if fake.DeleteUserStub != nil {
-		return fake.DeleteUserStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.deleteUserReturns
 	return fakeReturns.result1
 }
 
@@ -244,15 +246,16 @@ func (fake *FakeUserService) FindUserByID(arg1 context.Context, arg2 uint) (*mod
 		arg1 context.Context
 		arg2 uint
 	}{arg1, arg2})
+	stub := fake.FindUserByIDStub
+	fakeReturns := fake.findUserByIDReturns
 	fake.recordInvocation("FindUserByID", []interface{}{arg1, arg2})
 	fake.findUserByIDMutex.Unlock()
-	if fake.FindUserByIDStub != nil {
-		return fake.FindUserByIDStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.findUserByIDReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -308,15 +311,16 @@ func (fake *FakeUserService) FindUserByUserName(arg1 context.Context, arg2 strin
 		arg1 context.Context
 		arg2 string
 	}{arg1, arg2})
+	stub := fake.FindUserByUserNameStub
+	fakeReturns := fake.findUserByUserNameReturns
 	fake.recordInvocation("FindUserByUserName", []interface{}{arg1, arg2})
 	fake.findUserByUserNameMutex.Unlock()
-	if fake.FindUserByUserNameStub != nil {
-		return fake.FindUserByUserNameStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.findUserByUserNameReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -373,15 +377,16 @@ func (fake *FakeUserService) Login(arg1 context.Context, arg2 string, arg3 strin
 		arg2 string
 		arg3 string
 	}{arg1, arg2, arg3})
+	stub := fake.LoginStub
+	fakeReturns := fake.loginReturns
 	fake.recordInvocation("Login", []interface{}{arg1, arg2, arg3})
 	fake.loginMutex.Unlock()
-	if fake.LoginStub != nil {
-		return fake.LoginStub(arg1, arg2, arg3)
+	if stub != nil {
+		return stub(arg1, arg2, arg3)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.loginReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -438,15 +443,16 @@ func (fake *FakeUserService) UpdatePassword(arg1 context.Context, arg2 model.Use
 		arg2 model.User
 		arg3 string
 	}{arg1, arg2, arg3})
+	stub := fake.UpdatePasswordStub
+	fakeReturns := fake.updatePasswordReturns
 	fake.recordInvocation("UpdatePassword", []interface{}{arg1, arg2, arg3})
 	fake.updatePasswordMutex.Unlock()
-	if fake.UpdatePasswordStub != nil {
-		return fake.UpdatePasswordStub(arg1, arg2, arg3)
+	if stub != nil {
+		return stub(arg1, arg2, arg3)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.updatePasswordReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -502,15 +508,16 @@ func (fake *FakeUserService) UpdateUser(arg1 context.Context, arg2 model.User) (
 		arg1 context.Context
 		arg2 model.User
 	}{arg1, arg2})
+	stub := fake.UpdateUserStub
+	fakeReturns := fake.updateUserReturns
 	fake.recordInvocation("UpdateUser", []interface{}{arg1, arg2})
 	fake.updateUserMutex.Unlock()
-	if fake.UpdateUserStub != nil {
-		return fake.UpdateUserStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.updateUserReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 

@@ -306,4 +306,15 @@ var _ = Describe("VetOrgService", func() {
 			})
 		})
 	})
+
+	Describe("Add a customer to a vetOrg", func() {
+
+		Context("We have a valid Context, customer and vetOrg", func() {
+
+			It("Returns a customer  and no error", func() {
+
+			})
+
+		})
+	})
 })

@@ -91,15 +91,16 @@ func (fake *FakeCustomerRepo) Create(arg1 *model.Customer) error {
 	fake.createArgsForCall = append(fake.createArgsForCall, struct {
 		arg1 *model.Customer
 	}{arg1})
+	stub := fake.CreateStub
+	fakeReturns := fake.createReturns
 	fake.recordInvocation("Create", []interface{}{arg1})
 	fake.createMutex.Unlock()
-	if fake.CreateStub != nil {
-		return fake.CreateStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.createReturns
 	return fakeReturns.result1
 }
 
@@ -151,15 +152,16 @@ func (fake *FakeCustomerRepo) Delete(arg1 *model.Customer) error {
 	fake.deleteArgsForCall = append(fake.deleteArgsForCall, struct {
 		arg1 *model.Customer
 	}{arg1})
+	stub := fake.DeleteStub
+	fakeReturns := fake.deleteReturns
 	fake.recordInvocation("Delete", []interface{}{arg1})
 	fake.deleteMutex.Unlock()
-	if fake.DeleteStub != nil {
-		return fake.DeleteStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.deleteReturns
 	return fakeReturns.result1
 }
 
@@ -211,15 +213,16 @@ func (fake *FakeCustomerRepo) GetByID(arg1 uint) (*model.Customer, error) {
 	fake.getByIDArgsForCall = append(fake.getByIDArgsForCall, struct {
 		arg1 uint
 	}{arg1})
+	stub := fake.GetByIDStub
+	fakeReturns := fake.getByIDReturns
 	fake.recordInvocation("GetByID", []interface{}{arg1})
 	fake.getByIDMutex.Unlock()
-	if fake.GetByIDStub != nil {
-		return fake.GetByIDStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getByIDReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -274,15 +277,16 @@ func (fake *FakeCustomerRepo) GetByUserName(arg1 string) (*model.Customer, error
 	fake.getByUserNameArgsForCall = append(fake.getByUserNameArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.GetByUserNameStub
+	fakeReturns := fake.getByUserNameReturns
 	fake.recordInvocation("GetByUserName", []interface{}{arg1})
 	fake.getByUserNameMutex.Unlock()
-	if fake.GetByUserNameStub != nil {
-		return fake.GetByUserNameStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getByUserNameReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -337,15 +341,16 @@ func (fake *FakeCustomerRepo) GetByVetOrgID(arg1 uint) ([]model.Customer, error)
 	fake.getByVetOrgIDArgsForCall = append(fake.getByVetOrgIDArgsForCall, struct {
 		arg1 uint
 	}{arg1})
+	stub := fake.GetByVetOrgIDStub
+	fakeReturns := fake.getByVetOrgIDReturns
 	fake.recordInvocation("GetByVetOrgID", []interface{}{arg1})
 	fake.getByVetOrgIDMutex.Unlock()
-	if fake.GetByVetOrgIDStub != nil {
-		return fake.GetByVetOrgIDStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getByVetOrgIDReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -400,15 +405,16 @@ func (fake *FakeCustomerRepo) Update(arg1 *model.Customer) error {
 	fake.updateArgsForCall = append(fake.updateArgsForCall, struct {
 		arg1 *model.Customer
 	}{arg1})
+	stub := fake.UpdateStub
+	fakeReturns := fake.updateReturns
 	fake.recordInvocation("Update", []interface{}{arg1})
 	fake.updateMutex.Unlock()
-	if fake.UpdateStub != nil {
-		return fake.UpdateStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.updateReturns
 	return fakeReturns.result1
 }
 
