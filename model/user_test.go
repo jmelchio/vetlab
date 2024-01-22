@@ -2,8 +2,10 @@ package model_test
 
 import (
 	"encoding/json"
+	"time"
 
 	. "github.com/jmelchio/vetlab/model"
+	"gorm.io/gorm"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -25,7 +27,12 @@ var _ = Describe("User", func() {
 			email := "user@server.com"
 			password := "some-password"
 			goUser = User{
-				ID:        uint(12345),
+				Model: gorm.Model{
+					ID:        uint(12345),
+					CreatedAt: time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC),
+					UpdatedAt: time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC),
+					DeletedAt: gorm.DeletedAt{},
+				},
 				UserName:  &userName,
 				FirstName: firstName,
 				LastName:  lastName,
@@ -33,7 +40,7 @@ var _ = Describe("User", func() {
 				Password:  password,
 				AdminUser: false,
 			}
-			jsonUser = `{"id":12345,"user_name":"some-user-name","first_name":"some-first-name","last_name":"some-last-name","email":"user@server.com","password":"some-password","admin_user":false}`
+			jsonUser = `{"ID":12345,"CreatedAt":"2020-01-01T00:00:00Z","UpdatedAt":"2020-01-01T00:00:00Z","DeletedAt":null,"user_name":"some-user-name","first_name":"some-first-name","last_name":"some-last-name","email":"user@server.com","password":"some-password","admin_user":false}`
 		})
 
 		Context("From Golang to Json", func() {

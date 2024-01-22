@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	"github.com/tedsuo/rata"
+	"gorm.io/gorm"
 
 	"github.com/jmelchio/vetlab/api/apifakes"
 	"github.com/jmelchio/vetlab/model"
@@ -156,7 +157,7 @@ var _ = Describe("UserHandler", func() {
 
 		BeforeEach(func() {
 			updateUser = model.User{
-				ID:        uint(12345),
+				Model:     gorm.Model{ID: uint(12345)},
 				UserName:  &userName,
 				FirstName: firstName,
 				LastName:  lastName,
@@ -257,7 +258,7 @@ var _ = Describe("UserHandler", func() {
 
 		BeforeEach(func() {
 			deleteUser = model.User{
-				ID:        uint(12345),
+				Model:     gorm.Model{ID: uint(12345)},
 				UserName:  &userName,
 				FirstName: firstName,
 				LastName:  lastName,
@@ -355,7 +356,7 @@ var _ = Describe("UserHandler", func() {
 			}
 
 			loginUser = model.User{
-				ID:        uint(12345),
+				Model:     gorm.Model{ID: uint(12345)},
 				UserName:  &userName,
 				FirstName: firstName,
 				LastName:  lastName,
@@ -457,7 +458,7 @@ var _ = Describe("UserHandler", func() {
 
 		BeforeEach(func() {
 			sampleUser = model.User{
-				ID:        uint(12345),
+				Model:     gorm.Model{ID: uint(12345)},
 				UserName:  &userName,
 				FirstName: firstName,
 				LastName:  lastName,

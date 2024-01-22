@@ -10,6 +10,7 @@ import (
 	"net/http/httptest"
 
 	"github.com/tedsuo/rata"
+	"gorm.io/gorm"
 
 	"github.com/jmelchio/vetlab/api/apifakes"
 	"github.com/jmelchio/vetlab/model"
@@ -158,7 +159,7 @@ var _ = Describe("CustomerHandler", func() {
 
 		BeforeEach(func() {
 			updateCustomer = model.Customer{
-				ID:        uint(12345),
+				Model:     gorm.Model{ID: uint(12345)},
 				UserName:  &userName,
 				FirstName: firstName,
 				LastName:  lastName,
@@ -259,7 +260,7 @@ var _ = Describe("CustomerHandler", func() {
 
 		BeforeEach(func() {
 			deleteCustomer = model.Customer{
-				ID:        uint(12345),
+				Model:     gorm.Model{ID: uint(12345)},
 				UserName:  &userName,
 				FirstName: firstName,
 				LastName:  lastName,
@@ -357,7 +358,7 @@ var _ = Describe("CustomerHandler", func() {
 			}
 
 			loginCustomer = model.Customer{
-				ID:        uint(12345),
+				Model:     gorm.Model{ID: uint(12345)},
 				UserName:  &userName,
 				FirstName: firstName,
 				LastName:  lastName,
@@ -459,7 +460,7 @@ var _ = Describe("CustomerHandler", func() {
 
 		BeforeEach(func() {
 			sampleCustomer = model.Customer{
-				ID:        uint(12345),
+				Model:     gorm.Model{ID: uint(12345)},
 				UserName:  &userName,
 				FirstName: firstName,
 				LastName:  lastName,

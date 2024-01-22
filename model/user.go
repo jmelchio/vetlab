@@ -1,8 +1,10 @@
 package model
 
+import "gorm.io/gorm"
+
 // User declares the structure for a user in the system
 type User struct {
-	ID                 uint                `json:"id" gorm:"primaryKey"`
+	gorm.Model
 	UserName           *string             `json:"user_name" gorm:"uniqueIndex;not null"`
 	FirstName          string              `json:"first_name,omitempty"`
 	LastName           string              `json:"last_name,omitempty"`

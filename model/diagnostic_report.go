@@ -1,10 +1,14 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 // DiagnosticReport describes the structure of a veterinary lab report
 type DiagnosticReport struct {
-	ID         uint       `json:"id" gorm:"primaryKey"`
+	gorm.Model
 	RequestID  uint       `json:"request_id"`
 	VetOrgID   uint       `json:"vet_org_id"`
 	CustomerID uint       `json:"customer_id"`

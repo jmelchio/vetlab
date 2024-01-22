@@ -5,6 +5,7 @@ import (
 	"time"
 
 	. "github.com/jmelchio/vetlab/model"
+	"gorm.io/gorm"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -22,7 +23,12 @@ var _ = Describe("DiagnosticReport", func() {
 			reportBody := "some-report-body"
 			reportFile := "some-report-file"
 			goDiagnosticReport = DiagnosticReport{
-				ID:         uint(12345),
+				Model: gorm.Model{
+					ID:        uint(12345),
+					CreatedAt: time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC),
+					UpdatedAt: time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC),
+					DeletedAt: gorm.DeletedAt{},
+				},
 				RequestID:  uint(12345),
 				VetOrgID:   uint(12345),
 				CustomerID: uint(12345),
@@ -31,7 +37,7 @@ var _ = Describe("DiagnosticReport", func() {
 				ReportBody: reportBody,
 				ReportFile: reportFile,
 			}
-			jsonDiagnosticReport = `{"id":12345,"request_id":12345,"vet_org_id":12345,"customer_id":12345,"user_id":12345,"date":"0001-01-01T00:00:00Z","report_body":"some-report-body","report_file":"some-report-file"}`
+			jsonDiagnosticReport = `{"ID":12345,"CreatedAt":"2020-01-01T00:00:00Z","UpdatedAt":"2020-01-01T00:00:00Z","DeletedAt":null,"request_id":12345,"vet_org_id":12345,"customer_id":12345,"user_id":12345,"date":"0001-01-01T00:00:00Z","report_body":"some-report-body","report_file":"some-report-file"}`
 		})
 
 		Context("From Golang to Json", func() {

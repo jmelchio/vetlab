@@ -2,8 +2,10 @@ package model_test
 
 import (
 	"encoding/json"
+	"time"
 
 	. "github.com/jmelchio/vetlab/model"
+	"gorm.io/gorm"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -29,7 +31,12 @@ var _ = Describe("Vetorg", func() {
 			phone := "some-phone"
 			fax := "shadow-fax"
 			goVetorg = VetOrg{
-				ID:          12345,
+				Model: gorm.Model{
+					ID:        uint(12345),
+					CreatedAt: time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC),
+					UpdatedAt: time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC),
+					DeletedAt: gorm.DeletedAt{},
+				},
 				OrgName:     &orgName,
 				Street:      street,
 				HouseNumber: houseNumber,
@@ -41,7 +48,7 @@ var _ = Describe("Vetorg", func() {
 				Phone:       phone,
 				Fax:         fax,
 			}
-			jsonVetorg = `{"id":12345,"org_name":"some-org-name","street":"some-street","house_number":"some-house-number","city":"some-city","province":"some-province","country":"some-country","postal_code":"some-postal-code","email":"person@domain.com","phone":"some-phone","fax":"shadow-fax"}`
+			jsonVetorg = `{"ID":12345,"CreatedAt":"2020-01-01T00:00:00Z","UpdatedAt":"2020-01-01T00:00:00Z","DeletedAt":null,"org_name":"some-org-name","street":"some-street","house_number":"some-house-number","city":"some-city","province":"some-province","country":"some-country","postal_code":"some-postal-code","email":"person@domain.com","phone":"some-phone","fax":"shadow-fax"}`
 		})
 
 		Context("From Golang to Json", func() {

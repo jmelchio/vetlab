@@ -1,10 +1,14 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 // DiagnosticRequest describes the structure of a request for diagnostics
 type DiagnosticRequest struct {
-	ID          uint       `json:"id" gorm:"primaryKey"`
+	gorm.Model
 	VetOrgID    uint       `json:"vet_org_id"`
 	CustomerID  uint       `json:"customer_id"`
 	UserID      uint       `json:"user_id"`

@@ -13,6 +13,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/tedsuo/rata"
+	"gorm.io/gorm"
 
 	"github.com/jmelchio/vetlab/api"
 	"github.com/jmelchio/vetlab/api/apifakes"
@@ -155,7 +156,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 		BeforeEach(func() {
 			diagnosticRequest = model.DiagnosticRequest{
-				ID:          uint(98765),
+				Model:       gorm.Model{ID: uint(98765)},
 				VetOrgID:    uint(12345),
 				CustomerID:  uint(54321),
 				UserID:      uint(23451),
@@ -260,7 +261,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 		BeforeEach(func() {
 			diagnosticRequest = model.DiagnosticRequest{
-				ID:          uint(98765),
+				Model:       gorm.Model{ID: uint(98765)},
 				VetOrgID:    uint(12345),
 				CustomerID:  uint(54321),
 				UserID:      uint(23451),
@@ -269,7 +270,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			diagnosticRequestList = []model.DiagnosticRequest{diagnosticRequest}
 			vetOrgName := "Veterinary Clinic One"
 			vetOrg = model.VetOrg{
-				ID:      uint(12345),
+				Model:   gorm.Model{ID: uint(12345)},
 				OrgName: &vetOrgName,
 			}
 		})
@@ -401,7 +402,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 		BeforeEach(func() {
 			diagnosticRequest = model.DiagnosticRequest{
-				ID:          uint(98765),
+				Model:       gorm.Model{ID: uint(98765)},
 				VetOrgID:    uint(12345),
 				CustomerID:  uint(54321),
 				UserID:      uint(23451),
@@ -410,7 +411,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			diagnosticRequestList = []model.DiagnosticRequest{diagnosticRequest}
 			userName := "Some User Name"
 			user = model.User{
-				ID:       uint(23451),
+				Model:    gorm.Model{ID: uint(23451)},
 				UserName: &userName,
 			}
 		})
@@ -542,7 +543,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 
 		BeforeEach(func() {
 			diagnosticRequest = model.DiagnosticRequest{
-				ID:          uint(98765),
+				Model:       gorm.Model{ID: uint(98765)},
 				VetOrgID:    uint(12345),
 				CustomerID:  uint(54321),
 				UserID:      uint(23451),
@@ -551,7 +552,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			diagnosticRequestList = []model.DiagnosticRequest{diagnosticRequest}
 			customerName := "Some Customer Name"
 			customer = model.Customer{
-				ID:       uint(23451),
+				Model:    gorm.Model{ID: uint(23451)},
 				UserName: &customerName,
 			}
 		})
@@ -685,7 +686,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 		BeforeEach(func() {
 			requestDate = time.Date(2019, time.April, 10, 23, 0, 0, 0, time.UTC)
 			diagnosticRequest = model.DiagnosticRequest{
-				ID:          uint(98765),
+				Model:       gorm.Model{ID: uint(98765)},
 				VetOrgID:    uint(12345),
 				CustomerID:  uint(54321),
 				UserID:      uint(23451),
@@ -695,7 +696,7 @@ var _ = Describe("DiagnosticRequestHandler", func() {
 			diagnosticRequestList = []model.DiagnosticRequest{diagnosticRequest}
 			vetOrgName := "Some VetOrg Name"
 			vetOrg = model.VetOrg{
-				ID:      uint(12345),
+				Model:   gorm.Model{ID: uint(12345)},
 				OrgName: &vetOrgName,
 			}
 		})

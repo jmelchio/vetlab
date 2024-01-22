@@ -1,10 +1,12 @@
 package model
 
+import "gorm.io/gorm"
+
 // Customer declares the structure for a customer in the system
 // UserName is a pointer because we want to catch if it's null in
 // the database.
 type Customer struct {
-	ID                 uint                `json:"id" gorm:"primaryKey"`
+	gorm.Model
 	UserName           *string             `json:"user_name" gorm:"not null;uniqueIndex"`
 	FirstName          string              `json:"first_name,omitempty"`
 	LastName           string              `json:"last_name,omitempty"`

@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 
 	"github.com/jmelchio/vetlab/api"
 	"github.com/jmelchio/vetlab/model"
@@ -274,7 +275,7 @@ var _ = Describe("CustomerService", func() {
 				password, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 				stringPassword := string(password)
 				sampleCustomer = model.Customer{
-					ID:       uint(12345),
+					Model:    gorm.Model{ID: uint(12345)},
 					UserName: &luserName,
 					Password: stringPassword,
 				}
@@ -318,7 +319,7 @@ var _ = Describe("CustomerService", func() {
 				password, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 				stringPassword := string(password)
 				sampleCustomer = model.Customer{
-					ID:       uint(12345),
+					Model:    gorm.Model{ID: uint(12345)},
 					UserName: &luserName,
 					Password: stringPassword,
 				}
@@ -441,7 +442,7 @@ var _ = Describe("CustomerService", func() {
 			fLastName = "doe"
 
 			customer = model.Customer{
-				ID:        uint(12345),
+				Model:     gorm.Model{ID: uint(12345)},
 				UserName:  &fUserName,
 				FirstName: fFirstName,
 				LastName:  fLastName,
@@ -519,14 +520,14 @@ var _ = Describe("CustomerService", func() {
 			fLastName = "doe"
 
 			customer = model.Customer{
-				ID:        uint(12345),
+				Model:     gorm.Model{ID: uint(12345)},
 				UserName:  &fUserName,
 				FirstName: fFirstName,
 				LastName:  fLastName,
 			}
 
 			vetOrg = model.VetOrg{
-				ID: uint(12345),
+				Model: gorm.Model{ID: uint(12345)},
 			}
 
 			customerID = 12345
