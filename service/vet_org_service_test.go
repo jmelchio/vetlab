@@ -311,7 +311,18 @@ var _ = Describe("VetOrgService", func() {
 
 		Context("We have a valid Context, customer and vetOrg", func() {
 
-			It("Returns a customer  and no error", func() {
+			It("Returns a customer and no error", func() {
+
+			})
+
+		})
+	})
+
+	Describe("Remove a customer from a vetOrg", func() {
+
+		Context("We have a valid Context, customer and vetOrg", func() {
+
+			It("Returns a customer and no error", func() {
 
 			})
 

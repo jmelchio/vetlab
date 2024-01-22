@@ -43,9 +43,9 @@ var _ = Describe("VetOrgRepo", func() {
 		email = "someone@someplace.com"
 		phone = "101-101-1010"
 		fax = "202-202-2020"
-		customers = nil
-		diagnosticReports = nil
-		diagnosticRequests = nil
+		customers = make([]model.Customer, 0)
+		diagnosticReports = make([]model.DiagnosticReport, 0)
+		diagnosticRequests = make([]model.DiagnosticRequest, 0)
 
 		vetOrgOne = model.VetOrg{
 			OrgName:            &orgName,

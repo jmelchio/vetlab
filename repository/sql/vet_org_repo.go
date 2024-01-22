@@ -40,14 +40,14 @@ func (vetOrgRepo VetOrgRepo) GetByID(vetOrgID uint) (*model.VetOrg, error) {
 }
 
 func (vetOrgRepo VetOrgRepo) GetByName(vetOrgName string) ([]model.VetOrg, error) {
-	var vetOrgs []model.VetOrg
+	var vetOrgSlice []model.VetOrg
 
-	result := vetOrgRepo.Database.Where("org_name LIKE ?", "%"+vetOrgName+"%").Find(&vetOrgs)
+	result := vetOrgRepo.Database.Where("org_name LIKE ?", "%"+vetOrgName+"%").Find(&vetOrgSlice)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 	if result.RowsAffected == 0 {
 		return nil, fmt.Errorf("vetOrg(s) with orgName like '%s' not found", vetOrgName)
 	}
-	return vetOrgs, nil
+	return vetOrgSlice, nil
 }
