@@ -1,9 +1,7 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
-	"io"
 	"net/http"
 	"strconv"
 	"time"
@@ -79,21 +77,17 @@ func (diagnosticRequestServer *DiagnosticRequestServer) SubmitDiagnosticRequest(
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
 		return
 	}
-
-	requestBody, err := io.ReadAll(request.Body)
-	if err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	defer request.Body.Close()
 
 	var diagnosticRequest model.DiagnosticRequest
-	err = json.Unmarshal(requestBody, &diagnosticRequest)
-	if err != nil {
+	dec := json.NewDecoder(request.Body)
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&diagnosticRequest); err != nil {
 		http.Error(writer, InvalidBody, http.StatusBadRequest)
 		return
 	}
 
-	newDiagnosticRequest, err := diagnosticRequestServer.DiagnosticRequestService.SubmitDiagnosticRequest(context.TODO(), diagnosticRequest)
+	newDiagnosticRequest, err := diagnosticRequestServer.DiagnosticRequestService.SubmitDiagnosticRequest(request.Context(), diagnosticRequest)
 	if err != nil {
 		http.Error(writer, UnableToSubmitDiagnosticRequest, http.StatusInternalServerError)
 		return
@@ -110,7 +104,7 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequest(
 		return
 	}
 
-	diagnosticRequest, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByID(context.TODO(), uint(requestID))
+	diagnosticRequest, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByID(request.Context(), uint(requestID))
 	if err != nil {
 		http.Error(writer, ErrorFetchingDiagnosticRequests, http.StatusNotFound)
 		return
@@ -127,13 +121,13 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestB
 		return
 	}
 
-	vetOrg, err := diagnosticRequestServer.VetOrgService.FindVetOrgByID(context.TODO(), uint(vetOrgID))
+	vetOrg, err := diagnosticRequestServer.VetOrgService.FindVetOrgByID(request.Context(), uint(vetOrgID))
 	if err != nil {
 		http.Error(writer, ErrorFetchingVetOrg, http.StatusNotFound)
 		return
 	}
 
-	diagnosticRequestList, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByVetOrg(context.TODO(), *vetOrg)
+	diagnosticRequestList, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByVetOrg(request.Context(), *vetOrg)
 	if err != nil {
 		http.Error(writer, ErrorFetchingDiagnosticRequests, http.StatusNotFound)
 		return
@@ -150,13 +144,13 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestB
 		return
 	}
 
-	user, err := diagnosticRequestServer.UserService.FindUserByID(context.TODO(), uint(userID))
+	user, err := diagnosticRequestServer.UserService.FindUserByID(request.Context(), uint(userID))
 	if err != nil {
 		http.Error(writer, ErrorFetchingUser, http.StatusNotFound)
 		return
 	}
 
-	diagnosticRequestList, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByUser(context.TODO(), *user)
+	diagnosticRequestList, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByUser(request.Context(), *user)
 	if err != nil {
 		http.Error(writer, ErrorFetchingDiagnosticRequests, http.StatusNotFound)
 		return
@@ -173,13 +167,13 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestB
 		return
 	}
 
-	customer, err := diagnosticRequestServer.CustomerService.FindCustomerByID(context.TODO(), uint(customerID))
+	customer, err := diagnosticRequestServer.CustomerService.FindCustomerByID(request.Context(), uint(customerID))
 	if err != nil {
 		http.Error(writer, ErrorFetchingCustomer, http.StatusNotFound)
 		return
 	}
 
-	diagnosticRequestList, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByCustomer(context.TODO(), *customer)
+	diagnosticRequestList, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByCustomer(request.Context(), *customer)
 	if err != nil {
 		http.Error(writer, ErrorFetchingDiagnosticRequests, http.StatusNotFound)
 		return
@@ -218,13 +212,13 @@ func (diagnosticRequestServer *DiagnosticRequestServer) FindDiagnotisticRequestB
 		return
 	}
 
-	vetOrg, err := diagnosticRequestServer.VetOrgService.FindVetOrgByID(context.TODO(), uint(vetOrgID))
+	vetOrg, err := diagnosticRequestServer.VetOrgService.FindVetOrgByID(request.Context(), uint(vetOrgID))
 	if err != nil {
 		http.Error(writer, ErrorFetchingVetOrg, http.StatusNotFound)
 		return
 	}
 
-	diagnosticRequestList, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByDateRange(context.TODO(), startDate, endDate, *vetOrg)
+	diagnosticRequestList, err := diagnosticRequestServer.DiagnosticRequestService.FindRequestByDateRange(request.Context(), startDate, endDate, *vetOrg)
 	if err != nil {
 		http.Error(writer, ErrorFetchingDiagnosticRequests, http.StatusNotFound)
 		return

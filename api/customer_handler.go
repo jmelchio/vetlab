@@ -1,9 +1,7 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
-	"io"
 	"net/http"
 	"strconv"
 
@@ -65,20 +63,16 @@ func (customerServer *CustomerServer) CreateCustomer(writer http.ResponseWriter,
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
 		return
 	}
-
-	requestBody, err := io.ReadAll(request.Body)
-	if err != nil {
-		http.Error(writer, UnableToParseBody, http.StatusBadRequest)
-		return
-	}
+	defer request.Body.Close()
 
 	var createCustomer model.Customer
-	err = json.Unmarshal(requestBody, &createCustomer)
-	if err != nil {
+	dec := json.NewDecoder(request.Body)
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&createCustomer); err != nil {
 		http.Error(writer, InvalidBody, http.StatusBadRequest)
 		return
 	}
-	newCustomer, err := customerServer.CustomerService.CreateCustomer(context.TODO(), createCustomer)
+	newCustomer, err := customerServer.CustomerService.CreateCustomer(request.Context(), createCustomer)
 	if err != nil {
 		http.Error(writer, UnableToCreateCustomer, http.StatusInternalServerError)
 		return
@@ -93,20 +87,16 @@ func (customerServer *CustomerServer) UpdateCustomer(writer http.ResponseWriter,
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
 		return
 	}
-
-	requestBody, err := io.ReadAll(request.Body)
-	if err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	defer request.Body.Close()
 
 	var updateCustomer model.Customer
-	err = json.Unmarshal(requestBody, &updateCustomer)
-	if err != nil {
+	dec := json.NewDecoder(request.Body)
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&updateCustomer); err != nil {
 		http.Error(writer, InvalidBody, http.StatusBadRequest)
 		return
 	}
-	newCustomer, err := customerServer.CustomerService.UpdateCustomer(context.TODO(), updateCustomer)
+	newCustomer, err := customerServer.CustomerService.UpdateCustomer(request.Context(), updateCustomer)
 	if err != nil {
 		http.Error(writer, UnableToUpdateCustomer, http.StatusInternalServerError)
 		return
@@ -121,20 +111,16 @@ func (customerServer *CustomerServer) DeleteCustomer(writer http.ResponseWriter,
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
 		return
 	}
-
-	requestBody, err := io.ReadAll(request.Body)
-	if err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	defer request.Body.Close()
 
 	var deleteCustomer model.Customer
-	err = json.Unmarshal(requestBody, &deleteCustomer)
-	if err != nil {
+	dec := json.NewDecoder(request.Body)
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&deleteCustomer); err != nil {
 		http.Error(writer, InvalidBody, http.StatusBadRequest)
 		return
 	}
-	err = customerServer.CustomerService.DeleteCustomer(context.TODO(), deleteCustomer)
+	err := customerServer.CustomerService.DeleteCustomer(request.Context(), deleteCustomer)
 	if err != nil {
 		http.Error(writer, UnableToDeleteCustomer, http.StatusInternalServerError)
 		return
@@ -149,20 +135,16 @@ func (customerServer *CustomerServer) CustomerLogin(writer http.ResponseWriter, 
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
 		return
 	}
-
-	requestBody, err := io.ReadAll(request.Body)
-	if err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	defer request.Body.Close()
 
 	var loginRequest model.LoginRequest
-	err = json.Unmarshal(requestBody, &loginRequest)
-	if err != nil {
+	dec := json.NewDecoder(request.Body)
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&loginRequest); err != nil {
 		http.Error(writer, InvalidBody, http.StatusBadRequest)
 		return
 	}
-	loginCustomer, err := customerServer.CustomerService.Login(context.TODO(), loginRequest.UserName, loginRequest.Password)
+	loginCustomer, err := customerServer.CustomerService.Login(request.Context(), loginRequest.UserName, loginRequest.Password)
 	if err != nil {
 		http.Error(writer, UnableToLoginCustomer, http.StatusInternalServerError)
 		return
@@ -176,7 +158,7 @@ func (customerServer *CustomerServer) FindCustomer(writer http.ResponseWriter, r
 	customerID := rata.Param(request, "customer_id")
 
 	if uintValue, err := strconv.ParseUint(customerID, 10, 32); err == nil {
-		foundCustomer, err := customerServer.CustomerService.FindCustomerByID(context.TODO(), uint(uintValue))
+		foundCustomer, err := customerServer.CustomerService.FindCustomerByID(request.Context(), uint(uintValue))
 		if err != nil {
 			http.Error(writer, UnableToFindCustomer, http.StatusNotFound)
 			return
@@ -191,7 +173,7 @@ func (customerServer *CustomerServer) FindCustomer(writer http.ResponseWriter, r
 func (customerServer *CustomerServer) FindCustomerByUserName(writer http.ResponseWriter, request *http.Request) {
 	userName := rata.Param(request, "user_name")
 
-	foundCustomer, err := customerServer.CustomerService.FindCustomerByUserName(context.TODO(), userName)
+	foundCustomer, err := customerServer.CustomerService.FindCustomerByUserName(request.Context(), userName)
 	if err != nil {
 		http.Error(writer, UnableToFindCustomer, http.StatusNotFound)
 		return

@@ -1,9 +1,7 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
-	"io"
 	"net/http"
 	"strconv"
 
@@ -65,20 +63,16 @@ func (userServer *UserServer) CreateUser(writer http.ResponseWriter, request *ht
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
 		return
 	}
-
-	requestBody, err := io.ReadAll(request.Body)
-	if err != nil {
-		http.Error(writer, UnableToParseBody, http.StatusBadRequest)
-		return
-	}
+	defer request.Body.Close()
 
 	var createUser model.User
-	err = json.Unmarshal(requestBody, &createUser)
-	if err != nil {
+	dec := json.NewDecoder(request.Body)
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&createUser); err != nil {
 		http.Error(writer, InvalidBody, http.StatusBadRequest)
 		return
 	}
-	newUser, err := userServer.UserService.CreateUser(context.TODO(), createUser)
+	newUser, err := userServer.UserService.CreateUser(request.Context(), createUser)
 	if err != nil {
 		http.Error(writer, UnableToCreateUser, http.StatusInternalServerError)
 		return
@@ -93,20 +87,16 @@ func (userServer *UserServer) UpdateUser(writer http.ResponseWriter, request *ht
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
 		return
 	}
-
-	requestBody, err := io.ReadAll(request.Body)
-	if err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	defer request.Body.Close()
 
 	var updateUser model.User
-	err = json.Unmarshal(requestBody, &updateUser)
-	if err != nil {
+	dec := json.NewDecoder(request.Body)
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&updateUser); err != nil {
 		http.Error(writer, InvalidBody, http.StatusBadRequest)
 		return
 	}
-	newUser, err := userServer.UserService.UpdateUser(context.TODO(), updateUser)
+	newUser, err := userServer.UserService.UpdateUser(request.Context(), updateUser)
 	if err != nil {
 		http.Error(writer, UnableToUpdateUser, http.StatusInternalServerError)
 		return
@@ -121,20 +111,16 @@ func (userServer *UserServer) DeleteUser(writer http.ResponseWriter, request *ht
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
 		return
 	}
-
-	requestBody, err := io.ReadAll(request.Body)
-	if err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	defer request.Body.Close()
 
 	var deleteUser model.User
-	err = json.Unmarshal(requestBody, &deleteUser)
-	if err != nil {
+	dec := json.NewDecoder(request.Body)
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&deleteUser); err != nil {
 		http.Error(writer, InvalidBody, http.StatusBadRequest)
 		return
 	}
-	err = userServer.UserService.DeleteUser(context.TODO(), deleteUser)
+	err := userServer.UserService.DeleteUser(request.Context(), deleteUser)
 	if err != nil {
 		http.Error(writer, UnableToDeleteUser, http.StatusInternalServerError)
 		return
@@ -149,20 +135,16 @@ func (userServer *UserServer) Login(writer http.ResponseWriter, request *http.Re
 		http.Error(writer, EmptyBody, http.StatusBadRequest)
 		return
 	}
-
-	requestBody, err := io.ReadAll(request.Body)
-	if err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	defer request.Body.Close()
 
 	var loginRequest model.LoginRequest
-	err = json.Unmarshal(requestBody, &loginRequest)
-	if err != nil {
+	dec := json.NewDecoder(request.Body)
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&loginRequest); err != nil {
 		http.Error(writer, InvalidBody, http.StatusBadRequest)
 		return
 	}
-	loginUser, err := userServer.UserService.Login(context.TODO(), loginRequest.UserName, loginRequest.Password)
+	loginUser, err := userServer.UserService.Login(request.Context(), loginRequest.UserName, loginRequest.Password)
 	if err != nil {
 		http.Error(writer, UnableToLoginUser, http.StatusInternalServerError)
 		return
@@ -176,7 +158,7 @@ func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http
 	userID := rata.Param(request, "user_id")
 
 	if uintValue, err := strconv.ParseUint(userID, 10, 32); err == nil {
-		foundUser, err := userServer.UserService.FindUserByID(context.TODO(), uint(uintValue))
+		foundUser, err := userServer.UserService.FindUserByID(request.Context(), uint(uintValue))
 		if err != nil {
 			http.Error(writer, UnableToFindUser, http.StatusNotFound)
 			return
@@ -191,7 +173,7 @@ func (userServer *UserServer) FindUser(writer http.ResponseWriter, request *http
 func (userServer *UserServer) FindUserByUserName(writer http.ResponseWriter, request *http.Request) {
 	userName := rata.Param(request, "user_name")
 
-	foundUser, err := userServer.UserService.FindUserByUserName(context.TODO(), userName)
+	foundUser, err := userServer.UserService.FindUserByUserName(request.Context(), userName)
 	if err != nil {
 		http.Error(writer, UnableToFindUser, http.StatusNotFound)
 		return

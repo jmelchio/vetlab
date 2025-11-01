@@ -21,7 +21,7 @@ func openCors(handler http.Handler, domain string) http.Handler {
 	})
 }
 
-func writeJSONResponse(writer http.ResponseWriter, returnStatus int, responseBody interface{}) {
+func writeJSONResponse(writer http.ResponseWriter, returnStatus int, responseBody any) {
 	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(returnStatus)
 	if err := json.NewEncoder(writer).Encode(responseBody); err != nil {
