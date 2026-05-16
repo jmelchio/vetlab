@@ -1,4 +1,4 @@
-FROM golang:1.20.3-alpine3.17 as test-build-stage
+FROM golang:1.25.10-alpine3.23 AS test-build-stage
 LABEL authors="joris.melchior@gmail.com"
 
 COPY ./go.mod /workspace/go.mod
@@ -23,7 +23,7 @@ RUN cd /workspace; set -e; \
 WORKDIR /workspace
 ENTRYPOINT ["ginkgo", "repository/..."]
 
-FROM alpine:3.17.3 as image-stage
+FROM alpine:3.23 AS image-stage
 LABEL authors="joris.melchior@gmail.com"
 
 COPY --from=test-build-stage /opt/vetlab/vetlab /opt/vetlab/vetlab
