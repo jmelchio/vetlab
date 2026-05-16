@@ -23,7 +23,7 @@ RUN cd /workspace; set -e; \
 WORKDIR /workspace
 ENTRYPOINT ["ginkgo", "repository/..."]
 
-FROM alpine:3.23 AS image-stage
+FROM alpine:3.23.0 AS image-stage
 LABEL authors="joris.melchior@gmail.com"
 
 COPY --from=test-build-stage /opt/vetlab/vetlab /opt/vetlab/vetlab
