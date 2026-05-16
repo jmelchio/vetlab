@@ -6,7 +6,7 @@ volumes:
 services:
   vetlab-test:
     container_name: vetlab_test
-    image: vetlabtest:latest
+    image: vetlabtest:1.0
     links:
       - postgres
     command: ["--", "-dbHost=postgres"]
