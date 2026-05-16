@@ -1,7 +1,7 @@
 module github.com/jmelchio/vetlab
 
 go 1.25.0
-toolchain go1.25.0
+toolchain go1.25.10
 
 require (
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.12.2
