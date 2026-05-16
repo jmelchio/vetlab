@@ -16,14 +16,14 @@ RUN cd /workspace; set -e; \
     go get github.com/onsi/ginkgo/v2/...; \
     go get github.com/onsi/gomega/...; \
     go install github.com/onsi/ginkgo/v2/ginkgo; \
-    go mod tidy -compat=1.17; \
+    go mod tidy -compat=1.25.10; \
     ginkgo api/... model/... service/...;\
     go build -o /opt/vetlab/vetlab ./cmd/vetlab
 
 WORKDIR /workspace
 ENTRYPOINT ["ginkgo", "repository/..."]
 
-FROM alpine:3.23 AS image-stage
+FROM alpine:3.23.0 AS image-stage
 LABEL authors="joris.melchior@gmail.com"
 
 COPY --from=test-build-stage /opt/vetlab/vetlab /opt/vetlab/vetlab

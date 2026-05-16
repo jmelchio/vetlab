@@ -14,7 +14,8 @@ var _ = Describe("VetOrgRepo", func() {
 		vetOrgRepo         service.VetOrgRepo
 		vetOrgOne          model.VetOrg
 		vetOrgTwo          model.VetOrg
-		orgName            string
+		orgNameOne         string
+		orgNameTwo         string
 		street             string
 		houseNumber        string
 		city               string
@@ -33,7 +34,8 @@ var _ = Describe("VetOrgRepo", func() {
 		vetOrgRepoImpl := sql.VetOrgRepo{Database: database}
 		vetOrgRepo = &vetOrgRepoImpl
 
-		orgName = "zeVetOrg"
+		orgNameOne = "zeVetOrgOne"
+		orgNameTwo = "zeVetOrgTwo"
 		street = "zeStreet"
 		houseNumber = "909-1"
 		city = "pleasantville"
@@ -48,7 +50,23 @@ var _ = Describe("VetOrgRepo", func() {
 		diagnosticRequests = make([]model.DiagnosticRequest, 0)
 
 		vetOrgOne = model.VetOrg{
-			OrgName:            &orgName,
+			OrgName:            &orgNameOne,
+			Street:             street,
+			HouseNumber:        houseNumber,
+			City:               city,
+			Province:           province,
+			Country:            country,
+			PostalCode:         postalCode,
+			Email:              email,
+			Phone:              phone,
+			Fax:                fax,
+			Customers:          customers,
+			DiagnosticReports:  diagnosticReports,
+			DiagnosticRequests: diagnosticRequests,
+		}
+
+		vetOrgTwo = model.VetOrg{
+			OrgName:            &orgNameTwo,
 			Street:             street,
 			HouseNumber:        houseNumber,
 			City:               city,
@@ -97,14 +115,14 @@ var _ = Describe("VetOrgRepo", func() {
 		Context("When a vetOrgname is taken already", func() {
 
 			BeforeEach(func() {
-				vetOrgTwo = vetOrgOne
+				Expect(vetOrgTwo.OrgName).NotTo(Equal(vetOrgOne.OrgName))
 			})
 
 			It("It returns an error", func() {
 				err = vetOrgRepo.Create(&vetOrgOne)
-				Expect(err).NotTo(HaveOccurred())
-				err = vetOrgRepo.Create(&vetOrgTwo)
 				Expect(err).To(HaveOccurred())
+				err = vetOrgRepo.Create(&vetOrgTwo)
+				Expect(err).NotTo(HaveOccurred())
 			})
 		})
 	})
@@ -114,6 +132,7 @@ var _ = Describe("VetOrgRepo", func() {
 		Context("When a vetOrg is found", func() {
 
 			BeforeEach(func() {
+				*vetOrgOne.OrgName = "org_name_update"
 				err = vetOrgRepo.Create(&vetOrgOne)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(vetOrgOne.ID).NotTo(Equal(uint(0)))
@@ -151,6 +170,7 @@ var _ = Describe("VetOrgRepo", func() {
 		Context("When the vetOrg exists", func() {
 
 			BeforeEach(func() {
+				*vetOrgOne.OrgName = "org_name_delete_vet_org_found"
 				err = vetOrgRepo.Create(&vetOrgOne)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(vetOrgOne.ID).NotTo(Equal(uint(0)))
@@ -174,6 +194,7 @@ var _ = Describe("VetOrgRepo", func() {
 			var foundDiagnosticReport *model.VetOrg
 
 			BeforeEach(func() {
+				*vetOrgOne.OrgName = "org_name_get_by_id_vet_org_found"
 				err = vetOrgRepo.Create(&vetOrgOne)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(vetOrgOne.ID).NotTo(Equal(uint(0)))
@@ -206,6 +227,7 @@ var _ = Describe("VetOrgRepo", func() {
 			var foundVetOrg []model.VetOrg
 
 			BeforeEach(func() {
+				*vetOrgOne.OrgName = "org_name_get_by_name_vet_org_found"
 				err = vetOrgRepo.Create(&vetOrgOne)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(vetOrgOne.ID).NotTo(Equal(uint(0)))

@@ -15,7 +15,8 @@ var _ = Describe("CustomerRepo", func() {
 		customerRepo service.CustomerRepo
 		customerOne  model.Customer
 		customerTwo  model.Customer
-		userName     string
+		userNameOne  string
+		userNameTwo  string
 		firstName    string
 		lastName     string
 		email        string
@@ -27,7 +28,7 @@ var _ = Describe("CustomerRepo", func() {
 		customerRepoImpl := sql.CustomerRepo{Database: database}
 		customerRepo = &customerRepoImpl
 
-		userName = "user_name"
+		userNameOne = "user_name_one"
 		firstName = "first_name"
 		lastName = "last_name"
 		email = "first.last@gmail.com"
@@ -35,7 +36,16 @@ var _ = Describe("CustomerRepo", func() {
 		vetOrgID = uint(12345)
 
 		customerOne = model.Customer{
-			UserName:  &userName,
+			UserName:  &userNameOne,
+			FirstName: firstName,
+			LastName:  lastName,
+			Email:     email,
+			Password:  password,
+			VetOrgID:  vetOrgID,
+		}
+
+		customerTwo = model.Customer{
+			UserName:  &userNameTwo,
 			FirstName: firstName,
 			LastName:  lastName,
 			Email:     email,
@@ -77,14 +87,15 @@ var _ = Describe("CustomerRepo", func() {
 		Context("When a username is taken already", func() {
 
 			BeforeEach(func() {
-				customerTwo = customerOne
+				Expect(customerTwo.UserName).NotTo(Equal(customerOne.UserName))
 			})
 
 			It("It returns an error", func() {
+				// customerOne already exists in deleted state, so should not be able to create again
 				err = customerRepo.Create(&customerOne)
-				Expect(err).NotTo(HaveOccurred())
-				err = customerRepo.Create(&customerTwo)
 				Expect(err).To(HaveOccurred())
+				err = customerRepo.Create(&customerTwo)
+				Expect(err).NotTo(HaveOccurred())
 			})
 		})
 	})
@@ -94,6 +105,7 @@ var _ = Describe("CustomerRepo", func() {
 		Context("When a user is found", func() {
 
 			BeforeEach(func() {
+				*customerOne.UserName = "user_name_update"
 				err = customerRepo.Create(&customerOne)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(customerOne.ID).NotTo(Equal(uint(0)))
@@ -102,7 +114,7 @@ var _ = Describe("CustomerRepo", func() {
 			Context("When the updated password is less than 50 characters", func() {
 
 				It("It updates the customer record and returns updated customer with unchanged password", func() {
-					*customerOne.UserName = "new_user_name"
+					*customerOne.UserName = "new_user_name_sp"
 					customerOne.Password = "short_password"
 					err = customerRepo.Update(&customerOne)
 					Expect(err).NotTo(HaveOccurred())
@@ -116,7 +128,7 @@ var _ = Describe("CustomerRepo", func() {
 			Context("When the updated password is more than 50 characters", func() {
 
 				It("It updates the customer record and returns updated customer with unchanged password", func() {
-					*customerOne.UserName = "new_user_name"
+					*customerOne.UserName = "new_user_name_lp"
 					customerOne.Password = "long_password_of_more_than_fifty_characters_so_that_its"
 					err = customerRepo.Update(&customerOne)
 					Expect(err).NotTo(HaveOccurred())
@@ -142,6 +154,7 @@ var _ = Describe("CustomerRepo", func() {
 		Context("When the customer exists", func() {
 
 			BeforeEach(func() {
+				*customerOne.UserName = "user_name_delete_user_found"
 				err = customerRepo.Create(&customerOne)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(customerOne.ID).NotTo(Equal(uint(0)))
@@ -165,6 +178,7 @@ var _ = Describe("CustomerRepo", func() {
 			var foundCustomer *model.Customer
 
 			BeforeEach(func() {
+				*customerOne.UserName = "user_name_get_by_id_user_found"
 				err = customerRepo.Create(&customerOne)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(customerOne.ID).NotTo(Equal(uint(0)))
@@ -197,6 +211,7 @@ var _ = Describe("CustomerRepo", func() {
 			var foundCustomer *model.Customer
 
 			BeforeEach(func() {
+				*customerOne.UserName = "user_name_get_by_user_name_user_found"
 				err = customerRepo.Create(&customerOne)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(customerOne.ID).NotTo(Equal(uint(0)))
@@ -219,7 +234,7 @@ var _ = Describe("CustomerRepo", func() {
 			})
 
 			It("It returns the customer and nil for error", func() {
-				foundCustomer, err = customerRepo.GetByUserName("some_user_name")
+				foundCustomer, err = customerRepo.GetByUserName("non_existent_user_name")
 				Expect(err).To(HaveOccurred())
 				Expect(foundCustomer).To(BeNil())
 			})
@@ -233,6 +248,7 @@ var _ = Describe("CustomerRepo", func() {
 			var foundCustomers []model.Customer
 
 			BeforeEach(func() {
+				*customerOne.UserName = "user_name_get_by_vet_org_id_customer_found"
 				err = customerRepo.Create(&customerOne)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(customerOne.ID).NotTo(Equal(uint(0)))

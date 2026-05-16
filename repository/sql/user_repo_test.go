@@ -12,28 +12,39 @@ import (
 var _ = Describe("UserRepo", func() {
 
 	var (
-		userRepo  service.UserRepo
-		userOne   model.User
-		userTwo   model.User
-		userName  string
-		firstName string
-		lastName  string
-		email     string
-		password  string
+		userRepo    service.UserRepo
+		userOne     model.User
+		userTwo     model.User
+		userNameOne string
+		userNameTwo string
+		firstName   string
+		lastName    string
+		email       string
+		password    string
 	)
 
 	BeforeEach(func() {
 		userRepoImpl := sql.UserRepo{Database: database}
 		userRepo = &userRepoImpl
 
-		userName = "user_name"
+		userNameOne = "user_name_one"
+		userNameTwo = "user_name_two"
 		firstName = "first_name"
 		lastName = "last_name"
 		email = "first.last@gmail.com"
 		password = "want_some_hash?"
 
 		userOne = model.User{
-			UserName:  &userName,
+			UserName:  &userNameOne,
+			FirstName: firstName,
+			LastName:  lastName,
+			Email:     email,
+			Password:  password,
+			AdminUser: false,
+		}
+
+		userTwo = model.User{
+			UserName:  &userNameTwo,
 			FirstName: firstName,
 			LastName:  lastName,
 			Email:     email,
@@ -45,6 +56,7 @@ var _ = Describe("UserRepo", func() {
 	AfterEach(func() {
 		err = database.Where("1 = 1").Delete(&model.User{}).Error
 		Expect(err).NotTo(HaveOccurred())
+
 	})
 
 	Describe("User table", func() {
@@ -75,14 +87,15 @@ var _ = Describe("UserRepo", func() {
 		Context("When a username is taken already", func() {
 
 			BeforeEach(func() {
-				userTwo = userOne
+				Expect(userTwo.UserName).NotTo(Equal(userOne.UserName))
 			})
 
 			It("It returns an error", func() {
+				// userOne already exists in deleted state, so should not be able to create again
 				err = userRepo.Create(&userOne)
-				Expect(err).NotTo(HaveOccurred())
-				err = userRepo.Create(&userTwo)
 				Expect(err).To(HaveOccurred())
+				err = userRepo.Create(&userTwo)
+				Expect(err).NotTo(HaveOccurred())
 			})
 		})
 	})
@@ -92,6 +105,7 @@ var _ = Describe("UserRepo", func() {
 		Context("When a user is found", func() {
 
 			BeforeEach(func() {
+				*userOne.UserName = "user_name_update"
 				err = userRepo.Create(&userOne)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(userOne.ID).NotTo(Equal(uint(0)))
@@ -100,7 +114,7 @@ var _ = Describe("UserRepo", func() {
 			Context("When the updated password is less than 50 characters", func() {
 
 				It("It updates the user record and returns updated user with unchanged password", func() {
-					*userOne.UserName = "new_user_name"
+					*userOne.UserName = "new_user_name_sp"
 					userOne.Password = "short_password"
 					err = userRepo.Update(&userOne)
 					Expect(err).NotTo(HaveOccurred())
@@ -114,7 +128,7 @@ var _ = Describe("UserRepo", func() {
 			Context("When the updated password is more than 50 characters", func() {
 
 				It("It updates the user record and returns updated user with unchanged password", func() {
-					*userOne.UserName = "new_user_name"
+					*userOne.UserName = "new_user_name_lp"
 					userOne.Password = "long_password_of_more_than_fifty_characters_so_that_its"
 					err = userRepo.Update(&userOne)
 					Expect(err).NotTo(HaveOccurred())
@@ -140,9 +154,10 @@ var _ = Describe("UserRepo", func() {
 
 	Describe("Delete a user", func() {
 
-		Context("When the use is found", func() {
+		Context("When the user is found", func() {
 
 			BeforeEach(func() {
+				*userOne.UserName = "user_name_delete_user_found"
 				err = userRepo.Create(&userOne)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(userOne.ID).NotTo(Equal(uint(0)))
@@ -166,6 +181,7 @@ var _ = Describe("UserRepo", func() {
 			var foundUser *model.User
 
 			BeforeEach(func() {
+				*userOne.UserName = "user_name_get_by_id_user_found"
 				err = userRepo.Create(&userOne)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(userOne.ID).NotTo(Equal(uint(0)))
@@ -198,6 +214,7 @@ var _ = Describe("UserRepo", func() {
 			var foundUser *model.User
 
 			BeforeEach(func() {
+				*userOne.UserName = "user_name_get_by_user_name_user_found"
 				err = userRepo.Create(&userOne)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(userOne.ID).NotTo(Equal(uint(0)))
