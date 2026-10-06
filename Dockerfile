@@ -1,4 +1,4 @@
-FROM golang:1.25.10-alpine3.23 AS test-build-stage
+FROM golang:1.26-alpine3.23 AS test-build-stage
 LABEL authors="joris.melchior@gmail.com"
 
 COPY ./go.mod /workspace/go.mod
@@ -16,7 +16,7 @@ RUN cd /workspace; set -e; \
     go get github.com/onsi/ginkgo/v2/...; \
     go get github.com/onsi/gomega/...; \
     go install github.com/onsi/ginkgo/v2/ginkgo; \
-    go mod tidy -compat=1.25.10; \
+    go mod tidy -compat=1.26; \
     ginkgo api/... model/... service/...;\
     go build -o /opt/vetlab/vetlab ./cmd/vetlab
 
