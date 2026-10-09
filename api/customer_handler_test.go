@@ -109,7 +109,6 @@ var _ = Describe("CustomerHandler", func() {
 				Expect(recorder.Result().StatusCode).To(Equal(http.StatusInternalServerError))
 				respBody, err := io.ReadAll(recorder.Result().Body)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(err).NotTo(HaveOccurred())
 				Expect(string(respBody[0 : len(respBody)-1])).To(Equal(api.UnableToCreateCustomer))
 				Expect(customerService.CreateCustomerCallCount()).To(Equal(1))
 			})

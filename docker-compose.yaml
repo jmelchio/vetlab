@@ -1,12 +1,10 @@
-version: '3.7'
-
 volumes:
   postgres:
 
 services:
   vetlab-api:
     container_name: vetlab_api
-    image: vetlab:latest
+    image: vetlab:26.0.1
     ports:
       - "8080:8080"
     links:
