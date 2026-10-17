@@ -53,5 +53,4 @@ var _ = AfterSuite(func() {
 	_ = database.Migrator().DropTable(&model.Customer{})
 	_ = database.Migrator().DropTable(&model.VetOrg{})
 	_ = database.Migrator().DropTable(&model.User{})
-
 })
